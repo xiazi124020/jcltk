@@ -1,0 +1,334 @@
+{% extends "tem_sidebar.html" %}
+
+{% block title %}口座検索{% endblock %}
+
+{% block page-title %}口座検索{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<style>
+    :root {
+      --sidebar-width: 330px;
+    }
+</style>
+{% endblock css %}
+{% block side-bar %}
+    <!-- search form -->
+    <form action="#" method="get" id="search_form" name="search_form" class="sidebar-form" style="border:0px solid black">
+      {% csrf_token %}
+            <div class="form-group">
+                <button class="btn bg-olive btn-sm" type="button" onclick="do_search()">検索 <i class="fa fa-search"></i></button>&nbsp;&nbsp;
+                <button class="btn bg-olive btn-sm" type="button" onclick="do_clear()">クリア <i class="fa fa-trash"></i></button></button>
+                {%if perms.app.exp_userlist == True %}
+                <button class="btn bg-olive btn-sm pull-right" type="button" onclick="do_export()">CSV出力 <i class="fa fa-search"></i></button>
+                {%endif%}
+            </div>
+
+            <div class="form-group has-feedback has-clear">
+                <label for="name" class="text-primary">申請ID</label>
+                <input id="id" name="id" class="form-control rpa-input" type="text">
+                <span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>
+            </div>
+
+            <div class="form-group has-feedback has-clear">
+                <label for="client_id" class="text-primary">口座番号</label>
+                <textarea id="client_id" name="client_id" class="form-control rpa-input" rows="4" placeholder="複数入力の場合、「,」、「スペース」又は「改行」で区切って入力してください"></textarea>
+                <span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>
+            </div>
+
+            <div class="form-group has-feedback has-clear">
+                <label for="name" class="text-primary">氏名・法人名</label>
+                <input id="name" name="name" class="form-control rpa-input" type="text">
+                <span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>
+            </div>
+
+            <div class="form-group has-feedback has-clear">
+                <label for="name_kana" class="text-primary">氏名・法人名(カナ)</label>
+                <input id="name_kana" name="name_kana" class="form-control rpa-input"  type="text">
+                <span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="personal_fund" class="text-primary">自己資産</label>
+              <select id="personal_fund" name="personal_fund" class="form-control rpa-input" multiple="1" style="height:250px">
+                  <option value="" selected></option>
+                  <option value='10万円未満'>10万円未満</option>
+                  <option value='10万円～30万円未満'>10万円～30万円未満</option>
+                  <option value='30万円～100万円未満'>30万円～100万円未満</option>
+                  <option value='100万円～300万円未満'>100万円～300万円未満</option>
+                  <option value='300万円～500万円未満'>300万円～500万円未満</option>
+                  <option value='500万円～1000万円未満'>500万円～1000万円未満</option>
+                  <option value='1000万円～2500万円未満'>1000万円～2500万円未満</option>
+                  <option value='2500万円～5000万円未満'>2500万円～5000万円未満</option>
+                  <option value='5000万円～1億円未満'>5000万円～1億円未満</option>
+              </select>
+          </div>
+    </form>
+{% endblock %}
+{% block content-header %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-info">
+      <div class="box-body table-responsive">
+        <table id="user_list" class="display stripe nowrap">
+          <thead>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <!-- /.box -->
+  </div>
+  <!-- /.col -->
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function page_ready() {
+    DashboardUI.clientid_wrap_autocomplete()
+  }
+
+  function do_clear () {
+    document.search_form.reset();
+  }
+
+  function has_input( val ) {
+    if (val === void 0 ) {
+      return false
+    }
+    if (Object.prototype.toString.call(val) === '[object Array]') {
+      return !(val.length==1 && val[0] === '');
+    } else {
+      return val !== '';
+    }
+  }
+
+  var _tbl_user_list_ = null;
+  function do_search () {
+      var apply_id = $('#id').val();
+      var client_id = $.trim($('#client_id').val()).split(/[\s\n,]/g);
+      lpad_client_ids(client_id);
+      var name = $('#name').val();
+      var name_kana = $('#name_kana').val();
+      var personal_fund = $('#personal_fund').val();
+
+      if ( !has_input(apply_id)
+          && !has_input(client_id)
+          && !has_input(name)
+          && !has_input(name_kana)
+          && !has_input(personal_fund) ) {
+          alert('検索条件を入力してください。');
+          return;
+      }
+
+      if (　apply_id　&&  !/^\d+$/.test(apply_id) ) {
+          alert("申請IDは数字のみ入力してください。")
+          return;
+      }
+
+      if ( $.fn.DataTable.isDataTable('#user_list') ) {
+        $('#user_list').DataTable().destroy();
+      }
+      $('#user_list').empty();
+
+      payload = {
+          id:apply_id,
+          client_id: client_id,
+          name:name,
+          name_kana:name_kana,
+          personal_fund:personal_fund
+      }
+      $('#user_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/user/search",payload).post(users => {
+
+          if( !users || users.length === 0 ) {
+            $('#user_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
+            return;
+          }
+          $('#no_data_message').hide();
+          $("#navbar_message").html("決済差損益合計、平均ポジション保有期間の集計期間は{0}～{1}".format(users[0].min_ymd, users[0].max_ymd));
+          $('#user_list').empty();
+          var disp_columns = [
+              {
+                "title":"口座番号",
+                "data": "client_id",
+                "render": function(data, type, row, meta){
+                      if(data) {
+                        data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data + get_diamondclub_icon_html(data, window.context.diamonders) +'</a>';
+                      }
+                      return data;
+                }
+              },
+              {
+                "title":"氏名・法人名",
+                "data": "name",
+                "width": "80px"
+              },
+              {
+                "title":"氏名・法人名(カナ)",
+                "data": "name_kana",
+                "width": "80px"
+              },
+              {
+                "title":"性別",
+                "data": "sex",
+                "width": "30px"
+              },
+              {
+                "title":"生年月日・設立年月日",
+                "data": "birthdate",
+                "width": "80px"
+              },
+              {
+                "title":"PCメール",
+                "data": "pc_mail"
+              },
+              {
+                "title":"住所",
+                "data": "address"
+              },
+              {
+                "title":"口座ステータス",
+                "data": "kouza_status"
+              },
+              {
+                "title":"個人資産",
+                "data": "personal_fund"
+              },
+              {
+                "title":"口座開設日時",
+                "data": "open_dt",
+                "render": function(data, type, row, meta) {
+                  if(data == undefined) {
+                    return "-";
+                  }
+                  var date = moment(data, "YYYY-MM-DD HH:mm:SS");
+                  return date.format('YYYY年MM月DD日 HH:mm');
+                }
+              },
+              {
+                "title":"初回入金日時",
+                "data": "first_deposit_dt",
+                "render": function(data, type, row, meta) {
+                  if(data == undefined) {
+                    return "-";
+                  }
+                  var date = moment(data, "YYYY-MM-DD HH:mm:SS");
+                  return date.format('YYYY年MM月DD日 HH:mm');
+                }
+              },
+              {
+                "title":"初回取引日時",
+                "data": "first_trade_dt",
+                "render": function(data, type, row, meta) {
+                  if(data == undefined) {
+                    return "-";
+                  }
+                  var date = moment(data, "YYYY-MM-DD HH:mm:SS");
+                  return date.format('YYYY年MM月DD日 HH:mm');
+                }
+              },
+              {
+                "title":"最終取引日",
+                "data": "last_trade_dt",
+                "render": function(data, type, row, meta) {
+                  if(data == undefined) {
+                    return "-";
+                  }
+                  var date = moment(data, "YYYYMMDD");
+                  return date.format('YYYY年MM月DD日');
+                }
+              },
+              {
+                "title":"決済差損益合計(円)",
+                "data": "pl_total",
+                "render": function(data, type, row, meta) {
+                  if(data == undefined) {
+                    return "-";
+                  }
+                  return data;
+                }
+              },
+              {
+                "title":"平均ポジション保有期間",
+                "data": "avg_position_period",
+                "render": function(data, type, row, meta) {
+                  if(data == undefined) {
+                    return "-";
+                  }
+                  return data;
+                }
+              }
+          ];
+          _tbl_user_list_ = RpaDataTable.create_simple_paging_table('#user_list', {
+            data: users,
+            columns: disp_columns,
+            fixedColumns:{
+              leftColumns: 5
+            },
+            dom:'Bfrtip',
+            autoWidth:false,
+            scrollX: true,
+            scrollY: '680px',
+            paging:true,
+            // pageLength:200,
+            lengthChange:true,
+            processing:true,
+            pageLength : 50,
+            autoWidth:false
+          });
+      }, err => {
+        $('#user_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+      });
+  }
+
+  function do_export() {
+      var apply_id = $('#id').val();
+      var client_id = $('#client_id').val().split(/[\s\n,]/g);
+      lpad_client_ids(client_id);
+      var name = $('#name').val();
+      var name_kana = $('#name_kana').val();
+      var personal_fund = $('#personal_fund').val();
+
+      if ( !has_input(apply_id)
+          && !has_input(client_id)
+          && !has_input(name)
+          && !has_input(name_kana)
+          && !has_input(personal_fund) ) {
+          alert('検索条件を入力してください。');
+          return;
+      }
+
+      payload = {
+          id:apply_id,
+          client_id: client_id,
+          name:name,
+          name_kana:name_kana,
+          personal_fund:personal_fund
+      }
+
+      var url = "api/user/csvexport/count";
+      get_api(url, payload).post(user_count => {
+        if(parseInt(user_count) == 0) {
+          alert("データなし");
+          return;
+        } else {
+          if ( window.confirm('検索結果が{0}件、ダウンロードしてよろしいですか？'.format(user_count)) ) {
+            document.search_form.method = "post";
+            document.search_form.action = gethostwebname() + "/api/user/csvexport";
+            document.search_form.target =  "_self";
+            document.search_form.submit();
+          }
+        }
+      }).catch(err => {
+          $('#no_data_message').css("display", "block")
+          $('#no_data_message').html("<p class='error-message'>{0}</p>".format(err))
+      });
+    }
+
+</script>
+{% endblock %}

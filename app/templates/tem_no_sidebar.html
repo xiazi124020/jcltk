@@ -1,0 +1,85 @@
+{% extends "tem_base.html" %}
+{% load static %}
+
+{% block css %}
+{{ block.super }}
+  <style>
+    .nav-tabs-custom>.nav-tabs>li.active>a, .nav-tabs-custom>.nav-tabs>li.active:hover>a {
+      background: #88acdbc0 !important;
+    }
+    table td.numcol {
+      text-align : right;
+    }
+    .navbar-text {
+        width: 100%;
+        left: 0;
+        text-align: center;
+        margin: auto;
+        padding-top: 10px;
+    }
+    .history .dataTables_filter input { background-color: #303030;color:white }
+    .history .dataTables_filter label { color:white }
+    .fc-time{
+      display : none;
+    }
+    .fc-event-inner {
+      font-size: 1.5em;
+    }
+  </style>
+{% endblock css %}
+
+{% block body %}
+<body class="hold-transition skin-blue layout-top-nav">
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header navbar-brand">
+          {% block page-title %}{% endblock %}
+        </div>
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                  {% block toolbar %}{% endblock %}
+                  <li>
+                    <a href="javascript:void(0);" onclick="javascript:if(confirm('画面を閉じます。よろしいですか？')) { window.close() }" class="btn btn-sm btn-flat"><i class="fa fa-close"></i></a>
+                  </li>
+            </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    {% block content-header %}{% endblock %}
+    <!-- Main content -->
+    <section class="content" id="page_content">
+      {% block content %}{% endblock %}
+    </section>
+    <div id="message_no_print_perm" style="position:absolute;left:0;top:0; display:none;color:red;font-size:40px;margin-left:10px;z-index:9999">印刷権限なし</div>
+  </div>
+</div>
+<!-- ./wrapper -->
+
+  <footer class="main-footer fixed-bottom no-padding">
+    {% block content-footer %}{% endblock %}
+  </footer>
+</body>
+{% endblock body %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function template_ready() {
+
+      DashboardUI.ccypairid_load(window.context.ccy_pairs)
+
+      !page_ready || page_ready()
+  }
+
+</script>
+{% endblock scripts %}

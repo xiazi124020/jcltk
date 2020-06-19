@@ -1,0 +1,544 @@
+{% extends "tem_portal.html" %}
+
+{% block title %}ポータル{% endblock %}
+
+{% block content-header %}
+  <h1>
+    <i class="fa fa-dashboard"></i> Dashboard
+    <small>ポータル</small>
+    {% if perms.app.view_orderticket %}
+    <a id="v_order_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_order');" title="時間帯別通貨ペア別注文口座数へ" style="display:block;float:right;"><i class="fa fa-clock-o"></i></a>
+    {% endif %}
+    {% if perms.app.view_kessai %}
+    <a id="v_pl_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_pl');" title="損益へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-money"></i></a>
+    {% endif %}
+    {% if perms.app.view_deposit or perms.app.view_done %}
+    <a id="v_deposit_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_deposit');" title="売買高・預かり高へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-legal"></i></a>
+    {% endif %}
+    {% if perms.app.view_position %}
+    <a id="v_position_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_position');" title="最大ポジションへ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-database"></i></a>
+    {% endif %}
+    {% if perms.app.view_payment %}
+    <a id="v_payment_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_payment');" title="入出金へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-retweet"></i></a>
+    {% endif %}
+    {% if perms.app.view_device %}
+    <a id="v_channel_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_channel');" title="チャンネル別注文件数へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-laptop"></i></a>
+    {% endif %}
+    {% if perms.app.view_done %}
+    <a id="v_bs_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_bs');" title="売買合計(通貨ペア別)へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-yen"></i></a>
+    {% endif %}
+  </h1>
+{% endblock %}
+{% block content %}
+
+    <div id="v_summary" class="row">
+        {% if perms.app.view_done %}
+        <div class="col-md-3">
+          <div class="info-box">
+            <span class="info-box-icon bg-aqua btn" style="padding-left:8px" onclick="dispDetailchart('done/detail', 'bs')" title="過去データを見る"><h3>売買別</h3></span>
+            <div class="info-box-content">
+              <span class="info-box-number" id="done_bs_total_ymd"></span>
+              <span class="info-box-number" id="done_bs_total_b"></span>
+              <span class="info-box-number" id="done_bs_total_s"></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3">
+          <div class="info-box">
+            <span class="info-box-icon bg-green btn" style="padding-left:8px;padding-top:0px;" onclick="dispDetailchart('done/detail', 'exec_type')" title="過去データを見る"><h3>約定区<br>分別</h3></span>
+            <div class="info-box-content">
+              <span class="info-box-number" id="done_exec_total_ymd"></span>
+              <span class="info-box-number" id="done_exec_total_n"></span>
+              <span class="info-box-number" id="done_exec_total_k"></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        {% endif %}
+        <!-- /.col -->
+        {% if perms.app.view_payment %}
+        <div class="col-md-3">
+          <div class="info-box">
+            <span class="info-box-icon bg-red btn" style="padding-left:8px" onclick="dispDetailchart('payment/detail')" title="過去データを見る"><h3>入出金</h3></span>
+            <div class="info-box-content">
+              <span class="info-box-number" id="payment_total_ymd"></span>
+              <span class="info-box-number" id="payment_total_n"></span>
+              <span class="info-box-number" id="payment_total_s"></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        {% endif %}
+        <!-- /.col -->
+        {% if perms.app.view_position %}
+        <div class="col-md-3">
+          <div class="info-box">
+            <span class="info-box-icon bg-yellow btn" style="padding-left:8px;padding-top:0px;" onclick="dispDetailchart('position/detail')" title="過去データを見る"><h3>ポジシ<br>ョン</h3></span>
+            <div class="info-box-content">
+                <span class="info-box-number" id="position_total_ymd"></span>
+                <span class="info-box-number" id="position_total_b"></span>
+                <span class="info-box-number" id="position_total_s"></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        {% endif %}
+        <!-- /.col -->
+    </div>
+
+    <div id="v_open_client" class="row box box-primary" style="margin-left:0px">
+        <div class="box-header">
+            <i class="fa fa-new"></i>新規口座数推移
+            <div class="btn-group">
+                <a href="javascript:void(0);" onclick="$('#chk_client_open_m').prop('checked', true);init_open_client();" style="cursor:pointer"><input type="radio" name="chk_client_open" id="chk_client_open_m" value="m" checked="checked" style="margin-left:5px;display:inner-block;">月別</a>
+                <a href="javascript:void(0);" onclick="$('#chk_client_open_d').prop('checked', true);init_open_client();" style="cursor:pointer"><input type="radio" name="chk_client_open" id="chk_client_open_d" value="d" style="margin-left:10px;display:inner-block;">日別</a>
+            </div>
+            <span style="color:#dc3912;margin-left:20px">&#9632;</span>取引なし(現時点まで)
+            <span style="color:#3366cc;margin-left:10px">&#9632;</span>取引あり
+        </div>
+        <div class="box-body col-md-12">
+          <div id="canvas_open_client"></div>
+        </div>
+    </div>
+
+    <div id="v_container">
+
+      <!-- 時間帯別注文口座数（期間指定）-->
+      {% if perms.app.view_orderticket %}
+      <div id="v_order" class="row box box-solid box-primary view-item" style="display:none">
+        <div class="box-header with-border" ondblclick="on_view_dblclick('v_order')">
+            <i class="fa fa-clock-o"></i>時間帯別通貨ペア別注文口座数
+            <div style="display:inline-block;margin-left:10px">
+                <input type="text" id="order_ticket_timezone_search" style="display:inline-block;width:150px;color:white;background-color:#3c8dbc" />
+                <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_order_ticket_timezone({'event':'search'})"><i class="fa fa-search"></i></a>
+                <select id="order_ticket_timezone_ccy" style="display:inline-block;width:100px;color:white;margin-left:20px;background-color:#3c8dbc" onchange="create_order_ticket_timezone()">
+                  <option value="">ALL</option>
+                  <option value="Top10" selected>Top10</option>
+                  <option value="Top20">Top20</option>
+                </select>&nbsp;&nbsp;
+                {% if perms.app.print %}
+                  <a class="btn btn-flat btn-info btn-xs" onclick="javascript:exportCanvas2csv('order_ticket_timezone', 'copy')" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                  <a class="btn btn-flat btn-info btn-xs" onclick="javascript:exportCanvas2csv('order_ticket_timezone', 'csv')" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                {% endif %}
+            </div>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" title="トップへ" onclick="scroll_to_top()" style="margin-right:5px;"><i class="fa fa-hand-pointer-o top_icon"></i></button>
+                <button type="button" class="btn btn-box-tool" title="上に移動" onclick="on_view_order_change('v_order','prev')"><i class="fa fa-angle-up"></i></button>
+                <button type="button" class="btn btn-box-tool" title="下に移動" onclick="on_view_order_change('v_order','next')"><i class="fa fa-angle-down"></i></button>
+                <button type="button" class="btn btn-box-tool" title="最初に移動" onclick="on_view_order_change('v_order','first')"><i class="fa fa-angle-double-up"></i></button>
+                <button type="button" class="btn btn-box-tool" title="最後に移動" onclick="on_view_order_change('v_order','last')"><i class="fa fa-angle-double-down"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" id="v_order_collapse_btn"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" onclick="on_view_closed('v_order')"><i class="fa fa-times"></i></button>
+            </div>
+        </div>
+        <div class="box-body no-padding">
+          <div class="col-md-12">
+                <div id="order_ticket_timezone_container">
+                  <canvas id="order_ticket_timezone"></canvas>
+                </div>
+                <div id="order_ticket_timezone_message" class="text-info" style="width: 100% !important;height: auto !important;text-align:center;"><h1>Loading...</h1></div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- 損益（期間指定）-->
+      {% if perms.app.view_kessai %}
+      <div id="v_pl" class="row box box-solid box-primary view-item" style="display:none">
+          <div class="box-header with-border" ondblclick="on_view_dblclick('v_pl')">
+              <i class="fa fa-money"></i>損益
+              <i class="box-tip" style="display:none;"></i>
+              <div class="box-tools pull-right">
+                  <button type="button" class="toggle-expand-btn btn btn-box-tool" title="全画面表示" ><i class="fa fa-arrows-alt"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="トップへ" onclick="scroll_to_top()" style="margin-right:5px;"><i class="fa fa-hand-pointer-o top_icon"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="上に移動" onclick="on_view_order_change('v_pl','prev')"><i class="fa fa-angle-up"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="下に移動" onclick="on_view_order_change('v_pl','next')"><i class="fa fa-angle-down"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="最初に移動" onclick="on_view_order_change('v_pl','first')"><i class="fa fa-angle-double-up"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="最後に移動" onclick="on_view_order_change('v_pl','last')"><i class="fa fa-angle-double-down"></i></button>
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                  <button type="button" class="btn btn-box-tool" onclick="on_view_closed('v_pl')"><i class="fa fa-times"></i></button>
+              </div>
+          </div>
+
+          <div class="box-body no-padding">
+            <div class="col-md-6 view-subitem">
+                <div class="box no-border">
+                    <div class="box-header">
+                      <i class="fa fa-level-up text-green"></i>
+                      <input type="text" id="kesai_ranking_search_p" style="display:inner-block;width:150px;color:blue" />合計利益Top10顧客
+                      <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_kesai_ranking({'kbn':'p','event':'search'})"><i class="fa fa-search"></i></a>
+                      {% if perms.app.print %}
+                      <div class="pull-right">
+                          <a id="kesai_ranking_p_export_copy" class="btn btn-info btn-xs" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                          <a id="kesai_ranking_p_export_csv" class="btn btn-info btn-xs" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                      </div>
+                      {% endif %}
+                    </div>
+                  <table id="kesai_ranking_p" class="fixed-column-table" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+                </div>
+            </div>
+            <div class="col-md-6 view-subitem">
+                <div class="box no-border">
+                    <div class="box-header">
+                      <i class="fa fa-level-down text-red"></i>
+                      <input type="text" id="kesai_ranking_search_l" style="display:inner-block;width:150px;color:blue" />合計損失Top10顧客
+                      <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_kesai_ranking({'kbn':'l','event':'search'})"><i class="fa fa-search"></i></a>
+                      {% if perms.app.print %}
+                      <div class="pull-right">
+                        <a id="kesai_ranking_l_export_copy" class="btn btn-info btn-xs" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                        <a id="kesai_ranking_l_export_csv" class="btn btn-info btn-xs" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                      </div>
+                      {% endif %}
+                    </div>
+                  <table id="kesai_ranking_l" class="fixed-column-table" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+                </div>
+            </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- 売買高・預かり高 -->
+      {% if perms.app.view_deposit or perms.app.view_done %}
+      <div id="v_deposit" class="row box box-solid box-primary view-item" style="display:none">
+        <div class="box-header with-border" ondblclick="on_view_dblclick('v_deposit')">
+            <i class="fa fa-legal"></i>
+            {% if perms.app.view_done %}売買高{% endif %}
+            {% if perms.app.view_done and perms.app.view_deposit%}・{% endif %}
+            {% if perms.app.view_deposit%}預かり高{% endif %}
+            <i class="box-tip" style="display:none;"></i>
+            <div class="box-tools pull-right">
+                <button type="button" class="toggle-expand-btn btn btn-box-tool" title="全画面表示"><i class="fa fa-arrows-alt"></i></button>
+                <button type="button" class="btn btn-box-tool" title="トップへ" onclick="scroll_to_top()" style="margin-right:5px;"><i class="fa fa-hand-pointer-o top_icon"></i></button>
+                <button type="button" class="btn btn-box-tool" title="上に移動" onclick="on_view_order_change('v_deposit','prev')"><i class="fa fa-angle-up"></i></button>
+                <button type="button" class="btn btn-box-tool" title="下に移動" onclick="on_view_order_change('v_deposit','next')"><i class="fa fa-angle-down"></i></button>
+                <button type="button" class="btn btn-box-tool" title="最初に移動" onclick="on_view_order_change('v_deposit','first')"><i class="fa fa-angle-double-up"></i></button>
+                <button type="button" class="btn btn-box-tool" title="最後に移動" onclick="on_view_order_change('v_deposit','last')"><i class="fa fa-angle-double-down"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" onclick="on_view_closed('v_deposit')"><i class="fa fa-times"></i></button>
+            </div>
+        </div>
+        <div class="box-body no-padding">
+          <!--    月間売買高Top100口座     -->
+          {% if perms.app.view_done %}
+          <div class="col-md-6">
+              <div class="box box-info no-border">
+                  <div class="box-header">
+                    <i class="fa fa-list-ol"></i>
+                    <input id="search_month" type="text" class="" min='2012-01' max='2030-12'/>売買高Top100顧客
+                    <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_client_bs_monthly({'kbn':'b','event':'search'})"><i class="fa fa-search"></i></a>
+                    {% if perms.app.print %}
+                    <div class="pull-right">
+                      <a id="bs_monthly_export_copy" class="btn btn-info btn-xs" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                      <a id="bs_monthly_export_csv" class="btn btn-info btn-xs" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                    </div>
+                    {% endif %}
+                  </div>
+                  <table id="bs_monthly" cellspacing="0" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+              </div>
+          </div>
+          {% endif %}
+          {% if perms.app.view_deposit %}
+          <div class="col-md-6">
+              <div class="box box-info no-border">
+                <div class="box-header">
+                  <i class="fa fa-list-ol"></i>
+                  <input id="search_day" type="text" min='2012-01-01' max='2030-12-31'/>預かり高Top100顧客
+                  <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_max_deposit_client({'event':'search'})"><i class="fa fa-search"></i></a>
+                  {% if perms.app.print %}
+                  <div class="pull-right">
+                      <a id="max_deposit_client_export_copy" class="btn btn-info btn-xs" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                      <a id="max_deposit_client_export_csv" class="btn btn-info btn-xs" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                  </div>
+                  {% endif %}
+                </div>
+                <table id="max_deposit_client" cellspacing="0" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+              </div>
+          </div>
+          {% endif %}
+          <!--    最大ポジション保有者（通貨別）     -->
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- 最大ポジション -->
+      {% if perms.app.view_position %}
+      <div id="v_position" class="row box box-solid box-primary view-item" style="display:none">
+          <div class="box-header with-border" ondblclick="on_view_dblclick('v_position')">
+              <i class="fa fa-database"></i>最大ポジション保有顧客(通貨ペア別)
+              <div style="display:inline-block;margin-left:10px">
+                <input type="text" id="max_position_ccy_search" min='2012-01-01' max='2030-12-31' style="display:inner-block;width:150px;color:white;background-color:#3c8dbc" />
+                <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_max_position({'event':'search'})"><i class="fa fa-search"></i></a>
+              </div>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" title="トップへ" onclick="scroll_to_top()" style="margin-right:5px;"><i class="fa fa-hand-pointer-o top_icon"></i></button>
+                <button type="button" class="btn btn-box-tool" title="上に移動" onclick="on_view_order_change('v_position','prev')"><i class="fa fa-angle-up"></i></button>
+                <button type="button" class="btn btn-box-tool" title="下に移動" onclick="on_view_order_change('v_position','next')"><i class="fa fa-angle-down"></i></button>
+                <button type="button" class="btn btn-box-tool" title="最初に移動" onclick="on_view_order_change('v_position','first')"><i class="fa fa-angle-double-up"></i></button>
+                <button type="button" class="btn btn-box-tool" title="最後に移動" onclick="on_view_order_change('v_position','last')"><i class="fa fa-angle-double-down"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" onclick="on_view_closed('v_position')"><i class="fa fa-times"></i></button>
+              </div>
+              {% if perms.app.print %}
+                <a class="btn btn-flat btn-info btn-xs" onclick="javascript:exportCanvas2csv2('max_position_ccy', 'copy')" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                <a class="btn btn-flat btn-info btn-xs" onclick="javascript:exportCanvas2csv2('max_position_ccy', 'csv')" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+              {% endif %}
+          </div>
+          <div class="box-body no-padding">
+            <div class="col-md-8">
+                <div class="box box-info no-border">
+                    <div id="max_position_ccy_message" class="text-info" style="width: 100% !important;height: auto !important;text-align:center;"><h1>Loading...</h1></div>
+                    <div>
+                      <canvas id="max_position_ccy"></canvas>
+                    </div>
+                </div>
+            </div>
+          </div>
+      </div>
+      {% endif %}
+
+      <!-- 入出金 -->
+      {% if perms.app.view_payment %}
+      <div id="v_payment"  class="row box box-solid box-primary view-item" style="display:none">
+          <div class="box-header with-border" ondblclick="on_view_dblclick('v_payment')">
+              <i class="fa fa-retweet"></i>入出金
+              <i class="box-tip" style="display:none;"></i>
+              <div class="box-tools pull-right">
+                  <button type="button" class="toggle-expand-btn btn btn-box-tool" title="全画面表示" ><i class="fa fa-arrows-alt"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="トップへ" onclick="scroll_to_top()" style="margin-right:5px;"><i class="fa fa-hand-pointer-o top_icon"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="上に移動" onclick="on_view_order_change('v_payment','prev')"><i class="fa fa-angle-up"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="下に移動" onclick="on_view_order_change('v_payment','next')"><i class="fa fa-angle-down"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="最初に移動" onclick="on_view_order_change('v_payment','first')"><i class="fa fa-angle-double-up"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="最後に移動" onclick="on_view_order_change('v_payment','last')"><i class="fa fa-angle-double-down"></i></button>
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                  <button type="button" class="btn btn-box-tool" onclick="on_view_closed('v_payment')"><i class="fa fa-times"></i></button>
+              </div>
+          </div>
+          <div class="box-body no-padding">
+            <div class="col-md-4 view-subitem">
+                <div class="box box-info no-border">
+                    <div class="box-header with-border">
+                      <i class="fa fa-retweet"></i>
+                      <input type="text" id="payment_search_daterange" style="display:inner-block;width:150px;color:blue" />入・出金
+                      <input type="number" id="payment_search_threshold" style="display:inner-block;width:50px;text-align:right;color:blue" value="1000" min="100" step="100">万円以上の顧客(Top50件)
+                      <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_payment_threshold({'event':'search'})"><i class="fa fa-search"></i></a>
+                      {% if perms.app.print %}
+                      <div class="pull-right">
+                          <a id="payment_threshold_export_copy" class="btn btn-info btn-xs" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                          <a id="payment_threshold_export_csv" class="btn btn-info btn-xs" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                      </div>
+                      {% endif %}
+                    </div>
+                  <table id="payment_threshold" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+                </div>
+            </div>
+            <div class="col-md-4 view-subitem">
+                <div class="box box-info no-border">
+                    <div class="box-header with-border">
+                      <i class="fa fa-sign-in text-green"></i>
+                      <input type="text" id="payment_search_daterange_n" style="display:inner-block;width:150px;color:blue" />入金
+                      <input type="number" id="payment_search_threshold_n" style="display:inner-block;width:50px;text-align:right;color:blue" value="1000" min="100" step="100">万円以上の顧客(Top10件)
+                      <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_payment_ranking({'kbn':'n','event':'search'})"><i class="fa fa-search"></i></a>
+                      {% if perms.app.print %}
+                      <div class="pull-right">
+                          <a id="payment_ranking_n_export_copy" class="btn btn-info btn-xs" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                          <a id="payment_ranking_n_export_csv" class="btn btn-info btn-xs" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                      </div>
+                      {% endif %}
+                    </div>
+                  <table id="payment_ranking_n" class="fixed-column-table" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+                </div>
+            </div>
+            <div class="col-md-4 view-subitem">
+                <div class="box box-danger no-border">
+                    <div class="box-header with-border">
+                      <i class="fa fa-sign-out text-red"></i>
+                      <input type="text" id="payment_search_daterange_s" style="display:inner-block;width:150px;color:blue" />出金
+                      <input type="number" id="payment_search_threshold_s" style="display:inner-block;width:50px;text-align:right;color:blue" value="1000" min="100" step="100">万円以上の顧客(Top10件)
+                      <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_payment_ranking({'kbn':'s','event':'search'})"><i class="fa fa-search"></i></a>
+                      {% if perms.app.print %}
+                      <div class="pull-right">
+                          <a id="payment_ranking_s_export_copy" class="btn btn-info btn-xs" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                          <a id="payment_ranking_s_export_csv" class="btn btn-info btn-xs" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                      </div>
+                      {% endif %}
+                    </div>
+                  <table id="payment_ranking_s" class="fixed-column-table" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+                </div>
+            </div>
+          </div>
+      </div>
+      {% endif %}
+
+      <!-- チャンネル(注文件数) -->
+      {% if perms.app.view_device %}
+      <div id="v_channel" class="row box box-solid box-primary view-item" style="display:none">
+          <div class="box-header with-border" ondblclick="on_view_dblclick('v_channel')">
+              <i class="fa fa-laptop"></i>チャンネル別
+              <a href="javascript:void(0);" onclick="$('#device_kbn_client').prop('checked', true);create_channel({'event':'search'});" style="cursor:pointer"><input type="radio" name="device_kbn" id="device_kbn_client" value="client" checked="checked" style="margin-left:5px;display:inner-block;">口座数</a>
+              <a href="javascript:void(0);" onclick="$('#device_kbn_order').prop('checked', true);create_channel({'event':'search'});" style="cursor:pointer"><input type="radio" name="device_kbn" id="device_kbn_order" value="order" style="margin-left:10px;display:inner-block;">注文件数</a>
+              <div style="display:inline-block;margin-left:10px;">
+                <input type="text" id="channel_search_range" style="display:inner-block;width:150px;color:white;background-color:#3c8dbc" />
+                <a class="btn btn-flat btn-info btn-xs" onclick="create_channel({'event':'search'});"><i class="fa fa-search"></i></a>
+                {% if perms.app.print %}
+                <a class="btn btn-info btn-xs" onclick="javascript:csv_export_channel('copy');" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                <a class="btn btn-info btn-xs" onclick="javascript:csv_export_channel('csv');" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                {% endif %}
+              </div>
+              <i class="box-tip" style="display:none;"></i>
+              <div class="box-tools pull-right">
+                  <button type="button" class="toggle-expand-btn btn btn-box-tool" title="全画面表示" ><i class="fa fa-arrows-alt"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="トップへ" onclick="scroll_to_top()" style="margin-right:5px;"><i class="fa fa-hand-pointer-o top_icon"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="上に移動" onclick="on_view_order_change('v_channel','prev')"><i class="fa fa-angle-up"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="下に移動" onclick="on_view_order_change('v_channel','next')"><i class="fa fa-angle-down"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="最初に移動" onclick="on_view_order_change('v_channel','first')"><i class="fa fa-angle-double-up"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="最後に移動" onclick="on_view_order_change('v_channel','last')"><i class="fa fa-angle-double-down"></i></button>
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                  <button type="button" class="btn btn-box-tool" onclick="on_view_closed('v_channel')"><i class="fa fa-times"></i></button>
+              </div>
+          </div>
+          <div class="box-body no-padding" id="device_view_body">
+              <div class="col-md-3 view-subitem">
+                  <div style="height:300px"><canvas id="device_order" height="200"></canvas></div>
+                  <div class="box-header pull-right">
+                      <select id="device_order_month_select" style="display:inline-block;width:130px;color:blue;margin-left:20px" onchange="createLineChart('device_order_month', '1', '', 'change');">
+                          <option value="" selected>-</option>
+                          <option value='WEB'>WEB</option>
+                          <option value='PCリッチ'>PCリッチ</option>
+                          <option value='PCリッチ２'>PCリッチ２</option>
+                          <option value='スマートフォン'>スマートフォン</option>
+                        </select>
+                  </div>
+                  <div id="device_order_month_container" style="height:300px"><canvas id="device_order_month" height="200"></canvas></div>
+                  <div id="device_order_month_message" class="text-info" style="width: 100% !important;height: auto !important;text-align:center;"><h1>Loading...</h1></div>
+                  <div id="device_order_month_percent_container" style="height:300px;margin-top:30px"><canvas id="device_order_month_percent" height="200"></canvas></div>
+                  <div id="device_order_month_percent_message" class="text-info" style="width: 100% !important;height: auto !important;text-align:center;"><h1>Loading...</h1></div>
+              </div>
+              <div class="col-md-3 view-subitem">
+                  <div style="height:300px">
+                    <canvas id="new_old_app" height="200" style="display: none"></canvas>
+                    <canvas id="iphone_version" height="200" style="display: none"></canvas>
+                    <canvas id="ios_version" height="200" style="display: none"></canvas>
+                    <canvas id="android_version" height="200" style="display: none"></canvas>
+                  </div>
+                  <div class="box-header pull-right">
+                    <select id="new_old_app_month_select" style="display:inline-block;width:100px;color:blue;margin-left:20px" onchange="createLineChart('new_old_app_month', '2', '', 'change');">
+                      <option value="" selected>-</option>
+                      <option value='旧iPhone'>旧iPhone</option>
+                      <option value='新iPhone'>新iPhone</option>
+                      <option value='SN-iPhone'>SN-iPhone</option>
+                      <option value='旧Android'>旧Android</option>
+                      <option value='新Android'>新Android</option>
+                      <option value='SN-Android'>SN-Android</option>
+                    </select>
+                  </div>
+                  <div id="new_old_app_month_container" style="height:300px"><canvas id="new_old_app_month" height="200"></canvas></div>
+                  <div id="new_old_app_month_message" class="text-info" style="width: 100% !important;height: auto !important;text-align:center;"><h1>Loading...</h1></div>
+                  <div id="new_old_app_month_percent_container" style="height:300px;margin-top:30px"><canvas id="new_old_app_month_percent" height="200"></canvas></div>
+                  <div id="new_old_app_month_percent_message" class="text-info" style="width: 100% !important;height: auto !important;text-align:center;"><h1>Loading...</h1></div>
+              </div>
+              <div class="col-md-3 view-subitem">
+                  <div style="height:300px"><canvas id="means" height="200"></canvas></div>
+                  <div class="box-header pull-right">
+                    <select id="means_month_select" style="display:inline-block;width:100px;color:blue;margin-left:20px" onchange="createLineChart('means_month', '3', '', 'change');">
+                      <option value="" selected>-</option>
+                      <option value='携帯'>携帯</option>
+                      <option value='PC'>PC</option>
+                      <option value='モバイル'>モバイル</option>
+                    </select>
+                  </div>
+                  <div id="means_month_container" style="height:300px"><canvas id="means_month" height="200"></canvas></div>
+                  <div id="means_month_message" class="text-info" style="width: 100% !important;height: auto !important;text-align:center;"><h1>Loading...</h1></div>
+                  <div id="means_month_percent_container" style="height:300px;margin-top:30px"><canvas id="means_month_percent" height="200"></canvas></div>
+                  <div id="means_month_percent_message" class="text-info" style="width: 100% !important;height: auto !important;text-align:center;"><h1>Loading...</h1></div>
+              </div>
+              <div class="col-md-3 text-center view-subitem-3">
+                  <i class="fa fa-question-circle">不明デバイス</i>
+                  <table id="other_month" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+              </div>
+          </div>
+      </div>
+      {% endif %}
+
+       <!-- 売買  -->
+      {% if perms.app.view_done %}
+      <div id="v_bs"  class="row box box-solid box-primary view-item" style="display:none">
+          <div class="box-header with-border" ondblclick="on_view_dblclick('v_bs')">
+              <i class="fa fa-yen "></i>売買合計(通貨ペア別)
+              <!--<div style="display:inline-block;margin-left:10px">
+                  <input type="text" id="done_ccypair_range" style="display:inner-block;width:150px;color:blue" />
+                  <a class="btn btn-flat btn-info btn-xs" onclick="javascript:create_done_ccypair({'event':'search'});"><i class="fa fa-search"></i></a>
+                </div>-->
+              <i class="box-tip" style="display:none;"></i>
+              <div class="box-tools pull-right">
+                  <button type="button" class="toggle-expand-btn btn btn-box-tool" title="全画面表示" ><i class="fa fa-arrows-alt"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="トップへ" onclick="scroll_to_top()" style="margin-right:5px;"><i class="fa fa-hand-pointer-o top_icon"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="上に移動" onclick="on_view_order_change('v_bs','prev')"><i class="fa fa-angle-up"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="下に移動" onclick="on_view_order_change('v_bs','next')"><i class="fa fa-angle-down"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="最初に移動" onclick="on_view_order_change('v_bs','first')"><i class="fa fa-angle-double-up"></i></button>
+                  <button type="button" class="btn btn-box-tool" title="最後に移動" onclick="on_view_order_change('v_bs','last')"><i class="fa fa-angle-double-down"></i></button>
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                  <button type="button" class="btn btn-box-tool" onclick="on_view_closed('v_bs')"><i class="fa fa-times"></i></button>
+              </div>
+          </div>
+          <div class="box-body no-padding">
+                <!--    通貨別代金合計     -->
+                <div class="col-md-4 view-subitem-4">
+                    <div class="box box-info no-border">
+                        <div class="box-header with-border">
+                            <p class="box-title" id="done_ccypair_title">通貨ペア別売買合計</p>
+                            {% if perms.app.print %}
+                            <div class="pull-right">
+                              <a id="ccypair_export_copy" class="btn btn-info btn-xs" style="margin-left:20px;"><i class="fa fa-copy" title="コピー"></i></a>
+                              <a id="ccypair_export_csv" class="btn btn-info btn-xs" style="margin-left:5px;"><i class="fa fa-download" title="CSV出力"></i></a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <table id="ccypair" cellspacing="0" style="width:100%"><tr><td class="text-info text-center"><h1>Loading...</h1></td></tr></table>
+                    </div>
+                </div>
+                <div class="col-md-8 view-subitem-8">
+                  <canvas id="ccy_canvas_past"></canvas>
+                </div>
+          </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div id="message_success_copy2clipboard" class="copy-success-info" style="display: none;position:absolute;">
+      <h2>Copy to clipboard</h2>
+      <!--<div>
+        <span id="copy_message">copied 1000 rows to clipboard
+        </span>
+      </div>-->
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function page_ready() {
+    ccypair_load(window.context.ccy_pairs)
+  }
+
+  function ccypair_load(ccy) {
+    var options = '<option value="">ALL</option>';
+    options += '<option value="Top10" selected>Top10</option>';
+    options += '<option value="Top20">Top20</option>';
+    for (var i = 0; i < ccy.length; i++) {
+        options += '<option value="' + ccy[i].ccy_pair_id + '">' + ccy[i].ccy_pair_id + '</option>';
+    }
+    $("#order_ticket_timezone_ccy").html(options);
+    $("#order_ticket_timezone_ccy option:second").attr('selected', 'selected');
+  }
+
+</script>
+{% endblock %}
+

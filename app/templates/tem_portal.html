@@ -1,0 +1,355 @@
+{% extends "tem_base.html" %}
+{% load static %}
+
+{% block css %}
+{{ block.super }}
+<style>
+    .view-item {
+      margin-left:0px;
+    }
+    #view-subitem{
+      background-color: white !important;
+    }
+    /* materal dropdown stylings ------------------------------- */
+    #v_container input {
+      font-size:15px;
+      display:inline-block;
+      border:none;
+      margin-right:3px;
+      border-bottom:1px solid #757575;
+    }
+    #v_container input:focus { outline:none; }
+
+    #v_container select {
+      font-size:15px;
+      display:inline-block;
+      border:none;
+      border-bottom:1px solid #757575;
+    }
+    #v_container select:focus { outline:none; }
+    .panel-fullscreen {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      overflow-y:auto;
+      left: 0;
+      top: 0;
+      background: white;
+      z-index: 9999;
+    }
+    .fixed-column-table{
+      margin: 0 auto;
+      width: 100%;
+      clear: both;
+      border-collapse: collapse;
+      table-layout: fixed;
+      word-wrap:break-word;
+    }
+    div.copy-success-info {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      margin-top: -100px;
+      margin-left: -200px;
+      background-color: white;
+      border: 2px solid #111;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+      border-radius: 3px;
+      text-align: center;
+      z-index: 99999;
+  }
+  .box-tip {
+    margin-left:20px;color:#FFCCFF;
+  }
+  .jqstooltip {background-color: #111 !important;}
+  .add-menu-seperator {
+    border-bottom: solid 1px gray;
+    border-bottom-left-radius:1em
+  }
+</style>
+{% endblock css %}
+
+{% block body %}
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="index" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini">JCL</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg">jcltk社内システム</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="javascript:void(0);" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <span id="navbar_message" class="navbar-text" style="color:yellow;padding-left:5px;">
+        <!--<img src="{% static 'app/dist/images/env.png' %}" alt=""/>-->
+      </span>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+            <li class="dropdown notifications-menu">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                  <i class="fa fa-envelope-o"></i>
+                  <span class="label label-warning">{{infos|length}}</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li class="header">You have <i>{{infos|length}}</i> notices</li>
+                  <li>
+                    <ul class="menu">
+                      {% for info in infos %}
+                      <li style="font-size:12px;">
+                        <a href="javascript:void(0);" onclick="open_sub_window('info', 'info')">
+                          {% if info.priority == "crucial" %}
+                          <i class='fa fa-warning text-red'></i>
+                          {% elif info.priority == "high" %}
+                          <i class='fa fa-warning text-yellow'></i>
+                          {% else %}
+                          <i class='fa fa-info text-green'></i>
+                          {% endif %}
+                          {{info.create_dt}} {{info.title}}
+                        </a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <li class="footer"><a href="javascript:void(0);" onclick="open_sub_window('info', 'info')">詳細確認</a></li>
+                </ul>
+            </li>
+            <li><a href="javascript:void(0);" onclick="do_print()"><i class="fa fa-print"></i></a></li>
+            <li class="dropdown notifications-menu">
+                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                  <i class="fa fa-toggle-on"></i>&nbsp;<span class="user-image">表示・非表示設定</span>
+                  <span class="caret"></span>
+                </a>
+                <ul id="view_setting_menu" class="dropdown-menu" role="menu" style="background-color:gainsboro;padding-left:8px;">
+                  {% if perms.app.view_orderticket %}
+                  <li id="v_order_menu">
+                    <input type="checkbox" id="v_order_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_order_chk').trigger('click')" style="display:inline-block">時間帯別通貨ペア別注文口座数</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.app.view_kessai %}
+                  <li  id="v_pl_menu" >
+                    <input type="checkbox" id="v_pl_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_pl_chk').trigger('click')" style="display:inline-block">損益</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.app.view_deposit or perms.app.view_done %}
+                  <li id="v_deposit_menu" >
+                    <input type="checkbox" id="v_deposit_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_deposit_chk').trigger('click')" style="display:inline-block">売買高・預かり高</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.app.view_position %}
+                  <li id="v_position_menu">
+                    <input type="checkbox" id="v_position_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_position_chk').trigger('click')" style="display:inline-block">最大ポジション</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.app.view_payment %}
+                  <li id="v_payment_menu">
+                    <input type="checkbox" id="v_payment_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_payment_chk').trigger('click')" style="display:inline-block">入出金</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.app.view_device %}
+                  <li id="v_channel_menu">
+                    <input type="checkbox" id="v_channel_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_channel_chk').trigger('click')" style="display:inline-block">チャンネル別注文件数</a>
+                  </li>
+                  {% endif %}
+                  {% if perms.app.view_done %}
+                  <li id="v_bs_menu">
+                    <input type="checkbox" id="v_bs_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_bs_chk').trigger('click')" style="display:inline-block">売買合計(通貨ペア別)</a>
+                  </li>
+                  {% endif %}
+                </ul>
+            </li>
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown">
+            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              {% with username=user.last_name|add:' '|add:user.first_name %}
+              {% if username != ' ' %}
+              <span class="hidden-xs">{{ username }}</span>
+              {% else %}
+              <span class="hidden-xs">{{ user.get_username }}</span>
+              {% endif %}
+              {% endwith %}
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu" style="background-color:gainsboro;">
+              {% if request.user.is_superuser %}
+              <li>
+                  <a href="/admin/app/user/" target="_blank">ユーザー管理</a>
+              </li>
+              {% endif %}
+              <li>
+                  <a href="{% url 'password_change' %}">パスワード変更</a>
+              </li>
+              <li>
+                  <a href="{% url 'logout' %}">ログアウト</a>
+              </li>
+            </ul>
+          </li>
+          <!-- /.dropdown -->
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">MAIN NAVIGATION</li>
+        <li class="treeview menu-open">
+          <a href="javascript:void(0);">
+            <i class="fa fa-search"></i> <span>期間指定検索</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+        {% if perms.app.view_profile %}
+        <li class="treeview menu-open">
+            <a href="javascript:void(0);" onclick="dispKozaSearch()"><i class="fa fa-user"></i><span>口座検索</span></a>
+        </li>
+        {% endif %}
+        {% if user.is_superuser or user.is_staff %}
+        <li class="treeview menu-open">
+            <a href="javascript:void(0);" onclick="dispSetting()"><i class="fa fa-cogs"></i><span>システム設定</span></a>
+        </li>
+        {% endif %}
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+
+    <section class="content-header">
+    {% block content-header %}
+    {% endblock %}
+    </section>
+
+    <!-- Main content -->
+    <section class="content" id="page_content">
+      {% block content %}
+      {% endblock %}
+    </section>
+    <!-- /.content -->
+
+    <div id="message_no_print_perm" style="position:absolute;left:0;top:0; display:none;color:red;font-size:40px;margin-left:10px;z-index:9999">印刷権限なし</div>
+
+    <div class="modal modal-danger fade" id="modal-danger" style="display: none;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span></button>
+              <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body" id="modal-danger-body" style="background-color:gainsboro !important">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal modal-warning fade" id="modal-warning" style="display: none;">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span></button>
+              <h4 class="modal-title">Warning</h4>
+            </div>
+            <div class="modal-body" id="modal-warning-body" style="background-color:gainsboro !important;">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 1.1.3
+    </div>
+    <strong>Copyright &copy; 2019- <a href="https://www.sbifxt.co.jp/" rel="noopener" target="_blank">SBI FXトレード</a>.</strong> All rights reserved.
+  </footer>
+</div>
+</body>
+{% endblock body %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function template_ready() {
+
+      get_api('api/done/range').get(datas => {
+          sessionStorage['dashboard.full_date_range'] = JSON.stringify(datas)
+          do_init({
+            'diamond_image_src':"{% static 'app/dist/images/diamond.png' %}"
+          })
+
+          !page_ready || page_ready()
+      })
+  }
+
+  function do_init(dashboard_context){
+
+      dashboard_context = dashboard_context || {}
+
+      var views = []
+      $('#v_container >.view-item').each(function() {
+        views.push(this.id);
+      })
+
+      init_dashboard({
+            perms: window.context.perms,
+            views:views,
+            context:dashboard_context
+        }
+      );
+  }
+
+  function scroll_to_view(id) {
+    if( $('#' + id).css('display') == 'none' ) {
+      alert('指定されたチャートが非表示です。')
+      return;
+    }
+    // Scroll
+    $('html,body').animate({
+        scrollTop: $("#" + id).offset().top
+    }, 'slow');
+  }
+
+  function scroll_to_top() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
+
+  function dispSetting () {
+      url = gethostwebname() + '/system/setting';
+      window.open_sub_window(url, "system_setting");
+  }
+
+  function do_print() {
+    window.print();
+  }
+</script>
+{% endblock scripts %}

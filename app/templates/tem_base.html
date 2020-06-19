@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% block title %}{% endblock %}</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="{% static 'app/bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'app/bower_components/font-awesome/css/font-awesome.min.css' %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="{% static 'app/bower_components/Ionicons/css/ionicons.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'app/dist/css/jquery.dataTables.min.css' %}">
+  <link rel="stylesheet" href="{% static 'app/dist/css/buttons.dataTables.min.css' %}">
+  <link rel="stylesheet" href="{% static 'app/dist/css/fixedColumns.dataTables.min.css' %}">
+  <link rel="stylesheet" href="{% static 'app/dist/css/editor.dataTables.min.css' %}">
+  <link rel="stylesheet" href="{% static 'app/dist/css/select.dataTables.min.css' %}">
+  <!-- daterange picker -->
+  <link rel="stylesheet" href="{% static 'app/dist/css/daterangepicker.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'app/dist/css/AdminLTE.min.css' %}">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="{% static 'app/dist/css/skins/_all-skins.min.css' %}">
+  <link rel="stylesheet" href="{% static 'app/dist/css/rpa.css' %}?v=2019122001">
+  <link rel="stylesheet" href="{% static 'app/dist/css/print.css' %}?v=2019110601">
+  <!-- Google Font -->
+  <link rel="stylesheet" href="{% static 'app/dist/css/fonts.css' %}">
+  <link rel="shortcut icon" href="{% static 'app/dist/img/favicon.ico' %}">
+  <!-- jquery-ui -->
+  <link rel="stylesheet" href="{% static 'app/plugins/jquery/css/jquery-ui.min.css' %}">
+  <link rel="stylesheet" href="{% static 'app/plugins/jquery/css/jquery.datetimepicker.css' %}">
+  <link rel="stylesheet" href="{% static 'app/plugins/pace/pace.min.css' %}">
+  {% block css %}
+  <style>
+    .pace-running{
+      opacity: .7;
+      background-color: black;
+    }
+  </style>
+  {% endblock css%}
+</head>
+
+{% block body %}
+{% endblock body%}
+
+<!-- ./wrapper -->
+<!-- jQuery 3 -->
+<script src="{% static 'app/bower_components/jquery/dist/jquery-3.4.0.min.js' %}"></script>
+
+<!-- Bootstrap 3.3.7 -->
+<script src="{% static 'app/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<!-- DataTables -->
+<script src="{% static 'app/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'app/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'app/dist/js/dataTables.altEditor.free.js' %}"></script>
+<script src="{% static 'app/dist/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'app/dist/js/dataTables.select.min.js' %}"></script>
+<script src="{% static 'app/dist/js/dataTables.fixedColumns.min.js' %}"></script>
+<script src="{% static 'app/dist/js/buttons.flash.min.js' %}"></script>
+<script src="{% static 'app/dist/js/jszip.min.js' %}"></script>
+<script src="{% static 'app/dist/js/FileSaver.min.js' %}"></script>
+<script src="{% static 'app/dist/js/pdfmake.min.js' %}"></script>
+<script src="{% static 'app/dist/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'app/dist/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'app/dist/js/vfs_fonts_japanese.js' %}"></script>
+<script src="{% static 'app/dist/js/jquery.cookie.js' %}"></script>
+<!-- moment -->
+<script src="{% static 'app/bower_components/moment/min/moment.min.js' %}"></script>
+<!-- bootstrap datepicker -->
+<script src="{% static 'app/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+<!-- SlimScroll -->
+<script src="{% static 'app/bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'app/dist/js/adminlte.min.js' %}"></script>
+<!--lodash-->
+<script src="{% static 'app/dist/js/lodash.js' %}"></script>
+<!-- axios ajax -->
+<script src="{% static 'app/dist/js/axios.min.js' %}"></script>
+<!-- chartjs -->
+<script src="{% static 'app/dist/js/Chart.min.js' %}"></script>
+<!-- Sparkline -->
+<script src="{% static 'app/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
+<script src="{% static 'app/dist/js/chartjs-plugin-labels.js' %}"></script>
+<!-- fullCalendar -->
+<script src="{% static 'app/bower_components/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+<script src="{% static 'app/bower_components/fullcalendar/dist/locale/ja.js' %}"></script>
+<script src="{% static 'app/bower_components/fullcalendar/dist/gcal.min.js' %}"></script>
+<!-- jQuery ui -->
+<script src="{% static 'app/plugins/jquery/js/jquery-ui.min.js' %}"></script>
+<!-- date-picker -->
+<script src="{% static 'app/dist/js/jquery.daterangepicker.min.js' %}"></script>
+<script src="{% static 'app/plugins/jquery/js/jquery.ui.datepicker-ja.min.js' %}"></script>
+<script src="{% static 'app/plugins/jquery/js/monthpicker.min.js' %}"></script>
+<!-- customize -->
+<script src="{% static 'app/dist/js/commonfunction.js' %}?v=2020022601"></script>
+<script src="{% static 'app/dist/js/rpa_datatable.js' %}?v=2019111901"></script>
+<script src="{% static 'app/dist/js/rpa_api.js' %}?v=2019110601"></script>
+<script src="{% static 'app/dist/js/dashboard.js' %}?v=2020032601"></script>
+<script src="{% static 'app/dist/js/dashboard-ui.js' %}?v=2020032503"></script>
+<script src="{% static 'app/dist/js/system_setting.js' %}?v=2019121601"></script>
+<!-- PACE -->
+<script src="{% static 'app/bower_components/PACE/pace.min.js' %}"></script>
+
+{% block scripts %}
+<script>
+
+    csrfToken = '{% csrf_token %}'
+
+    Pace.options.ajax.trackMethods = ['GET', 'POST']
+    $(document).ajaxStart(function() { Pace.restart() })
+
+    $(document).ready( function () {
+
+        window.context = {}
+
+        window.context.perms = {
+              view_profile: '{{perms.app.view_profile}}'  === 'True',
+              view_alert: '{{perms.app.view_alert}}'  === 'True',
+              view_done: '{{perms.app.view_done}}'  === 'True',
+              view_payment: '{{perms.app.view_payment}}'  === 'True',
+              view_position: '{{perms.app.view_position}}'  === 'True',
+              view_deposit: '{{perms.app.view_deposit}}'  === 'True',
+              view_orderticket: '{{perms.app.view_orderticket}}'  === 'True',
+              view_kessai: '{{perms.app.view_kessai}}'  === 'True',
+              view_device: '{{perms.app.view_device}}'  === 'True',
+              can_print: '{{perms.app.print}}' === 'True',
+        }
+
+        axios.defaults.xsrfCookieName = 'csrftoken';
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+        pdfMake.fonts = {
+                GenShin: {
+                    normal: 'GenShinGothic-Normal-Sub.ttf',
+                    bold: 'GenShinGothic-Normal-Sub.ttf',
+                    italics: 'GenShinGothic-Normal-Sub.ttf',
+                    bolditalics: 'GenShinGothic-Normal-Sub.ttf'
+                }
+        }
+
+        document.addEventListener('contextmenu', event => {
+          　if( !window.context.perms.can_print ) {
+              event.preventDefault()
+            }
+        })
+
+        window.onbeforeprint  = function() {
+            if( !window.context.perms.can_print ) {
+              $('#page_content').css("visibility","hidden");
+              $('#message_no_print_perm').show();
+            }
+        }
+
+        window.onafterprint  = function() {
+          if( !window.context.perms.can_print ) {
+              $('#page_content').css("visibility","visible");
+              $('#message_no_print_perm').hide();
+          }
+        }
+
+        var promises = []
+        promises.push(new Promise(
+          (resolve) => {
+            get_api('api/diamondclub/list').get(datas => {
+                diamonders = {}
+                _.forEach(datas, function(data) {
+                  diamonders[data] = data
+                })
+                resolve(diamonders)
+            })
+          }
+        ))
+
+        promises.push( new Promise(
+          (resolve) => {
+            get_api('api/ccypair/list').get(datas => {
+              resolve(datas)
+            })
+          }
+        ))
+
+        Promise.all(promises).then( values => {
+          window.context.diamonders = values[0]
+          window.context.ccy_pairs = values[1]
+          !template_ready || template_ready()
+        });
+
+    })
+
+    function dispProfile(client_id) {
+      window.open_sub_window(gethostwebname() + "/user/{0}".format(client_id), "_blank");
+    }
+
+</script>
+{% endblock scripts %}
+
+</html>

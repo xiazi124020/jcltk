@@ -1,0 +1,30 @@
+■ create
+python manage.py startapp [アプリケーション名]
+python manage.py createsuperuser
+admin/zaq12wsx
+admin/zaq12wsx
+
+■ start local server
+env\scripts\activate
+python manage.py runserver
+
+■ migrate
+python manage.py makemigrations
+python manage.py migrate
+python manage.py inspectdb jcl_users > app/models/jcl_users.py
+
+■production
+
+python manage.py collectstatic
+pip freeze >requirements.txt
+
+----------サーバ再起動 start----------
+systemctl stop firewalld
+cd /home/rpa-work/rpa-web
+source venv/bin/activate
+pkill gunicorn
+systemctl restart nginx.service
+gunicorn --bind 127.0.0.1:8000 apps.wsgi:application --timeout=3000 --daemon
+----------サーバ再起動 end----------
+
+■Djiango model

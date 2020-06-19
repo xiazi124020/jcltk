@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>jcltk社内システム | signup</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="/static/app/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/app/bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/static/app/bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/app/dist/css/AdminLTE.min.css">
+
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="#"><b>jcltk社内システム</b></a>
+  </div>
+  <!-- /.login-logo -->
+  <div>
+    <p class="login-box-msg">ユーザ登録</p>
+    <form method="post" action="{% url 'signup' %}">
+    {% csrf_token %}
+    <table class="table">
+        <tr>
+            <td><span class="text-red">*</span><label for="username">ログインID:</label></td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.last_name.label_tag }}</td>
+            <td>{{ form.last_name }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.first_name.label_tag }}</td>
+            <td>{{ form.first_name }}</td>
+        </tr>
+        <tr>
+            <td><span class="text-red">*</span>{{ form.password1.label_tag }}</td>
+            <td>{{ form.password1 }}</td>
+        </tr>
+        <tr>
+            <td><span class="text-red">*</span>{{ form.password2.label_tag }}</td>
+            <td>{{ form.password2 }}</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:right"><input type="submit"  class="btn btn-primary" value="登録" /></td>
+        </tr>
+    </table>
+
+    <div class="text-red" style="margin-top:5px;">
+    {# エラーメッセージを表示 #}
+        {% if form.errors %}
+            <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    </form>
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+</body>
+</html>

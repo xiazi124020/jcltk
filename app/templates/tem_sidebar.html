@@ -1,0 +1,126 @@
+{% extends "tem_base.html" %}
+{% load static %}
+
+{% block css %}
+{{ block.super }}
+  <style>
+    /* サイドバー幅 */
+    :root {
+      --sidebar-width: 250px;
+    }
+    .content-wrapper {
+      background-color:white;
+      margin-left: var(--sidebar-width);
+    }
+    .right-side,
+    .main-footer {
+      margin-left: var(--sidebar-width);
+    }
+    .main-header > .navbar{
+      margin-left: var(--sidebar-width);
+    }
+    .main-header > .logo{
+      width: var(--sidebar-width);
+    }
+    .main-sidebar,
+    .left-side {
+      width: var(--sidebar-width);
+      padding-right:0px;
+    }
+    /* 画面前面の全体に表示 */
+    table td.numcol {
+      text-align : right;
+    }
+    .ui-autocomplete {
+      z-index:900 !important;
+    }
+    .sidebar-wrapper label{
+      color:white;
+      font-weight:normal
+    }
+  </style>
+{% endblock css %}
+
+{% block body %}
+<body class="hold-transition skin-blue fixed">
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="javascript:void(0);" class="logo">{% block page-title %}{% endblock %}</a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top control-navbar-dark" role="navigation">
+      <span id="navbar_message" class="navbar-text text-red" style="background-color:#e0ffff;padding-left:5px;padding-right:5px"></span>
+      <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+              <li>
+                <a href="javascript:void(0);" onclick="javascript:if(confirm('画面を閉じます。よろしいですか？')) { window.close() }" class="btn  btn-sm btn-flat"><i class="fa fa-close"></i></a>
+              </li>
+          </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <section class="sidebar">
+     <!-- sidebar: style can be found in sidebar.less -->
+    <div class="sidebar-wrapper">
+        {% block side-bar %}{% endblock %}
+    </div>
+  </section>
+  </aside>
+  <div class="control-sidebar-bg"></div>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper" id="content_id">
+    <!-- Content Header (Page header) -->
+    {% block content-header %}{% endblock %}
+    <!-- Main content -->
+    <section class="content" id="page_content">
+      {% block content %}{% endblock %}
+    </section>
+    <div id="message_no_print_perm" style="position:absolute;left:0;top:0; display:none;color:red;font-size:40px;margin-left:10px;z-index:9999">印刷権限なし</div>
+  </div>
+  <!-- ./wrapper -->
+
+</body>
+{% endblock body %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function template_ready() {
+
+      DashboardUI.ccypairid_load(window.context.ccy_pairs)
+
+      !page_ready || page_ready()
+  }
+
+  function form2json () {
+      var result = {};
+      data = $('form').serializeArray();
+      for (idx = 0; idx < data.length; idx++) {
+        p_name = data[idx].name
+        if ( p_name.indexOf('client_id') >= 0 ) {
+            p_value = data[idx].value.split(/[\s\n,]/g).filter(item => item)
+            lpad_client_ids(p_value)
+            if (p_value.length == 0) {
+              p_value = data[idx].value
+            } else if (p_value.length == 1) {
+              p_value = p_value[0]
+            }
+        } else {
+            p_value = data[idx].value
+            if( p_value.match(/^\d{4}\/\d{2}\/\d{2}-\d{4}\/\d{2}\/\d{2}$/) ) {
+              p_value = p_value.replace(/\//g, '').split('-')
+            }
+        }
+        result[p_name] = p_value
+      }
+      return result;
+  }
+
+</script>
+{% endblock scripts %}
