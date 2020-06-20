@@ -22,7 +22,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="#"><b>jcltk社内システム</b></a>
+    <a href="#"><b>jcl社内システム</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
@@ -30,9 +30,9 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <p>
+        <!-- <p>
           <p><label for="salt">　　　キー:</label> <input type="text" name="salt" required="" id="salt"></p>
-        </p>
+        </p> -->
         <button type="submit" class="btn btn-primary">Login</button>
     </form>
   </div>
