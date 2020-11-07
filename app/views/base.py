@@ -7,10 +7,7 @@ from django.db.models import DecimalField
 from django.db.models import F
 from django.db.models.functions import Cast
 from django_mysql.models.functions import JSONExtract
-from app.models.data import TApplicationList
 from app.util.json import decimal_default_proc, parse_parameters_asjson, parse_post_parameters_asjson
-from app.util.crypt import AESCipher
-from app.models.diamond_user import DiamondUser
 
 DEFAULT_LIMIT = 10
 

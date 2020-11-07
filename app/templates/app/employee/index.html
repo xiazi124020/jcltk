@@ -1,0 +1,232 @@
+{% extends "tem_sidebar.html" %}
+
+{% block title %}社員管理{% endblock %}
+
+{% block page-title %}社員管理{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<style>
+    :root {
+      --sidebar-width: 330px;
+    }
+</style>
+{% endblock css %}
+{% block side-bar %}
+    <!-- search form -->
+    <form action="#" method="get" id="search_form" name="search_form" class="sidebar-form" style="border:0px solid black">
+      {% csrf_token %}
+            <div class="form-group">
+                <button class="btn bg-olive btn-sm" type="button" onclick="do_search()">検索 <i class="fa fa-search"></i></button>&nbsp;&nbsp;
+                <button class="btn bg-olive btn-sm" type="button" onclick="do_clear()">クリア <i class="fa fa-trash"></i></button></button>
+            </div>
+
+            <div class="form-group has-feedback has-clear">
+                <label for="emp_no" class="text-primary">社員番号</label>
+                <textarea id="emp_no" name="emp_no" class="form-control rpa-input" rows="4" placeholder="複数入力の場合、「,」、「スペース」又は「改行」で区切って入力してください"></textarea>
+                <span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>
+            </div>
+
+            <div class="form-group has-feedback has-clear">
+                <label for="name" class="text-primary">氏名</label>
+                <input id="name" name="name" class="form-control rpa-input" type="text">
+                <span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>
+            </div>
+
+    </form>
+{% endblock %}
+{% block content-header %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-info">
+      <div class="box-body table-responsive">
+        <table id="employee_list" class="display stripe nowrap">
+          <thead>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <!-- /.box -->
+  </div>
+  <!-- /.col -->
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function page_ready() {
+    DashboardUI.clientid_wrap_autocomplete()
+  }
+
+  function do_clear () {
+    document.search_form.reset();
+  }
+
+  function has_input( val ) {
+    if (val === void 0 ) {
+      return false
+    }
+    if (Object.prototype.toString.call(val) === '[object Array]') {
+      return !(val.length==1 && val[0] === '');
+    } else {
+      return val !== '';
+    }
+  }
+
+  var _tbl_employee_list_ = null;
+  var test_employees = [
+    {
+      "emp_no": "jcl001",
+      "name": "テスト　太郎",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl002",
+      "name": "テスト　太郎2",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl003",
+      "name": "テスト　太郎3",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl004",
+      "name": "テスト　太郎4",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl005",
+      "name": "テスト　太郎5",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl006",
+      "name": "テスト　太郎6",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl007",
+      "name": "テスト　太郎7",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl008",
+      "name": "テスト　太郎8",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    }
+
+  ];
+  function do_search () {
+      var emp_no = $.trim($('#emp_no').val()).split(/[\s\n,]/g);
+      lpad_client_ids(emp_no);
+      var name = $('#name').val();
+
+      if ( $.fn.DataTable.isDataTable('#employee_list') ) {
+        $('#employee_list').DataTable().destroy();
+      }
+      $('#employee_list').empty();
+
+      payload = {
+        emp_no:emp_no,
+          name:name,
+      }
+      $('#employee_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/employee/list",payload).post(employees => {
+          employees = test_employees;
+          if( !employees || employees.length === 0 ) {
+            $('#employee_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
+            return;
+          }
+          $('#no_data_message').hide();
+          $('#employee_list').empty();
+          var disp_columns = [
+              {
+                "title":"社員番号",
+                "data": "emp_no",
+                "width": "20px",
+                "render": function(data, type, row, meta){
+                      if(data) {
+                        data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+                      }
+                      return data;
+                }
+              },
+              {
+                "title":"氏名",
+                "data": "name",
+                "width": "20px"
+              },
+              {
+                "title":"生年月日",
+                "data": "birthday",
+                "width": "20px"
+              },
+              {
+                "title":"性別",
+                "data": "sex",
+                "width": "10px"
+              },
+              {
+                "title":"メールアドレス",
+                "data": "email",
+                "width": "50px"
+              },
+              {
+                "title":"電話番号",
+                "data": "tel_no"
+              }
+          ];
+          _tbl_employee_list_ = RpaDataTable.create_simple_paging_table('#employee_list', {
+            data: employees,
+            columns: disp_columns,
+            fixedColumns:{
+              leftColumns: 5
+            },
+            dom:'Bfrtip',
+            autoWidth:false,
+            scrollX: true,
+            scrollY: '680px',
+            paging:true,
+            // pageLength:200,
+            lengthChange:true,
+            processing:true,
+            pageLength : 50,
+            autoWidth:false
+          });
+      }, err => {
+        $('#employee_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+      });
+  }
+
+
+</script>
+{% endblock %}

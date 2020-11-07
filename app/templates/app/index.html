@@ -4,97 +4,13 @@
 
 {% block content-header %}
   <h1>
-    <i class="fa fa-dashboard"></i> Dashboard
-    <small>ポータル</small>
-    <!-- {% if perms.app.view_orderticket %}
-    <a id="v_order_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_order');" title="時間帯別通貨ペア別注文口座数へ" style="display:block;float:right;"><i class="fa fa-clock-o"></i></a>
-    {% endif %}
-    {% if perms.app.view_kessai %}
-    <a id="v_pl_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_pl');" title="損益へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-money"></i></a>
-    {% endif %}
-    {% if perms.app.view_deposit or perms.app.view_done %}
-    <a id="v_deposit_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_deposit');" title="売買高・預かり高へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-legal"></i></a>
-    {% endif %}
-    {% if perms.app.view_position %}
-    <a id="v_position_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_position');" title="最大ポジションへ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-database"></i></a>
-    {% endif %}
-    {% if perms.app.view_payment %}
-    <a id="v_payment_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_payment');" title="入出金へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-retweet"></i></a>
-    {% endif %}
-    {% if perms.app.view_device %}
-    <a id="v_channel_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_channel');" title="チャンネル別注文件数へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-laptop"></i></a>
-    {% endif %}
-    {% if perms.app.view_done %}
-    <a id="v_bs_shortcut" href="javascript:void(0);" onclick="javascript:scroll_to_view('v_bs');" title="売買合計(通貨ペア別)へ" style="display:block;float:right;padding-right:10px;"><i class="fa fa-yen"></i></a>
-    {% endif %} -->
+    <i class="fa fa-home"></i> Home
   </h1>
 {% endblock %}
 {% block content %}
 
     <div id="v_summary" class="row">
-        {% if perms.app.view_done %}
-        <div class="col-md-3">
-          <div class="info-box">
-            <!-- <span class="info-box-icon bg-aqua btn" style="padding-left:8px" onclick="dispDetailchart('done/detail', 'bs')" title="過去データを見る"><h3>売買別</h3></span> -->
-            <div class="info-box-content">
-              <span class="info-box-number" id="done_bs_total_ymd"></span>
-              <span class="info-box-number" id="done_bs_total_b"></span>
-              <span class="info-box-number" id="done_bs_total_s"></span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div class="col-md-3">
-          <div class="info-box">
-            <!-- <span class="info-box-icon bg-green btn" style="padding-left:8px;padding-top:0px;" onclick="dispDetailchart('done/detail', 'exec_type')" title="過去データを見る"><h3>約定区<br>分別</h3></span> -->
-            <div class="info-box-content">
-              <span class="info-box-number" id="done_exec_total_ymd"></span>
-              <span class="info-box-number" id="done_exec_total_n"></span>
-              <span class="info-box-number" id="done_exec_total_k"></span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-          <!-- /.info-box -->
-        </div>
-        {% endif %}
-        <!-- /.col -->
-        {% if perms.app.view_payment %}
-        <div class="col-md-3">
-          <div class="info-box">
-            <!-- <span class="info-box-icon bg-red btn" style="padding-left:8px" onclick="dispDetailchart('payment/detail')" title="過去データを見る"><h3>入出金</h3></span> -->
-            <div class="info-box-content">
-              <span class="info-box-number" id="payment_total_ymd"></span>
-              <span class="info-box-number" id="payment_total_n"></span>
-              <span class="info-box-number" id="payment_total_s"></span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-          <!-- /.info-box -->
-        </div>
-        {% endif %}
-        <!-- /.col -->
-        {% if perms.app.view_position %}
-        <div class="col-md-3">
-          <div class="info-box">
-            <!-- <span class="info-box-icon bg-yellow btn" style="padding-left:8px;padding-top:0px;" onclick="dispDetailchart('position/detail')" title="過去データを見る"><h3>ポジシ<br>ョン</h3></span> -->
-            <div class="info-box-content">
-                <span class="info-box-number" id="position_total_ymd"></span>
-                <span class="info-box-number" id="position_total_b"></span>
-                <span class="info-box-number" id="position_total_s"></span>
-            </div>
-            <!-- /.info-box-content -->
-          </div>
-          <!-- /.info-box -->
-        </div>
-        {% endif %}
-        <!-- /.col -->
-    </div>
-
-
-    <div id="v_container">
-
+      <table id="employee" class="fixed-column-table" style="width:100%"><tr><td class="text-info text-center"><h1>Loading12345...{{name}}</h1></td></tr></table>
     </div>
 
 {% endblock %}
@@ -104,18 +20,7 @@
 <script>
 
   function page_ready() {
-    ccypair_load(window.context.ccy_pairs)
-  }
 
-  function ccypair_load(ccy) {
-    var options = '<option value="">ALL</option>';
-    options += '<option value="Top10" selected>Top10</option>';
-    options += '<option value="Top20">Top20</option>';
-    for (var i = 0; i < ccy.length; i++) {
-        options += '<option value="' + ccy[i].ccy_pair_id + '">' + ccy[i].ccy_pair_id + '</option>';
-    }
-    $("#order_ticket_timezone_ccy").html(options);
-    $("#order_ticket_timezone_ccy option:second").attr('selected', 'selected');
   }
 
 </script>
