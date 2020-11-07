@@ -80,7 +80,7 @@
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini">JCL</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">jcltk社内システム</span>
+      <span class="logo-lg">JCL社内システム</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -203,7 +203,7 @@
     <section class="sidebar">
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">MAIN NAVIGATION</li>
+        <li class="header"></li>
         <li class="treeview menu-open">
           <!-- <a href="javascript:void(0);">
             <i class="fa fa-search"></i> <span>社員管理</span>
@@ -211,11 +211,9 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a> -->
-        {% if perms.app.view_profile %}
         <li class="treeview menu-open">
             <a href="javascript:void(0);" onclick="dispEmployee()"><i class="fa fa-user"></i><span>社員管理</span></a>
         </li>
-        {% endif %}
       </ul>
     </section>
     <!-- /.sidebar -->
