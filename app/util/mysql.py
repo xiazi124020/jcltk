@@ -22,11 +22,11 @@ def get_datasource():
             "PASSWORD": config.get("db", "PASSWORD"),
             'HOST': config.get("db", "HOST"),
             'PORT': config.get("db", "PORT"),
-            'OPTIONS': {
-                'ssl': {
-                    'ca': r'C:\Users\chuaxin\Desktop\work\workspace\rpa_web\apps\rds-ca-2019-ap-northeast-1.pem',
-                }
-            }
+            # 'OPTIONS': {
+            #     'ssl': {
+            #         'ca': r'C:\Users\chuaxin\Desktop\work\workspace\rpa_web\apps\rds-ca-2019-ap-northeast-1.pem',
+            #     }
+            # }
         }
     else:
         result = {
