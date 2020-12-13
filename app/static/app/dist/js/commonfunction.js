@@ -157,99 +157,6 @@ function create_date_range_picker(ref_id, default_range, full_date_range) {
     $('#' + ref_id).dateRangePicker(options)
 }
 
-function create_date_range_picker_ym(ref_id, default_range, full_date_range) {
-    ref_id = ref_id || 'daterange-btn'
-
-    if (default_range !== void 0){
-      $('#' + ref_id).val( default_range[0] + '-' + default_range[1])
-    } else {
-      $('#' + ref_id).val( moment().format('YYYY/MM') + '-' + moment().format('YYYY/MM'))
-    }
-
-    var options =
-    {
-      autoClose: false,
-      format: 'YYYY/MM',
-      separator: '-',
-      language: 'auto',
-      startOfWeek: 'sunday',// or monday
-      getValue: function()
-      {
-        return $(this).val();
-      },
-      setValue: function(s)
-      {
-        if(!$(this).is(':disabled') && s != $(this).val())
-        {
-          $(this).val(s);
-        }
-      },
-      startDate: new Date(2019, 0, 1),
-      endDate: new Date(),
-      time: {
-        enabled: false
-      },
-      minDays: 0,
-      maxDays: 0,
-      showShortcuts: true,
-      shortcuts:
-      {
-        'prev-days': [1,5,7,30],
-        'prev' : ['week','month'],
-      },
-      customShortcuts : [],
-      inline:false,
-      container:'body',
-      alwaysOpen:false,
-      singleDate:false,
-      lookBehind: false,
-      batchMode: false,
-      duration: 200,
-      stickyMonths: false,
-      dayDivAttrs: [],
-      dayTdAttrs: [],
-      applyBtnClass: '',
-      singleMonth: 'auto',
-      hoveringTooltip: function(days, startTime, hoveringTime)
-      {
-        return days > 1 ? days + ' ' + 'days' : '';
-      },
-      showTopbar: true,
-      swapTime: false,
-      selectForward: false,
-      selectBackward: false,
-      showWeekNumbers: false,
-      getWeekNumber: function(date) //date will be the first day of a week
-      {
-        return moment(date).format('w');
-      },
-      monthSelect: true,
-      yearSelect: true
-    }
-
-    if ( full_date_range === void 0 ){
-      if ( sessionStorage['dashboard.full_date_range'] ) {
-        var ls_date_range =  JSON.parse(sessionStorage['dashboard.full_date_range'])
-        full_date_range = [ls_date_range['start'].substring(0,6), ls_date_range['end'].substring(0,6)]
-      }
-    }
-
-    if ( full_date_range ) {
-      options.customShortcuts.push({
-          name: '全期間',
-          dates : function()
-          {
-              var start = full_date_range[0].replace(/\//g, '').replace(/\-/g, '')
-              var end = full_date_range[1].replace(/\//g, '').replace(/\-/g, '')
-              var start = moment(start,'YYYYMM').toDate();
-              var end =  moment(end,'YYYYMM').toDate();
-              return [start,end];
-          }
-        }
-      )
-    }
-    $('#' + ref_id).dateRangePicker(options);
-}
 
 function get_axios() {
   var domain = get_domain();
@@ -261,42 +168,6 @@ function get_domain() {
   return window.location.href.replace('http://','').replace('https://','').split(/[/?#]/)[1];
 }
 
-function get_date_range(url, callback) {
-    query_url = url + (url.endsWith('/') ? 'range' : '/range')
-    get_axios().get(query_url, {
-      headers: {"X-CSRFToken": csrfToken}
-    }).then(response => {
-      var date_range = response.data;
-      if (date_range) {
-        callback([date_range.start, date_range.end])
-      }
-    }).catch(err => {
-      var dt = new Date();
-      var y = dt.getFullYear();
-      var m = ("00" + (dt.getMonth()+1)).slice(-2);
-      var d = ("00" + dt.getDate()).slice(-2);
-      var ymd = y + m +  d;
-      callback([ymd, ymd])
-    })
-}
-
-function get_date_range2(url, callback) {
-  get_axios().get(url, {
-    headers: {"X-CSRFToken": csrfToken}
-  }).then(response => {
-    var date_range = response.data;
-    if (date_range) {
-      callback([date_range.start, date_range.end])
-    }
-  }).catch(err => {
-    var dt = new Date();
-    var y = dt.getFullYear();
-    var m = ("00" + (dt.getMonth()+1)).slice(-2);
-    var d = ("00" + dt.getDate()).slice(-2);
-    var ymd = y + m +  d;
-    callback([ymd, ymd])
-  })
-}
 
 window.chartColors = {
 	red: 'rgb(255, 99, 132)',
@@ -367,33 +238,6 @@ function gethostwebname() {
   return localhostPaht + projectName;
 }
 
-/**
- * 半年間または31日の間範囲取得
- * @param num 数字
- * @param daymonthkbn 月/日区分
-* */
-function getBefroeDate(num, daymonthkbn, separator) {
-  var date = new Date($.ajax({async: false}).getResponseHeader("Date"));
-  var year= date.getFullYear();
-  if(daymonthkbn == 1) {
-    date.setDate(date.getDate() - num);
-  } else {
-    date.setMonth(date.getMonth() - num);
-  }
-  var month= date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
-  var day= date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-  if(daymonthkbn == 1) {
-    if(separator) {
-      return year + separator + month + separator + day;
-    }
-    return year + "" + month + "" + day;
-  } else {
-    if(separator) {
-      return year + separator + month;
-    }
-    return year + "" + month;
-  }
-}
 
 function getBeforeMonth(d){
   d = new Date(d);

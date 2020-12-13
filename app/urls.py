@@ -10,7 +10,6 @@ from app.util.utils import any_permission_required
 import apps.settings
 from . import url_converters
 
-url_converters.register()
 
 urlpatterns = [
 

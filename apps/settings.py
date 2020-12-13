@@ -29,7 +29,7 @@ SECRET_KEY = 'oyfts+$x%%^_(257+tp^!cp)()r27g^#(p9()eg^b&t%yhirv9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.112.50.119", "52.194.144.121", "dev-gt3.sbifxt.co.jp", "127.0.0.1"]
+ALLOWED_HOSTS = ["127.0.0.1"]
 
 #ALLOWED_IPS = ["127.0.0.1", "10.112.50.*", "118.103.121.173", "101.102.143.238"]
 

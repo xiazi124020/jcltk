@@ -123,50 +123,6 @@
                 </ul>
             </li>
             <li><a href="javascript:void(0);" onclick="do_print()"><i class="fa fa-print"></i></a></li>
-            <!-- <li class="dropdown notifications-menu">
-                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                  <i class="fa fa-toggle-on"></i>&nbsp;<span class="user-image">表示・非表示設定</span>
-                  <span class="caret"></span>
-                </a>
-                <ul id="view_setting_menu" class="dropdown-menu" role="menu" style="background-color:gainsboro;padding-left:8px;">
-                  {% if perms.app.view_orderticket %}
-                  <li id="v_order_menu">
-                    <input type="checkbox" id="v_order_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_order_chk').trigger('click')" style="display:inline-block">時間帯別通貨ペア別注文口座数</a>
-                  </li>
-                  {% endif %}
-                  {% if perms.app.view_kessai %}
-                  <li  id="v_pl_menu" >
-                    <input type="checkbox" id="v_pl_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_pl_chk').trigger('click')" style="display:inline-block">損益</a>
-                  </li>
-                  {% endif %}
-                  {% if perms.app.view_deposit or perms.app.view_done %}
-                  <li id="v_deposit_menu" >
-                    <input type="checkbox" id="v_deposit_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_deposit_chk').trigger('click')" style="display:inline-block">売買高・預かり高</a>
-                  </li>
-                  {% endif %}
-                  {% if perms.app.view_position %}
-                  <li id="v_position_menu">
-                    <input type="checkbox" id="v_position_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_position_chk').trigger('click')" style="display:inline-block">最大ポジション</a>
-                  </li>
-                  {% endif %}
-                  {% if perms.app.view_payment %}
-                  <li id="v_payment_menu">
-                    <input type="checkbox" id="v_payment_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_payment_chk').trigger('click')" style="display:inline-block">入出金</a>
-                  </li>
-                  {% endif %}
-                  {% if perms.app.view_device %}
-                  <li id="v_channel_menu">
-                    <input type="checkbox" id="v_channel_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_channel_chk').trigger('click')" style="display:inline-block">チャンネル別注文件数</a>
-                  </li>
-                  {% endif %}
-                  {% if perms.app.view_done %}
-                  <li id="v_bs_menu">
-                    <input type="checkbox" id="v_bs_chk" onclick="on_view_disp_changed(this)" style="display:inline-block"><a href="javascript:void(0);" onclick="$('#v_bs_chk').trigger('click')" style="display:inline-block">売買合計(通貨ペア別)</a>
-                  </li>
-                  {% endif %}
-                </ul>
-            </li> -->
-          <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown">
             <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               {% with username=user.last_name|add:' '|add:user.first_name %}
