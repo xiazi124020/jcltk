@@ -8,12 +8,12 @@ from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
 import apps.settings as settings
 from django.http import HttpResponse
-from app.views.base import json_extract, to_json
+from app.views.base import json_extract, to_json, dictfetchall
 from app.models.model import Employee
 from app.util.json import decimal_default_proc, parse_parameters_asjson, parse_post_parameters_asjson
+from django.db import connection
 
 logger = logging.getLogger(__name__)
-
 
 def build_post_filters(request, exceptions={}):
 
@@ -46,6 +46,18 @@ def get_list(request):
     #     .filter(filters) \
     #     .values('emp_no','first_name','last_name','sex','birthday','email','tel_no') \
     #     .order_by('emp_no')
+
+    sql = f"""
+        select emp_no,first_name,last_name,sex,birthday,email,tel_no from employee order by emp_no
+    """
+
+    print("----------------------------------")
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        datas1 = dictfetchall(cursor)
+        print(datas1)
+
+
     logger.debug(datas.query)
     datas = list(datas)
 

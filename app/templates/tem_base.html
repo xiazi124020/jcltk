@@ -57,7 +57,6 @@
 <!-- DataTables -->
 <script src="{% static 'app/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'app/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-<script src="{% static 'app/dist/js/dataTables.altEditor.free.js' %}"></script>
 <script src="{% static 'app/dist/js/dataTables.buttons.min.js' %}"></script>
 <script src="{% static 'app/dist/js/dataTables.select.min.js' %}"></script>
 <script src="{% static 'app/dist/js/dataTables.fixedColumns.min.js' %}"></script>
@@ -99,8 +98,7 @@
 <!-- customize -->
 <script src="{% static 'app/dist/js/commonfunction.js' %}?v=2020022601"></script>
 <script src="{% static 'app/dist/js/rpa_datatable.js' %}?v=2019111901"></script>
-<script src="{% static 'app/dist/js/rpa_api.js' %}?v=2019110601"></script>
-<script src="{% static 'app/dist/js/dashboard.js' %}?v=2020032601"></script>
+<script src="{% static 'app/dist/js/rpa_api.js' %}?v=2019110601"></script><script src="{% static 'app/dist/js/dashboard.js' %}?v=2020032601"></script>
 <script src="{% static 'app/dist/js/dashboard-ui.js' %}?v=2020032503"></script>
 <script src="{% static 'app/dist/js/system_setting.js' %}?v=2019121601"></script>
 <!-- PACE -->
@@ -119,16 +117,6 @@
         window.context = {}
 
         window.context.perms = {
-              // view_profile: '{{perms.app.view_profile}}'  === 'True',
-              // view_alert: '{{perms.app.view_alert}}'  === 'True',
-              // view_done: '{{perms.app.view_done}}'  === 'True',
-              // view_payment: '{{perms.app.view_payment}}'  === 'True',
-              // view_position: '{{perms.app.view_position}}'  === 'True',
-              // view_deposit: '{{perms.app.view_deposit}}'  === 'True',
-              // view_orderticket: '{{perms.app.view_orderticket}}'  === 'True',
-              // view_kessai: '{{perms.app.view_kessai}}'  === 'True',
-              // view_device: '{{perms.app.view_device}}'  === 'True',
-              // can_print: '{{perms.app.print}}' === 'True',
         }
 
         axios.defaults.xsrfCookieName = 'csrftoken';
@@ -141,53 +129,6 @@
                     bolditalics: 'GenShinGothic-Normal-Sub.ttf'
                 }
         }
-
-        // document.addEventListener('contextmenu', event => {
-        //   　if( !window.context.perms.can_print ) {
-        //       event.preventDefault()
-        //     }
-        // })
-
-        // window.onbeforeprint  = function() {
-        //     if( !window.context.perms.can_print ) {
-        //       $('#page_content').css("visibility","hidden");
-        //       $('#message_no_print_perm').show();
-        //     }
-        // }
-
-        // window.onafterprint  = function() {
-        //   if( !window.context.perms.can_print ) {
-        //       $('#page_content').css("visibility","visible");
-        //       $('#message_no_print_perm').hide();
-        //   }
-        // }
-
-        // var promises = []
-        // promises.push(new Promise(
-        //   (resolve) => {
-        //     get_api('api/diamondclub/list').get(datas => {
-        //         diamonders = {}
-        //         _.forEach(datas, function(data) {
-        //           diamonders[data] = data
-        //         })
-        //         resolve(diamonders)
-        //     })
-        //   }
-        // ))
-
-        // promises.push( new Promise(
-        //   (resolve) => {
-        //     get_api('api/ccypair/list').get(datas => {
-        //       resolve(datas)
-        //     })
-        //   }
-        // ))
-
-        // Promise.all(promises).then( values => {
-        //   window.context.diamonders = values[0]
-        //   window.context.ccy_pairs = values[1]
-        //   !template_ready || template_ready()
-        // });
         page_ready()
     })
 

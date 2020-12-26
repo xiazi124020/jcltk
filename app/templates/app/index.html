@@ -9,10 +9,36 @@
 {% endblock %}
 {% block content %}
 
-    <div id="v_summary" class="row">
-      <table id="employee" class="fixed-column-table" style="width:100%"><tr><td class="text-info text-center"><h1>Loading12345...{{name}}</h1></td></tr></table>
-    </div>
+{{python2json}}
+<div class="row">
+  <div class="col-md-6">
+    <div class="info-box">
+      <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
 
+      <div class="info-box-content">
+        <span class="info-box-text">CPU Traffic</span>
+        <span class="info-box-number">90<small>%</small></span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+  <div class="col-md-6">
+    <div class="info-box">
+      <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Likes</span>
+        <span class="info-box-number">41,410</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+
+</div>
 {% endblock %}
 
 {% block scripts %}
