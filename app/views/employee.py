@@ -47,10 +47,23 @@ def get_list(request):
     #     .values('emp_no','first_name','last_name','sex','birthday','email','tel_no') \
     #     .order_by('emp_no')
 
+
+    # パラメータを使用する場合
+    p1 = "jcl001"
+    sql = f"""
+        select emp_no,first_name,last_name,sex,birthday,email,tel_no from employee where emp_no = %s order by emp_no
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(sql, (p1, ))
+        datas1 = dictfetchall(cursor)
+        print(datas1)
+
+    print("--------------------------------------------------------------------------")
+
+
     sql = f"""
         select emp_no,first_name,last_name,sex,birthday,email,tel_no from employee order by emp_no
     """
-
     print("----------------------------------")
     with connection.cursor() as cursor:
         cursor.execute(sql)
