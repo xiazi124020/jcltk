@@ -1,0 +1,188 @@
+{% extends "tem_no_sidebar.html" %}
+
+{% block title %}管理{% endblock %}
+
+{% block page-title %}顧客管理{% endblock %}
+
+{% block css %}
+{{ block.super }}
+{% endblock css %}
+{% block content-header %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-info">
+      <div class="box-body table-responsive">
+        <table id="customer_list" class="display stripe nowrap">
+          <thead>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <!-- /.box -->
+  </div>
+  <!-- /.col -->
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function page_ready() {
+    do_search()
+  }
+
+  var _tbl_customer_list_ = null;
+  var test_customers = [
+    {
+      "emp_no": "jcl001",
+      "name": "テスト　太郎",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl002",
+      "name": "テスト　太郎2",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl003",
+      "name": "テスト　太郎3",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl004",
+      "name": "テスト　太郎4",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl005",
+      "name": "テスト　太郎5",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl006",
+      "name": "テスト　太郎6",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl007",
+      "name": "テスト　太郎7",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    },
+    {
+      "emp_no": "jcl008",
+      "name": "テスト　太郎8",
+      "birthday": "1981/01/01",
+      "sex": "男",
+      "email": "test@jcltk.com",
+      "tel_no": "090-1234-5678"
+    }
+
+  ];
+  function do_search() {
+
+      if ( $.fn.DataTable.isDataTable('#customer_list') ) {
+        $('#customer_list').DataTable().destroy();
+      }
+      $('#customer_list').empty();
+
+      $('#customer_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/customer/list").post(customers => {
+          // customers = test_customers;
+          if( !customers || customers.length === 0 ) {
+            $('#customer_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
+            return;
+          }
+          $('#no_data_message').hide();
+          $('#customer_list').empty();
+          var disp_columns = [
+              {
+                "title":"顧客名",
+                "data": "name",
+                "width": "20px",
+                "render": function(data, type, row, meta){
+                      if(data) {
+                        data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+                      }
+                      return data;
+                }
+              },
+              {
+                "title":"郵便番号",
+                "data": "zip",
+                "width": "20px",
+                "render": function(data, type, row, meta){
+                      return row.first_name + " " + row.last_name;
+                }
+              },
+              {
+                "title":"住所",
+                "data": "address",
+                "width": "20px"
+              },
+              {
+                "title":"電話番号",
+                "data": "tel_no",
+                "width": "10px"
+              },
+              {
+                "title":"partener",
+                "data": "partener",
+                "width": "50px"
+              },
+              {
+                "title":"備考",
+                "data": "other"
+              }
+          ];
+          _tbl_customer_list_ = RpaDataTable.create_simple_paging_table('#customer_list', {
+            data: customers,
+            columns: disp_columns,
+            fixedColumns:{
+              leftColumns: 5
+            },
+            dom:'Bfrtip',
+            autoWidth:false,
+            scrollX: true,
+            scrollY: '680px',
+            paging:true,
+            // pageLength:200,
+            lengthChange:true,
+            processing:true,
+            pageLength : 50,
+            buttons: [
+              'copy', 'excel', 'pdf'
+            ],
+            autoWidth:false
+          });
+      }, err => {
+        $('#customer_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+      });
+  }
+
+
+</script>
+{% endblock %}
