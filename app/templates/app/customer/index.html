@@ -1,6 +1,6 @@
 {% extends "tem_no_sidebar.html" %}
 
-{% block title %}管理{% endblock %}
+{% block title %}顧客管理{% endblock %}
 
 {% block page-title %}顧客管理{% endblock %}
 
@@ -133,10 +133,7 @@
               {
                 "title":"郵便番号",
                 "data": "zip",
-                "width": "20px",
-                "render": function(data, type, row, meta){
-                      return row.first_name + " " + row.last_name;
-                }
+                "width": "20px"
               },
               {
                 "title":"住所",

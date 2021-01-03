@@ -1,0 +1,188 @@
+{% extends "tem_no_sidebar.html" %}
+
+{% block title %}項目管理{% endblock %}
+
+{% block page-title %}項目管理{% endblock %}
+
+{% block css %}
+{{ block.super }}
+{% endblock css %}
+{% block content-header %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-info">
+      <div class="box-body table-responsive">
+        <table id="project_list" class="display stripe nowrap">
+          <thead>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <!-- /.box -->
+  </div>
+  <!-- /.col -->
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function page_ready() {
+    do_search()
+  }
+
+  var _tbl_project_list_ = null;
+  var test_project = [
+    {
+      "pro_no": "jcl001",
+      "pro_name": "プロジェクト001",
+      "pro_address": "埼玉県蕨市塚越2-1-17-504",
+      "cust_name": "customer001",
+      "emp_name": "jcl001",
+      "en_time": "2020/09/01",
+      "exit_time": "2021/09/01"
+    },
+    {
+      "pro_no": "jcl002",
+      "pro_name": "プロジェクト002",
+      "pro_address": "埼玉県蕨市塚越2-1-17-504",
+      "cust_name": "customer002",
+      "emp_name": "jcl002",
+      "en_time": "2020/09/01",
+      "exit_time": "2021/09/01"
+    },
+    {
+      "pro_no": "jcl003",
+      "pro_name": "プロジェクト003",
+      "pro_address": "埼玉県蕨市塚越2-1-17-504",
+      "cust_name": "customer003",
+      "emp_name": "jcl003",
+      "en_time": "2020/09/01",
+      "exit_time": "2021/09/01"
+    },
+    {
+      "pro_no": "jcl004",
+      "pro_name": "プロジェクト004",
+      "pro_address": "埼玉県蕨市塚越2-1-17-504",
+      "cust_name": "customer004",
+      "emp_name": "jcl004",
+      "en_time": "2020/09/01",
+      "exit_time": "2021/09/01"
+    },
+    {
+      "pro_no": "jcl005",
+      "pro_name": "プロジェクト005",
+      "pro_address": "埼玉県蕨市塚越2-1-17-504",
+      "cust_name": "customer005",
+      "emp_name": "jcl005",
+      "en_time": "2020/09/01",
+      "exit_time": "2021/09/01"
+    },
+    {
+      "pro_no": "jcl006",
+      "pro_name": "プロジェクト006",
+      "pro_address": "埼玉県蕨市塚越2-1-17-504",
+      "cust_name": "customer006",
+      "emp_name": "jcl006",
+      "en_time": "2020/09/01",
+      "exit_time": "2021/09/01"
+    },
+    {
+      "pro_no": "jcl007",
+      "pro_name": "プロジェクト007",
+      "pro_address": "埼玉県蕨市塚越2-1-17-504",
+      "cust_name": "customer007",
+      "emp_name": "jcl008",
+      "en_time": "2020/09/01",
+      "exit_time": "2021/09/01"
+    },
+    {
+      "pro_no": "jcl008",
+      "pro_name": "プロジェクト008",
+      "pro_address": "埼玉県蕨市塚越2-1-17-504",
+      "cust_name": "customer008",
+      "emp_name": "jcl008",
+      "en_time": "2020/09/01",
+      "exit_time": "2021/09/01"
+    }
+
+  ];
+  function do_search() {
+
+      if ( $.fn.DataTable.isDataTable('#project_list') ) {
+        $('#project_list').DataTable().destroy();
+      }
+      $('#project_list').empty();
+
+      $('#project_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/project/list").post(projects => {
+          // projects = test_projects;
+          if( !projects || projects.length === 0 ) {
+            $('#project_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
+            return;
+          }
+          $('#no_data_message').hide();
+          $('#project_list').empty();
+          var disp_columns = [
+              {
+                "title":"項目番号",
+                "data": "pro_no",
+                "width": "20px",
+                "render": function(data, type, row, meta){
+                      if(data) {
+                        data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+                      }
+                      return data;
+                }
+              },
+              {
+                "title":"項目名",
+                "data": "pro_name",
+                "width": "20px"
+              },
+              {
+                "title":"項目住所",
+                "data": "pro_address",
+                "width": "50px"
+              },
+              {
+                "title":"顧客名",
+                "data": "cust_name",
+                "width": "20px"
+              },
+              {
+                "title":"社員名",
+                "data": "emp_name",
+                "width": "20px"
+              },
+              {
+                "title":"入場時間",
+                "data": "en_time",
+                "width": "20px"
+              },
+              {
+                "title":"退場時間",
+                "data": "exit_time",
+                "width": "20px"
+              }
+          ];
+          _tbl_project_list_ = $('#project_list').DataTable( {
+              dom: 'Bfrtip',
+              buttons: [
+                  'copy', 'csv', 'excel', 'pdf', 'print'
+              ],
+              data: projects,
+              columns: disp_columns,
+          } );
+
+      }, err => {
+        $('#project_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+      });
+  }
+
+
+</script>
+{% endblock %}
