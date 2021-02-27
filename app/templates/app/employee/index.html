@@ -165,35 +165,32 @@
                 "data": "tel_no"
               }
           ];
-          _tbl_employee_list_ = $('#employee_list').DataTable( {
-              dom: 'Bfrtip',
-              buttons: [
-                  'copy', 'csv', 'excel', 'pdf', 'print'
-              ],
-              data: employees,
-              columns: disp_columns,
-          } );
-
-          // _tbl_employee_list_ = RpaDataTable.create_simple_paging_table('#employee_list', {
-          //   data: employees,
-          //   columns: disp_columns,
-          //   fixedColumns:{
-          //     leftColumns: 5
-          //   },
-          //   dom:'Bfrtip',
-          //   autoWidth:false,
-          //   scrollX: true,
-          //   scrollY: '680px',
-          //   paging:true,
-          //   // pageLength:200,
-          //   lengthChange:true,
-          //   processing:true,
-          //   pageLength : 50,
-          //   buttons: [
-          //     'copy', 'excel', 'pdf'
-          //   ],
-          //   autoWidth:false
-          // });
+          _tbl_employee_list_ = $('#employee_list').DataTable({
+            data: employees,
+            columns: disp_columns,
+            fixedColumns:{
+              leftColumns: 5
+            },
+            dom:'Bfrtip',
+            autoWidth:false,
+            scrollX: true,
+            scrollY: '680px',
+            paging:true,
+            // pageLength:200,
+            lengthChange:true,
+            processing:true,
+            pageLength : 50,
+            buttons: [
+            {
+              extend: 'pdfHtml5',
+              text: 'pdf',
+              customize: function ( doc ) {
+                doc.defaultStyle.font= 'GenShin';
+              }
+            },'copy', 'excel'
+            ],
+            autoWidth:false
+          });
       }, err => {
         $('#employee_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
       });
