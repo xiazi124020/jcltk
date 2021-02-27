@@ -1,0 +1,11 @@
+CREATE TABLE `customer` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `zip` varchar(7) NOT NULL,
+  `address` varchar(100) NOT NULL,
+  `tel_no` varchar(15) NOT NULL,
+  `partener` int NOT NULL,
+  `other` varchar(100) DEFAULT NULL,
+  `delete_flag` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

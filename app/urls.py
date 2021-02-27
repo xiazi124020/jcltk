@@ -6,6 +6,8 @@ from django.contrib.auth import views
 from django.contrib.auth.decorators import login_required, permission_required
 from app.views import index
 from app.views import employee
+from app.views import customer
+from app.views import project
 from app.util.utils import any_permission_required
 import apps.settings
 from . import url_converters
@@ -19,12 +21,17 @@ urlpatterns = [
     path("", index.portal, name="index"),
     path("index", index.portal, name="index"),
     path("employee/index", employee.index, name="employee.index"),
+    path("customer/index", customer.index, name="customer.index"),
+    path("project/index", project.index, name="project.index"),
 
     #----------------------------------------------------------------------------------------------------------------------------
     # api url naming rules
     #----------------------------------------------------------------------------------------------------------------------------
     #社員
     path('api/employee/list', login_required((employee.get_list))),
+    path('api/customer/list', login_required((customer.get_list))),
+    path('api/project/list', login_required((project.get_list))),
+
 
     #----------------------------------------------------------------------------------------------------------------------------
     #

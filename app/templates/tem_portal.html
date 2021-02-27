@@ -170,6 +170,12 @@
         <li class="treeview menu-open">
             <a href="javascript:void(0);" onclick="dispEmployee()"><i class="fa fa-user"></i><span>社員管理</span></a>
         </li>
+        <li class="treeview menu-open">
+            <a href="javascript:void(0);" onclick="dispCustomer()"><i class="fa fa-user"></i><span>顧客管理</span></a>
+        </li>
+        <li class="treeview menu-open">
+          <a href="javascript:void(0);" onclick="dispProject()"><i class="fa fa-user"></i><span>項目管理</span></a>
+      </li>
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -269,6 +275,16 @@
   function dispEmployee () {
       url = gethostwebname() + '/employee/index';
       open_sub_window(url, "employee_index");
+  }
+  
+    function dispCustomer () {
+      url = gethostwebname() + '/customer/index';
+      open_sub_window(url, "customer_index");
+  }
+    
+  function dispProject () {
+      url = gethostwebname() + '/project/index';
+      open_sub_window(url, "project_index");
   }
 </script>
 {% endblock scripts %}
