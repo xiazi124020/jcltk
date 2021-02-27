@@ -6,6 +6,20 @@
 
 {% block css %}
 {{ block.super }}
+<style>
+#modal {
+  position: absolute;
+  width: 33%;
+  left: 33%;
+  top: 20%;
+  height: auto;
+  z-index: 999;
+  display: none;
+}
+.modal-content {
+  background-color: #F5FFFA;
+}
+</style>
 {% endblock css %}
 {% block content-header %}{% endblock %}
 {% block content %}
@@ -22,8 +36,54 @@
     <!-- /.box -->
   </div>
   <!-- /.col -->
-</div>
+</div>  
+<div id="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span></button>
+          <h4 class="modal-title">社員追加</h4>
+        </div>
+        <div class="modal-body">
+          <row>
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label>社員番号</label>
+                    <input type="text" id="id" class="form-control" placeholder="社員番号">
+                  </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label>姓</label>
+                    <input type="text" id="first_name" class="form-control" placeholder="姓">
+                  </div>
+              </div>
+          </row>
+          <row>
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label>名</label>
+                    <input type="text" id="last_name" class="form-control" placeholder="名">
+                  </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label>性別</label>
+                    <input type="text" id="sex" class="form-control" placeholder="性別">
+                  </div>
+              </div>
+          </row>
+          
 
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">登録</button>
+        </div>
+      </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -35,73 +95,7 @@
   }
 
   var _tbl_employee_list_ = null;
-  var test_employees = [
-    {
-      "emp_id": "jcl001",
-      "name": "テスト　太郎",
-      "birthday": "1981/01/01",
-      "sex": "男",
-      "email": "test@jcltk.com",
-      "tel_no": "090-1234-5678"
-    },
-    {
-      "emp_id": "jcl002",
-      "name": "テスト　太郎2",
-      "birthday": "1981/01/01",
-      "sex": "男",
-      "email": "test@jcltk.com",
-      "tel_no": "090-1234-5678"
-    },
-    {
-      "emp_id": "jcl003",
-      "name": "テスト　太郎3",
-      "birthday": "1981/01/01",
-      "sex": "男",
-      "email": "test@jcltk.com",
-      "tel_no": "090-1234-5678"
-    },
-    {
-      "emp_id": "jcl004",
-      "name": "テスト　太郎4",
-      "birthday": "1981/01/01",
-      "sex": "男",
-      "email": "test@jcltk.com",
-      "tel_no": "090-1234-5678"
-    },
-    {
-      "emp_id": "jcl005",
-      "name": "テスト　太郎5",
-      "birthday": "1981/01/01",
-      "sex": "男",
-      "email": "test@jcltk.com",
-      "tel_no": "090-1234-5678"
-    },
-    {
-      "emp_id": "jcl006",
-      "name": "テスト　太郎6",
-      "birthday": "1981/01/01",
-      "sex": "男",
-      "email": "test@jcltk.com",
-      "tel_no": "090-1234-5678"
-    },
-    {
-      "emp_id": "jcl007",
-      "name": "テスト　太郎7",
-      "birthday": "1981/01/01",
-      "sex": "男",
-      "email": "test@jcltk.com",
-      "tel_no": "090-1234-5678"
-    },
-    {
-      "emp_id": "jcl008",
-      "name": "テスト　太郎8",
-      "birthday": "1981/01/01",
-      "sex": "男",
-      "email": "test@jcltk.com",
-      "tel_no": "090-1234-5678"
-    }
-
-  ];
+  
   function do_search() {
 
       if ( $.fn.DataTable.isDataTable('#employee_list') ) {
@@ -111,11 +105,10 @@
 
       $('#employee_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
       get_api("api/employee/list").post(employees => {
-          // employees = test_employees;
-          if( !employees || employees.length === 0 ) {
-            $('#employee_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
-            return;
-          }
+          // if( !employees || employees.length === 0 ) {
+          //   $('#employee_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
+          //   return;
+          // }
           $('#no_data_message').hide();
           $('#employee_list').empty();
           var disp_columns = [
@@ -181,13 +174,20 @@
             processing:true,
             pageLength : 50,
             buttons: [
-            {
-              extend: 'pdfHtml5',
-              text: 'pdf',
-              customize: function ( doc ) {
-                doc.defaultStyle.font= 'GenShin';
-              }
-            },'copy', 'excel'
+              {
+                extend: 'pdfHtml5',
+                text: 'pdf',
+                customize: function ( doc ) {
+                  doc.defaultStyle.font= 'GenShin';
+                }
+              },
+              {
+                  text: 'add',
+                  action: function ( e, dt, node, config ) {
+                    $('#modal').fadeTo(200,1);
+                  }
+              }, 
+              'excel'
             ],
             autoWidth:false
           });
