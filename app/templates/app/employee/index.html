@@ -10,6 +10,9 @@
 .modal-content {
   background-color: #F5FFFA;
 }
+.modal-dialog {
+  width: 1000px
+}
 </style>
 {% endblock css %}
 {% block content-header %}{% endblock %}
@@ -37,27 +40,74 @@
       </div>
       <div class="modal-body">          
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>社員番号</label>
               <input type="text" id="id" class="form-control" placeholder="社員番号">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>職位</label>
+              <select class="form-control" id="position">
+                <option>一般社員</option>
+                <option>営業担当</option>
+                <option>部長</option>
+                <option>取締役</option>
+                <option>社長</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>部門</label>
+              <select class="form-control" id="department_id">
+                <option>--</option>
+                <option>１部</option>
+                <option>２部</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>社員種別</label>
+              <select class="form-control" id="emp_type">
+                <option>正社員</option>
+                <option>契約社員</option>
+                <option>BP</option>
+                <option>個人事業主</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
             <div class="form-group">
               <label>姓</label>
               <input type="text" id="first_name" class="form-control" placeholder="姓">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>名</label>
               <input type="text" id="last_name" class="form-control" placeholder="名">
             </div>
           </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>姓(カナ)</label>
+              <input type="text" id="first_name_kana" class="form-control" placeholder="姓(カナ">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>名(カナ</label>
+              <input type="text" id="last_name_kana" class="form-control" placeholder="名(カナ">
+            </div>
+          </div>
         </div>
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>性別</label>
               <div class="radio">
@@ -72,48 +122,61 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>生年月日</label>
               <input type="date" id="birthday" class="form-control" placeholder="生年月日">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>電話番号</label>
               <input type="number" id="tel" class="form-control" placeholder="電話番号">
             </div>
           </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>所属営業担当</label>
+              <select class="form-control" id="sales_id">
+                <option>営業担当１</option>
+                <option>営業担当２</option>
+              </select>
+            </div>
+          </div>
         </div>
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-9">
             <div class="form-group">
               <label>Email</label>
               <input type="text" id="email" class="form-control" placeholder="Email">
             </div>
           </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>駅</label>
+              <input type="text" id="station" class="form-control" placeholder="駅">
+            </div>
+          </div>
         </div>
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-2">
             <div class="form-group">
               <label>郵便番号</label>
               <input type="text" id="zip" class="form-control" placeholder="郵便番号">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-2">
             <div class="form-group">
               <label>都道府県</label>
-              <input type="text" id="address1" class="form-control" placeholder="都道府県">
+              <select class="form-control" id="address1">
+                <option>東京都</option>
+                <option>千葉県</option>
+                <option>埼玉県</option>
+                <option>神奈川県</option>
+              </select>
             </div>
           </div>
-          <!-- <div class="col-md-4" style="vertical-align: middle">
-            <div class="form-group">
-              <button type="submit" class="btn btn-primary">住所検索</button>
-            </div>
-          </div> -->
-        </div>
-        <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-8">
             <div class="form-group">
               <label>市町郡街</label>
               <input type="text" id="address2" class="form-control" placeholder="市町郡街">
@@ -121,13 +184,19 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>在留カード番号</label>
+              <input type="text" id="address2" class="form-control" placeholder="在留カード番号">
+            </div>
+          </div>
+          <div class="col-md-3">
             <div class="form-group">
               <label>日本滞在時間</label>
               <input type="text" id="at_japan_date" class="form-control" placeholder="日本滞在時間">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>日本語能力</label>
               <select class="form-control" id="japanese_level">
@@ -138,7 +207,7 @@
               </select>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>仕事経験</label>
               <input type="text" id="start_work_date" class="form-control" placeholder="仕事経験">
@@ -146,37 +215,37 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>入社日付</label>
               <input type="date" id="entry_date" class="form-control" placeholder="入社日付">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>離任日付</label>
               <input type="date" id="quit_date" class="form-control" placeholder="離任日付">
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
-              <label>在留カード番号</label>
-              <input type="text" id="address2" class="form-control" placeholder="在留カード番号">
+              <div class="form-group">
+                <label>給料</label>
+                <input type="number" id="salary" class="form-control" placeholder="給料">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <div class="form-group">
+                <label>交通費</label>
+                <input type="number" id="transport_cost" class="form-control" placeholder="交通費">
+              </div>
             </div>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-4">
-            <div class="form-group">
-              <label>部門</label>
-              <select class="form-control" id="department_id">
-                <option>--</option>
-                <option>１部</option>
-                <option>２部</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-8">
+          <div class="col-md-3">
             <div class="form-group">
               <label>プロジェクト</label>
               <select class="form-control" id="project_id">
@@ -186,59 +255,34 @@
               </select>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="form-group">
-              <div class="form-group">
-                <label>給料</label>
-                <input type="number" id="salary" class="form-control" placeholder="給料">
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <div class="form-group">
-                <label>交通費</label>
-                <input type="number" id="transport_cost" class="form-control" placeholder="交通費">
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <div class="form-group">
               <label>単価</label>
               <input type="number" id="price" class="form-control" placeholder="給料">
             </div>
           </div>
-        </div>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label>社員種別</label>
-            <select class="form-control" id="emp_type">
-              <option>正社員</option>
-              <option>契約社員</option>
-              <option>BP</option>
-              <option>個人事業主</option>
-            </select>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>ステータス</label>
+              <select class="form-control" id="status">
+                <option>稼働中</option>
+                <option>待機中</option>
+                <option>離任</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="form-group">
-            <label>ステータス</label>
-            <select class="form-control" id="status">
-              <option>稼働中</option>
-              <option>待機中</option>
-              <option>離任</option>
-            </select>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>プロジェクト予定終了日</label>
+              <input type="date" id="project_end_plan_date" class="form-control" placeholder="プロジェクト予定終了日">
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">	
-      <a href="#" data-dismiss="modal" class="btn">Close</a>
-      <a href="#" class="btn btn-primary">登録</a>
-    </div>
+      <div class="modal-footer">	
+        <a href="#" data-dismiss="modal" class="btn">Close</a>
+        <a href="#" class="btn btn-primary">登録</a>
+      </div>
   </div>
 </div>
 
