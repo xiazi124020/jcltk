@@ -7,15 +7,6 @@
 {% block css %}
 {{ block.super }}
 <style>
-#modal {
-  position: absolute;
-  width: 33%;
-  left: 33%;
-  top: 20%;
-  height: auto;
-  z-index: 999;
-  display: none;
-}
 .modal-content {
   background-color: #F5FFFA;
 }
@@ -36,54 +27,221 @@
     <!-- /.box -->
   </div>
   <!-- /.col -->
-</div>  
-<div id="modal">
+</div>
+<div class="modal fade" id="emp_register">
+  <div class="modal-dialog">
     <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span></button>
-          <h4 class="modal-title">社員追加</h4>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">登録</h4>
+      </div>
+      <div class="modal-body">          
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>社員番号</label>
+              <input type="text" id="id" class="form-control" placeholder="社員番号">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>姓</label>
+              <input type="text" id="first_name" class="form-control" placeholder="姓">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>名</label>
+              <input type="text" id="last_name" class="form-control" placeholder="名">
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <row>
-              <div class="col-md-6">
-                <div class="form-group">
-                    <label>社員番号</label>
-                    <input type="text" id="id" class="form-control" placeholder="社員番号">
-                  </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>性別</label>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios1" value="1" checked="">
+                  男性
+                </label>
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios2" value="0">
+                  女性
+                </label>
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                    <label>姓</label>
-                    <input type="text" id="first_name" class="form-control" placeholder="姓">
-                  </div>
-              </div>
-          </row>
-          <row>
-              <div class="col-md-6">
-                <div class="form-group">
-                    <label>名</label>
-                    <input type="text" id="last_name" class="form-control" placeholder="名">
-                  </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                    <label>性別</label>
-                    <input type="text" id="sex" class="form-control" placeholder="性別">
-                  </div>
-              </div>
-          </row>
-          
-
-
-
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>生年月日</label>
+              <input type="date" id="birthday" class="form-control" placeholder="生年月日">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>電話番号</label>
+              <input type="number" id="tel" class="form-control" placeholder="電話番号">
+            </div>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">登録</button>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="text" id="email" class="form-control" placeholder="Email">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>郵便番号</label>
+              <input type="text" id="zip" class="form-control" placeholder="郵便番号">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>都道府県</label>
+              <input type="text" id="address1" class="form-control" placeholder="都道府県">
+            </div>
+          </div>
+          <!-- <div class="col-md-4" style="vertical-align: middle">
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">住所検索</button>
+            </div>
+          </div> -->
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>市町郡街</label>
+              <input type="text" id="address2" class="form-control" placeholder="市町郡街">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>日本滞在時間</label>
+              <input type="text" id="at_japan_date" class="form-control" placeholder="日本滞在時間">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>日本語能力</label>
+              <select class="form-control" id="japanese_level">
+                <option>1級流暢</option>
+                <option>1級</option>
+                <option>2級</option>
+                <option>3級</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>仕事経験</label>
+              <input type="text" id="start_work_date" class="form-control" placeholder="仕事経験">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>入社日付</label>
+              <input type="date" id="entry_date" class="form-control" placeholder="入社日付">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>離任日付</label>
+              <input type="date" id="quit_date" class="form-control" placeholder="離任日付">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>在留カード番号</label>
+              <input type="text" id="address2" class="form-control" placeholder="在留カード番号">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>部門</label>
+              <select class="form-control" id="department_id">
+                <option>--</option>
+                <option>１部</option>
+                <option>２部</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <label>プロジェクト</label>
+              <select class="form-control" id="project_id">
+                <option>--</option>
+                <option>プロジェクトＡ</option>
+                <option>プロジェクトＢ</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="form-group">
+                <label>給料</label>
+                <input type="number" id="salary" class="form-control" placeholder="給料">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="form-group">
+                <label>交通費</label>
+                <input type="number" id="transport_cost" class="form-control" placeholder="交通費">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>単価</label>
+              <input type="number" id="price" class="form-control" placeholder="給料">
+            </div>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>社員種別</label>
+            <select class="form-control" id="emp_type">
+              <option>正社員</option>
+              <option>契約社員</option>
+              <option>BP</option>
+              <option>個人事業主</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>ステータス</label>
+            <select class="form-control" id="status">
+              <option>稼働中</option>
+              <option>待機中</option>
+              <option>離任</option>
+            </select>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="modal-footer">	
+      <a href="#" data-dismiss="modal" class="btn">Close</a>
+      <a href="#" class="btn btn-primary">Save changes</a>
+    </div>
+  </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -184,7 +342,10 @@
               {
                   text: 'add',
                   action: function ( e, dt, node, config ) {
-                    $('#modal').fadeTo(200,1);
+                    // $('#modal').fadeTo(200,1);
+                    $('#emp_register').modal({
+                        show: true
+                    })
                   }
               }, 
               'excel'

@@ -24,7 +24,7 @@ def get_list(request):
     # パラメータを使用する場合
     p1 = "jcl001"
     sql = f"""
-        select emp_id,first_name,last_name,sex,birthday,email,tel_no from employee where emp_id = %s order by emp_id
+        select emp_id,first_name,last_name,sex,birthday,email,tel from employee where emp_id = %s order by emp_id
     """
     with connection.cursor() as cursor:
         cursor.execute(sql, (p1, ))
@@ -32,7 +32,7 @@ def get_list(request):
 
 
     sql = f"""
-        select emp_id,first_name,last_name,sex,birthday,email,tel_no from employee order by emp_id
+        select emp_id,first_name,last_name,sex,birthday,email,tel from employee order by emp_id
     """
     with connection.cursor() as cursor:
         cursor.execute(sql)
