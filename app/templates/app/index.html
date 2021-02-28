@@ -11,8 +11,38 @@
 
 <div class="row">
   <div class="col-md-6">
-    社員エリア
-    datatable1
+      <div class="box">
+          <div class="box-header with-border">
+            <h3 class="box-title">Monthly Recap Report</h3>
+
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
+              <div class="btn-group">
+                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                  <i class="fa fa-wrench"></i></button>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="#">Action</a></li>
+                  <li><a href="#">Another action</a></li>
+                  <li><a href="#">Something else here</a></li>
+                  <li class="divider"></li>
+                  <li><a href="#">Separated link</a></li>
+                </ul>
+              </div>
+              <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+            </div>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            
+            <div id="sales_chart"></div>
+          </div>
+          <!-- ./box-body -->
+          <div class="box-footer">
+           
+          </div>
+          <!-- /.box-footer -->
+        </div>
   </div>
   <!-- /.col -->
   <div class="col-md-6">
@@ -40,9 +70,31 @@
 <script>
 
   function page_ready() {
-
+    sales_chart();
   }
 
+  function sales_chart() {
+    var chart = c3.generate({
+      bindto: '#sales_chart',
+      data: {
+        x: 'x',
+        columns: [
+          ['x','１月', '２月', '３月', '４月', '５月', '６月', '７月', '８月', '９月', '１０月', '１１月', '１２月'],
+          ['売上(万円)', 2211, 2010, 1910, 1801, 2100, 2300, 2400, 2900, 2800, 1900, 2000, 2120 ]
+        ],
+        type: 'bar',
+
+      },
+      axis: {
+          x: {
+              type: 'category'
+          },
+          y: {
+              padding: { top: 0, bottom: 0 }
+          }
+      }
+    });
+  }
 </script>
 {% endblock %}
 

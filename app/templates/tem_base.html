@@ -38,6 +38,7 @@
   <script src="https://cdn.jsdelivr.net/gh/vast-engineering/jquery-popup-overlay@2/jquery.popupoverlay.min.js">
   </script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <link rel="stylesheet" href="{% static 'app/dist/css/c3.min.css' %}">
   {% block css %}
   <style>
     .pace-running{
@@ -81,6 +82,8 @@
 <script src="{% static 'app/dist/js/adminlte.min.js' %}"></script>
 <!--lodash-->
 <script src="{% static 'app/dist/js/lodash.js' %}"></script>
+<!--lodash-->
+<script src="{% static 'app/dist/js/c3.min.js' %}"></script>
 <!-- axios ajax -->
 <script src="{% static 'app/dist/js/axios.min.js' %}"></script>
 <!-- chartjs -->
@@ -105,6 +108,7 @@
 <script src="{% static 'app/dist/js/dashboard-ui.js' %}?v=2020032503"></script>
 <!-- PACE -->
 <script src="{% static 'app/bower_components/PACE/pace.min.js' %}"></script>
+<script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
 
 {% block scripts %}
 <script>
