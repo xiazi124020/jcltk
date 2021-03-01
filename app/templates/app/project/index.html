@@ -1,11 +1,19 @@
 {% extends "tem_no_sidebar.html" %}
 
-{% block title %}項目管理{% endblock %}
+{% block title %}プロジェクト管理{% endblock %}
 
-{% block page-title %}項目管理{% endblock %}
+{% block page-title %}プロジェクト管理{% endblock %}
 
 {% block css %}
 {{ block.super }}
+<style>
+.modal-content {
+  background-color: #F5FFFA;
+}
+.modal-dialog {
+  width: 700px
+}
+</style>
 {% endblock css %}
 {% block content-header %}{% endblock %}
 {% block content %}
@@ -13,7 +21,7 @@
   <div class="col-xs-12">
     <div class="box box-info">
       <div class="box-body table-responsive">
-        <table id="project_list" class="display stripe nowrap">
+        <table id="employee_list" class="display stripe nowrap">
           <thead>
           </thead>
         </table>
@@ -23,6 +31,80 @@
   </div>
   <!-- /.col -->
 </div>
+<div class="modal fade" id="emp_register">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">登録</h4>
+      </div>
+      <div class="modal-body">          
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>プロジェクト名称</label>
+              <input type="text" id="name" class="form-control" placeholder="プロジェクト名称">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>開始日</label>
+              <div class="input-group date">
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+                <input type="date" id="start_date" format="YYYY-MM-DD" class="form-control pull-right" id="datepicker">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>終了日</label>
+              <div class="input-group date">
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+                <input type="date" id="end_date" format="YYYY-MM-DD" class="form-control pull-right" id="datepicker">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>ステータス</label>
+              <select class="form-control" id="status">
+                <option>未開始</option>
+                <option>進行中</option>
+                <option>完了</option>
+                <option>中止</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>お客様</label>
+              <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="9" tabindex="-1" aria-hidden="true">
+                <option selected="selected" data-select2-id="11">お客様１</option>
+                <option>お客様２</option>
+                <option>お客様３</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>駅</label>
+              <input type="text" id="station" class="form-control" placeholder="駅">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">	
+        <a href="#" data-dismiss="modal" class="btn">Close</a>
+        <a href="#" class="btn btn-primary">登録</a>
+      </div>
+  </div>
+</div>
 
 {% endblock %}
 
@@ -31,105 +113,31 @@
 <script>
 
   function page_ready() {
+    $('.select2').select2()
     do_search()
   }
 
-  var _tbl_project_list_ = null;
-  var test_project = [
-    {
-      "pro_no": "jcl001",
-      "pro_name": "プロジェクト001",
-      "pro_address": "埼玉県蕨市塚越2-1-17-504",
-      "cust_name": "customer001",
-      "emp_name": "jcl001",
-      "en_time": "2020/09/01",
-      "exit_time": "2021/09/01"
-    },
-    {
-      "pro_no": "jcl002",
-      "pro_name": "プロジェクト002",
-      "pro_address": "埼玉県蕨市塚越2-1-17-504",
-      "cust_name": "customer002",
-      "emp_name": "jcl002",
-      "en_time": "2020/09/01",
-      "exit_time": "2021/09/01"
-    },
-    {
-      "pro_no": "jcl003",
-      "pro_name": "プロジェクト003",
-      "pro_address": "埼玉県蕨市塚越2-1-17-504",
-      "cust_name": "customer003",
-      "emp_name": "jcl003",
-      "en_time": "2020/09/01",
-      "exit_time": "2021/09/01"
-    },
-    {
-      "pro_no": "jcl004",
-      "pro_name": "プロジェクト004",
-      "pro_address": "埼玉県蕨市塚越2-1-17-504",
-      "cust_name": "customer004",
-      "emp_name": "jcl004",
-      "en_time": "2020/09/01",
-      "exit_time": "2021/09/01"
-    },
-    {
-      "pro_no": "jcl005",
-      "pro_name": "プロジェクト005",
-      "pro_address": "埼玉県蕨市塚越2-1-17-504",
-      "cust_name": "customer005",
-      "emp_name": "jcl005",
-      "en_time": "2020/09/01",
-      "exit_time": "2021/09/01"
-    },
-    {
-      "pro_no": "jcl006",
-      "pro_name": "プロジェクト006",
-      "pro_address": "埼玉県蕨市塚越2-1-17-504",
-      "cust_name": "customer006",
-      "emp_name": "jcl006",
-      "en_time": "2020/09/01",
-      "exit_time": "2021/09/01"
-    },
-    {
-      "pro_no": "jcl007",
-      "pro_name": "プロジェクト007",
-      "pro_address": "埼玉県蕨市塚越2-1-17-504",
-      "cust_name": "customer007",
-      "emp_name": "jcl008",
-      "en_time": "2020/09/01",
-      "exit_time": "2021/09/01"
-    },
-    {
-      "pro_no": "jcl008",
-      "pro_name": "プロジェクト008",
-      "pro_address": "埼玉県蕨市塚越2-1-17-504",
-      "cust_name": "customer008",
-      "emp_name": "jcl008",
-      "en_time": "2020/09/01",
-      "exit_time": "2021/09/01"
-    }
-
-  ];
+  var _tbl_employee_list_ = null;
+  
   function do_search() {
 
-      if ( $.fn.DataTable.isDataTable('#project_list') ) {
-        $('#project_list').DataTable().destroy();
+      if ( $.fn.DataTable.isDataTable('#employee_list') ) {
+        $('#employee_list').DataTable().destroy();
       }
-      $('#project_list').empty();
+      $('#employee_list').empty();
 
-      $('#project_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
-      get_api("api/project/list").post(projects => {
-          // projects = test_projects;
-          if( !projects || projects.length === 0 ) {
-            $('#project_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
-            return;
-          }
+      $('#employee_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/employee/list").post(employees => {
+          // if( !employees || employees.length === 0 ) {
+          //   $('#employee_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
+          //   return;
+          // }
           $('#no_data_message').hide();
-          $('#project_list').empty();
+          $('#employee_list').empty();
           var disp_columns = [
               {
-                "title":"項目番号",
-                "data": "pro_no",
+                "title":"社員番号",
+                "data": "emp_id",
                 "width": "20px",
                 "render": function(data, type, row, meta){
                       if(data) {
@@ -139,47 +147,78 @@
                 }
               },
               {
-                "title":"項目名",
-                "data": "pro_name",
+                "title":"氏名",
+                "data": "name",
+                "width": "20px",
+                "render": function(data, type, row, meta){
+                      return row.first_name + " " + row.last_name;
+                }
+              },
+              {
+                "title":"生年月日",
+                "data": "birthday",
                 "width": "20px"
               },
               {
-                "title":"項目住所",
-                "data": "pro_address",
+                "title":"性別",
+                "data": "sex",
+                "width": "10px",
+                "render": function(data, type, row, meta){
+                  if(data == "1") {
+                    return "男"
+                  } else {
+                    return "女"
+                  }
+                }
+              },
+              {
+                "title":"メールアドレス",
+                "data": "email",
                 "width": "50px"
               },
               {
-                "title":"顧客名",
-                "data": "cust_name",
-                "width": "20px"
-              },
-              {
-                "title":"社員名",
-                "data": "emp_name",
-                "width": "20px"
-              },
-              {
-                "title":"入場時間",
-                "data": "en_time",
-                "width": "20px"
-              },
-              {
-                "title":"退場時間",
-                "data": "exit_time",
-                "width": "20px"
+                "title":"電話番号",
+                "data": "tel_no"
               }
           ];
-          _tbl_project_list_ = $('#project_list').DataTable( {
-              dom: 'Bfrtip',
-              buttons: [
-                  'copy', 'csv', 'excel', 'pdf', 'print'
-              ],
-              data: projects,
-              columns: disp_columns,
-          } );
-
+          _tbl_employee_list_ = $('#employee_list').DataTable({
+            data: employees,
+            columns: disp_columns,
+            fixedColumns:{
+              leftColumns: 5
+            },
+            dom:'Bfrtip',
+            autoWidth:false,
+            scrollX: true,
+            scrollY: '680px',
+            paging:true,
+            // pageLength:200,
+            lengthChange:true,
+            processing:true,
+            pageLength : 50,
+            buttons: [
+              {
+                extend: 'pdfHtml5',
+                text: 'pdf',
+                customize: function ( doc ) {
+                  doc.defaultStyle.font= 'GenShin';
+                }
+              },
+              {
+                  text: 'add',
+                  action: function ( e, dt, node, config ) {
+                    // $('#modal').fadeTo(200,1);
+                    $('#emp_register').modal({
+                        show: true
+                    })
+                  }
+              }, 
+              'excel'
+            ],
+            autoWidth:false
+          });
       }, err => {
-        $('#project_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+        $('#employee_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
       });
   }
 

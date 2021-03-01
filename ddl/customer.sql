@@ -8,6 +8,6 @@ CREATE TABLE customer (
   partener int NOT NULL,
   Representative varchar(20) NOT NULL,
   project_id int DEFAULT NULL,
-  payment_kbn
+  station varchar(20),
   PRIMARY KEY (id)
 )
