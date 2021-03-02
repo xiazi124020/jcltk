@@ -6,9 +6,12 @@
   <h1>
     <i class="fa fa-home"></i> Home
   </h1>
+  <style>
+    .table thead,
+    .table th {text-align: center;}
+  </style>
 {% endblock %}
 {% block content %}
-
 <div class="row">
   <div class="col-md-6">
     <div class="box">
@@ -239,6 +242,7 @@
         {
           "title":"社員番号",
           "data": "emp_id",
+          "className": "text-left",
           // "width": "20px",
           "render": function(data, type, row, meta){
             if(data) {
@@ -250,6 +254,7 @@
         {
           "title":"氏名",
           "data": "name",
+          "className": "text-left",
           "render": function(data, type, row, meta){
             return row.first_name + " " + row.last_name;
           }
@@ -257,6 +262,7 @@
         {
           "title":"氏名(カナ)",
           "data": "name",
+          "className": "text-left",
           "render": function(data, type, row, meta){
             return row.first_name_kana + " " + row.last_name_kana;
           }
@@ -264,6 +270,7 @@
         {
           "title":"給料",
           "data": "salary",
+          "className": "text-right",
           "render": function(data, type, row, meta) {
             return data.toLocaleString(
               undefined, 
@@ -274,6 +281,7 @@
         {
           "title":"単価",
           "data": "price",
+          "className": "text-right",
           "render": function(data, type, row, meta) {
             return data.toLocaleString(
               undefined, 
@@ -284,6 +292,7 @@
         {
           "title":"交通費",
           "data": "transport_cost",
+          "className": "text-right",
           "render": function(data, type, row, meta) {
             return data.toLocaleString(
               undefined, 
@@ -294,6 +303,7 @@
         {
           "title":"生年月日",
           "data": "birthday",
+          "className": "text-left",
           "render": function(data, type, row, meta) {
             return data.format_as_yyyymmdd_with_slash()
           }
@@ -301,6 +311,7 @@
         {
           "title":"性別",
           "data": "sex",
+          "className": "text-left",
           "render": function(data, type, row, meta){
             if(data == "1") {
               return "男"
@@ -312,18 +323,22 @@
         {
           "title":"メールアドレス",
           "data": "email",
+          "className": "text-left",
         },
         {
           "title":"電話番号",
-          "data": "tel"
+          "data": "tel",
+          "className": "text-left",
         },
         {
           "title":"プロジェクト",
-          "data": "project_name"
+          "data": "project_name",
+          "className": "text-left",
         },
         {
           "title":"プロジェクト予定終了日",
           "data": "project_end_plan_date",
+          "className": "text-left",
           "render": function(data, type, row, meta) {
             return data.format_as_yyyymmdd_with_slash()
           }
@@ -331,6 +346,7 @@
         {
           "title":"入社年月日",
           "data": "entry_date",
+          "className": "text-left",
           "render": function(data, type, row, meta) {
             return data.format_as_yyyymmdd_with_slash()
           }
@@ -338,6 +354,7 @@
         {
           "title":"社員種別",
           "data": "kbn",
+          "className": "text-left",
           "render": function(data, type, row, meta){
             if(data === 1) {
               return "正社員"
@@ -371,14 +388,6 @@
             doc.defaultStyle.font= 'GenShin';
           }
         },
-        {
-          text: 'add',
-          action: function ( e, dt, node, config ) {
-            $('#emp_register').modal({
-              show: true
-            })
-          }
-        }, 
         'excel'
       ],
       autoWidth:false
@@ -432,21 +441,25 @@
     var disp_columns = [
         {
           "title":"プロジェクト名称",
+          "className": "text-left",
           "data": "name"
         },
         {
           "title":"開始日",
           "data": "start_date",
+          "className": "text-left",
           "render": function(data, type, row, meta) {
             return data.format_as_yyyymmdd_with_slash()
           }
         },
         {
           "title":"駅",
+          "className": "text-left",
           "data": "station",
         },
         {
           "title":"ステータス",
+          "className": "text-left",
           "data": "status",
           "render": function(data, type, row, meta){
             if(data == "1") {
@@ -458,6 +471,7 @@
         },
         {
           "title":"お客様名",
+          "className": "text-left",
           "data": "customer_name",
         },
         {
@@ -473,10 +487,12 @@
         },
         {
           "title":"下限",
+          "className": "text-left",
           "data": "min_time"
         },
         {
           "title":"上限",
+          "className": "text-left",
           "data": "max_time"
         }
     ];
@@ -500,14 +516,6 @@
             doc.defaultStyle.font= 'GenShin';
           }
         },
-        {
-          text: 'add',
-          action: function ( e, dt, node, config ) {
-            $('#emp_register').modal({
-              show: true
-            })
-          }
-        }, 
         'excel'
       ],
       autoWidth:false
@@ -561,22 +569,27 @@
         {
           "title":"お客様名",
           "data": "name",
+          "className": "text-left",
         },
         {
           "title":"郵便番号",
           "data": "zip",
+          "className": "text-left",
         },
         {
           "title":"住所",
           "data": "address",
+          "className": "text-left",
         },
         {
           "title":"電話番号",
           "data": "tel",
+          "className": "text-left",
         },
         {
           "title":"お客様区分",
           "data": "partener",
+          "className": "text-left",
           "render": function(data, type, row, meta){
             if(data == "1") {
               return "上会社"
@@ -587,10 +600,12 @@
         },
         {
           "title":"代表者",
+          "className": "text-left",
           "data": "representative",
         },
         {
           "title":"駅",
+          "className": "text-left",
           "data": "station"
         }
     ];
@@ -614,14 +629,6 @@
             doc.defaultStyle.font= 'GenShin';
           }
         },
-        {
-          text: 'add',
-          action: function ( e, dt, node, config ) {
-            $('#emp_register').modal({
-              show: true
-            })
-          }
-        }, 
         'excel'
       ],
       autoWidth:false
