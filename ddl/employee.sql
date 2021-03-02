@@ -28,6 +28,7 @@ CREATE TABLE employee (
   position int COMMENT '職位',
   sales_id varchar(10) COMMENT '営業担当ID',
   project_end_plan_date date COMMENT 'プロジェクト予定終了日',
+  kbn int,
   delete_falg int,
   PRIMARY KEY (emp_id),
   KEY department_id (department_id),
