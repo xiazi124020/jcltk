@@ -264,27 +264,39 @@
         {
           "title":"給料",
           "data": "salary",
-          "render": function(data, type, row, meta){
-            return row.first_name_kana + " " + row.last_name_kana;
+          "render": function(data, type, row, meta) {
+            return data.toLocaleString(
+              undefined, 
+              { minimumFractionDigits: 2 }
+            )
           }
         },
         {
           "title":"単価",
           "data": "price",
-          "render": function(data, type, row, meta){
-            return row.first_name_kana + " " + row.last_name_kana;
+          "render": function(data, type, row, meta) {
+            return data.toLocaleString(
+              undefined, 
+              { minimumFractionDigits: 2 }
+            )
           }
         },
         {
           "title":"交通費",
           "data": "transport_cost",
-          "render": function(data, type, row, meta){
-            return row.first_name_kana + " " + row.last_name_kana;
+          "render": function(data, type, row, meta) {
+            return data.toLocaleString(
+              undefined, 
+              { minimumFractionDigits: 2 }
+            )
           }
         },
         {
           "title":"生年月日",
           "data": "birthday",
+          "render": function(data, type, row, meta) {
+            return data.format_as_yyyymmdd_with_slash()
+          }
         },
         {
           "title":"性別",
@@ -311,11 +323,17 @@
         },
         {
           "title":"プロジェクト予定終了日",
-          "data": "project_end_plan_date"
+          "data": "project_end_plan_date",
+          "render": function(data, type, row, meta) {
+            return data.format_as_yyyymmdd_with_slash()
+          }
         },
         {
           "title":"入社年月日",
-          "data": "entry_date"
+          "data": "entry_date",
+          "render": function(data, type, row, meta) {
+            return data.format_as_yyyymmdd_with_slash()
+          }
         },
         {
           "title":"社員種別",
@@ -419,6 +437,9 @@
         {
           "title":"開始日",
           "data": "start_date",
+          "render": function(data, type, row, meta) {
+            return data.format_as_yyyymmdd_with_slash()
+          }
         },
         {
           "title":"駅",
