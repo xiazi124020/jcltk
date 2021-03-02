@@ -28,7 +28,11 @@ CREATE TABLE `project` (
   `station` varchar(20) DEFAULT NULL,
   `status` int DEFAULT NULL,
   `customer_id` int DEFAULT NULL,
+  `seisan` int DEFAULT NULL,
+  `min_time` int DEFAULT NULL,
+  `max_time` int DEFAULT NULL,
   `delete_falg` int DEFAULT NULL,
+  
   PRIMARY KEY (`id`),
   KEY `customer_id` (`customer_id`),
   CONSTRAINT `project_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`)
