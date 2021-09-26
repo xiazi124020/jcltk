@@ -25,7 +25,7 @@ def get_list(request):
 
     datas = []
     sql = f"""
-        select name,zip,address,tel_no,partener,email,partener,station,representative from customer
+        select id,name,zip,address,tel_no,partener,email,partener,station,representative from customer
     """
     with connection.cursor() as cursor:
         cursor.execute(sql)
@@ -39,10 +39,10 @@ def get_customer(request):
     post_data = json.loads(request.body.decode('utf-8'))
     parameters = post_data['data']
     # お客様名称
-    customer_name = parameters['customer_name']
+    id = parameters['id']
     datas = []
     sql = f"""
-        select name,zip,address,tel_no,partener,email,partener,station,representative from customer where name = %s
+        select id,name,zip,address,tel_no,partener,email,partener,station,representative from customer where id = %s
     """
     with connection.cursor() as cursor:
         cursor.execute(sql, (customer_name,))
@@ -50,6 +50,20 @@ def get_customer(request):
 
     return HttpResponse(to_json(datas), content_type='application/json')
 
+
+@login_required
+def delete(request):
+
+    post_data = json.loads(request.body.decode('utf-8'))
+    data = post_data['data']
+    sql='DELETE FROM customer WHERE ID IN (%s)' 
+    inlist=', '.join(map(lambda x: '%s', data))
+    sql = sql % inlist
+
+    with connection.cursor() as cursor:
+        cursor.execute(sql, data)
+
+    return HttpResponse(to_json({"success": True}), content_type='application/json')
 
 @login_required
 def insert(request):
@@ -115,7 +129,7 @@ def insert(request):
         cursor.execute(sql, (customer_name, zip_str, address, tel, email, 1, representative, project, station))
 
     sql = f"""
-        select name,zip,address,tel_no,partener,email,partener,station,representative from customer
+        select id,name,zip,address,tel_no,partener,email,partener,station,representative from customer
     """
     datas = []
     with connection.cursor() as cursor:

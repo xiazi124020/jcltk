@@ -171,6 +171,12 @@
           $('#customer_list').empty();
           var disp_columns = [
               {
+                "title":"id",
+                "data": "id",
+                "visible": false,
+                "searchable": false
+              },
+              {
                 "title":"お客様名",
                 "data": "name",
                 "width": "20px",
@@ -337,7 +343,6 @@
   function do_edit() {
     var selected = _tbl_customer_list_.rows('.selected').data()
     if(selected && selected.length == 0) {
-      // alert("更新お客様を選択してください。");
       $("#error_message").text("更新お客様を選択してください。")
       $("#modal-alert").modal('show')
       return;
@@ -345,15 +350,14 @@
     if(selected && selected.length > 1) {
       $("#error_message").text("1件お客様選択しかない。")
       $("#modal-alert").modal('show')
-      // alert("更新お客様を選択してください。");
       return;
     }
     $('#customer_register').modal('show')
     
     // お客様名
-    let name = selected[0].name;
+    let id = selected[0].id;
     let post_datas = {
-      customer_name:name
+      id:id
     }
     get_axios().post("api/customer/info", {
         headers: {"X-CSRFToken": csrfToken},
@@ -374,7 +378,27 @@
   }
 
   function do_delete() {
-
+    
+    var selected = _tbl_customer_list_.rows('.selected').data()
+    if(selected && selected.length == 0) {
+      $("#error_message").text("削除お客様を選択してください。")
+      $("#modal-alert").modal('show')
+      return;
+    }
+    let post_datas = [];
+    _.forEach(selected, function(data) {
+      post_datas.push(data.id)
+    });
+    get_axios().post("api/customer/delete", {
+        headers: {"X-CSRFToken": csrfToken},
+        data: post_datas
+      }).then(response => {
+        showLoading();
+        do_search();
+    }).catch(err => {
+      hideLoading();
+      alert(err)
+    })
   }
  
   function is_empty(s) {

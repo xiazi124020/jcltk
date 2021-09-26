@@ -37,6 +37,7 @@ urlpatterns = [
     #----------------------------------------------------------------------------------------------------------------------------
     #お客様
     path('api/customer/insert', login_required((customer.insert))),
+    path('api/customer/delete', login_required((customer.delete))),
     path('api/customer/list', login_required((customer.get_list))),
     path('api/customer/info', login_required((customer.get_customer))),
 
