@@ -262,6 +262,7 @@
                   action: function ( e, dt, node, config ) {
                     $("#id").val(null);
                     $("#action").text("登録");
+                    $(".modal-title").text("登録");
                     $('#customer_register').modal({
                         show: true
                     })
@@ -312,6 +313,7 @@
     // 住所
     var id = $("#id").val();
     $("#action").text("登録");
+    $(".modal-title").text("登録");
     if(is_empty(customer_name) || is_empty(partener) || is_empty(representative) || is_empty(tel) ||
     is_empty(email) || is_empty(station) || is_empty(zip) || is_empty(address)) {
       // alert("未入力項目があります。");
@@ -393,6 +395,7 @@
           // id
           $("#id").val(customer_info.id);
           $("#action").text("更新");
+          $(".modal-title").text("更新");
         }
     }).catch(err => {
       hideLoading();
@@ -424,12 +427,6 @@
     })
   }
  
-  function is_empty(s) {
-    if(s == null || "" == s) {
-      return true;
-    }
-    return false;
-  }
   
 </script>
 {% endblock %}

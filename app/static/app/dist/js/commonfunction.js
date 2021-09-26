@@ -577,3 +577,10 @@ function formatDate(date) {
   }
   return (myyear + "/" + mymonth + "/" + myweekday);
 }
+
+function is_empty(s) {
+  if(s == null || "" == s) {
+    return true;
+  }
+  return false;
+}

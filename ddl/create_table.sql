@@ -29,15 +29,15 @@ CREATE TABLE project (
   station varchar(20) DEFAULT NULL,
   status int DEFAULT NULL,
   customer_id int DEFAULT NULL,
-  seisan int DEFAULT NULL,
-  min_time int DEFAULT NULL,
-  max_time int DEFAULT NULL,
+  seisan int DEFAULT 0,
+  min_time int DEFAULT 150,
+  max_time int DEFAULT 200,
   insert_date timestamp DEFAULT CURRENT_TIMESTAMP,
   update_date timestamp DEFAULT CURRENT_TIMESTAMP,
   
   PRIMARY KEY (id),
   KEY customer_id (customer_id),
-  CONSTRAINT project_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id)
+  CONSTRAINT project_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE
 );
 
 CREATE TABLE department (
@@ -80,6 +80,6 @@ CREATE TABLE employee (
   PRIMARY KEY (emp_id),
   KEY department_id (department_id),
   KEY project_id (project_id),
-  CONSTRAINT employee_ibfk_1 FOREIGN KEY (department_id) REFERENCES department (id),
-  CONSTRAINT employee_ibfk_2 FOREIGN KEY (project_id) REFERENCES project (id)
+  CONSTRAINT employee_ibfk_1 FOREIGN KEY (department_id) REFERENCES department (id)  ON DELETE CASCADE,
+  CONSTRAINT employee_ibfk_2 FOREIGN KEY (project_id) REFERENCES project (id)  ON DELETE CASCADE
 ) 

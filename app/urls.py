@@ -24,22 +24,22 @@ urlpatterns = [
     path("customer/index", customer.index, name="customer.index"),
     path("project/index", project.index, name="project.index"),
 
-    #----------------------------------------------------------------------------------------------------------------------------
-    # api url naming rules
-    #----------------------------------------------------------------------------------------------------------------------------
     #社員
     path('api/employee/list', login_required((employee.get_list))),
     path('api/project/list', login_required((project.get_list))),
 
 
-    #----------------------------------------------------------------------------------------------------------------------------
-    # api url naming rules
-    #----------------------------------------------------------------------------------------------------------------------------
     #お客様
     path('api/customer/insert', login_required((customer.insert))),
     path('api/customer/delete', login_required((customer.delete))),
     path('api/customer/list', login_required((customer.get_list))),
     path('api/customer/info', login_required((customer.get_customer))),
+
+    #プロジェクト
+    path('api/project/insert', login_required((project.insert))),
+    path('api/project/delete', login_required((project.delete))),
+    path('api/project/list', login_required((project.get_list))),
+    path('api/project/info', login_required((project.get_project))),
 
     #----------------------------------------------------------------------------------------------------------------------------
     #
