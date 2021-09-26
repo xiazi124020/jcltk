@@ -14,34 +14,36 @@ CREATE TABLE customer (
   email varchar(100) DEFAULT NULL,
   partener int NOT NULL,
   Representative varchar(20) NOT NULL,
-  project_id int DEFAULT NULL,
   station varchar(20),
+  insert_date timestamp DEFAULT CURRENT_TIMESTAMP,
+  update_date timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 );
 
 
-CREATE TABLE `project` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主キー',
-  `name` varchar(50) NOT NULL,
-  `start_date` date NOT NULL,
-  `end_date` date DEFAULT NULL,
-  `station` varchar(20) DEFAULT NULL,
-  `status` int DEFAULT NULL,
-  `customer_id` int DEFAULT NULL,
-  `seisan` int DEFAULT NULL,
-  `min_time` int DEFAULT NULL,
-  `max_time` int DEFAULT NULL,
-  `delete_falg` int DEFAULT NULL,
+CREATE TABLE project (
+  id int NOT NULL AUTO_INCREMENT COMMENT '主キー',
+  name varchar(50) NOT NULL,
+  start_date date NOT NULL,
+  end_date date DEFAULT NULL,
+  station varchar(20) DEFAULT NULL,
+  status int DEFAULT NULL,
+  customer_id int DEFAULT NULL,
+  seisan int DEFAULT NULL,
+  min_time int DEFAULT NULL,
+  max_time int DEFAULT NULL,
+  insert_date timestamp DEFAULT CURRENT_TIMESTAMP,
+  update_date timestamp DEFAULT CURRENT_TIMESTAMP,
   
-  PRIMARY KEY (`id`),
-  KEY `customer_id` (`customer_id`),
-  CONSTRAINT `project_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`)
+  PRIMARY KEY (id),
+  KEY customer_id (customer_id),
+  CONSTRAINT project_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id)
 );
 
-CREATE TABLE `department` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE department (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(50) DEFAULT NULL,
+  PRIMARY KEY (id)
 );
 CREATE TABLE employee (
   emp_id varchar(10) NOT NULL COMMENT '社員番号',

@@ -45,11 +45,10 @@ def get_customer(request):
         select id,name,zip,address,tel_no,partener,email,partener,station,representative from customer where id = %s
     """
     with connection.cursor() as cursor:
-        cursor.execute(sql, (customer_name,))
+        cursor.execute(sql, (id,))
         datas = dictfetchall(cursor)
 
     return HttpResponse(to_json(datas), content_type='application/json')
-
 
 @login_required
 def delete(request):
@@ -86,47 +85,59 @@ def insert(request):
     zip_str = parameters['zip']
     #  住所
     address = parameters['address']
-    #  プロジェクト
-    project = parameters['project']
-    sql = f"""
-        select name,zip,address,tel_no,partener,email,partener,station,representative from customer where name = %s
-    """
-    with connection.cursor() as cursor:
-        cursor.execute(sql, (customer_name,))
-        datas = dictfetchall(cursor)
-        if len(datas) > 0:
-            return HttpResponse(to_json({"exists_flag": 1}), content_type='application/json')
-
-    sql = f"""
-        INSERT INTO customer( 
-            name
-            , zip
-            , address
-            , tel_no
-            , email
-            , partener
-            , representative
-            , project_id
-            , station
-            ) 
-            VALUES ( 
-            %s
-            , %s
-            , %s
-            , %s
-            , %s
-            , %s
-            , %s
-            , %s
-            , %s
-            )
-    """
-    if len(project) == 0:
-        project = None
+    #  id
+    id = parameters['id']
+    sql = None
+    exec_sql = None
+    if id is None or id == "":
+        sql = f"""
+            select name,zip,address,tel_no,partener,email,partener,station,representative from customer where name = %s
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(sql, (customer_name,))
+            datas = dictfetchall(cursor)
+            if len(datas) > 0:
+                return HttpResponse(to_json({"exists_flag": 1}), content_type='application/json')
+        exec_sql = f"""
+            INSERT INTO customer( 
+                name
+                , zip
+                , address
+                , tel_no
+                , email
+                , partener
+                , representative
+                , station
+                ) 
+                VALUES ( 
+                %s
+                , %s
+                , %s
+                , %s
+                , %s
+                , %s
+                , %s
+                , %s
+                )
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(exec_sql, (customer_name, zip_str, address, tel, email, partener, representative, station))
     else:
-        project = project[0]
-    with connection.cursor() as cursor:
-        cursor.execute(sql, (customer_name, zip_str, address, tel, email, 1, representative, project, station))
+        exec_sql = f"""
+            update customer set
+                name = %s
+                , zip = %s
+                , address = %s
+                , tel_no = %s
+                , email = %s
+                , partener = %s
+                , representative = %s
+                , station = %s
+            where
+                id = %s
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(exec_sql, (customer_name, zip_str, address, tel, email, partener, representative, station, id))
 
     sql = f"""
         select id,name,zip,address,tel_no,partener,email,partener,station,representative from customer

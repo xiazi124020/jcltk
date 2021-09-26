@@ -7,7 +7,8 @@ CREATE TABLE customer (
   email varchar(100) DEFAULT NULL,
   partener int NOT NULL,
   Representative varchar(20) NOT NULL,
-  project_id int DEFAULT NULL,
   station varchar(20),
+  insert_date timestamp DEFAULT CURRENT_TIMESTAMP,
+  update_date timestamp DEFAULT CURRENT_TIMESTAMP
   PRIMARY KEY (id)
 )

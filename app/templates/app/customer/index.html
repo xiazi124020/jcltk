@@ -63,7 +63,7 @@
           <div class="col-md-4">
             <div class="form-group">
               <label>お客様名称</label>
-              <input type="text" id="name" class="form-control" placeholder="お客様名称">
+              <input type="text" id="name" class="form-control" placeholder="お客様名称" maxlength="50">
             </div>
           </div>
           <div class="col-md-4">
@@ -71,12 +71,16 @@
               <label>顧客区分</label>
               <div class="radio">
                 <label>
-                  <input type="radio" name="partener" id="optionsRadios1" value="1" checked="">
+                  <input type="radio" name="partener" id="optionsRadios1" value="0" checked="">
                   お客様
                 </label>
                 <label>
-                  <input type="radio" name="partener" id="optionsRadios2" value="0">
+                  <input type="radio" name="partener" id="optionsRadios2" value="1">
                   BP
+                </label>
+                <label>
+                  <input type="radio" name="partener" id="optionsRadios3" value="2">
+                  Both
                 </label>
               </div>
             </div>
@@ -84,7 +88,7 @@
           <div class="col-md-4">
             <div class="form-group">
               <label>代表者</label>
-              <input type="text" id="representative" class="form-control" placeholder="代表者">
+              <input type="text" id="representative" class="form-control" placeholder="代表者" maxlength="20">
             </div>
           </div>
         </div>
@@ -92,13 +96,13 @@
           <div class="col-md-4">
             <div class="form-group">
               <label>電話番号</label>
-              <input type="number" id="tel" class="form-control" placeholder="電話番号">
+              <input type="number" id="tel" class="form-control" placeholder="電話番号" maxlength="15">
             </div>
           </div>
           <div class="col-md-8">
             <div class="form-group">
               <label>Email</label>
-              <input type="text" id="email" class="form-control" placeholder="Email">
+              <input type="text" id="email" class="form-control" placeholder="Email" maxlength="100">
             </div>
           </div>
         </div>
@@ -106,23 +110,23 @@
           <div class="col-md-2">
             <div class="form-group">
               <label>駅</label>
-              <input type="text" id="station" class="form-control" placeholder="駅">
+              <input type="text" id="station" class="form-control" placeholder="駅" maxlength="20">
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group">
               <label>郵便番号</label>
-              <input type="text" id="zip" class="form-control" placeholder="郵便番号">
+              <input type="text" id="zip" class="form-control" placeholder="郵便番号" maxlength="7">
             </div>
           </div>
           <div class="col-md-8">
             <div class="form-group">
               <label>住所</label>
-              <input type="text" id="address" class="form-control" placeholder="市町郡街">
+              <input type="text" id="address" class="form-control" placeholder="市町郡街" maxlength="100">
             </div>
           </div>
         </div>
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-md-12">
             <div class="form-group">
               <label>プロジェクト</label>
@@ -135,11 +139,12 @@
               </select>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
+      <input type="hidden" name="id" id="id">
       <div class="modal-footer">	
         <a href="#" data-dismiss="modal" class="btn">Close</a>
-        <a href="#" onclick="add_customer();" class="btn btn-primary">登録</a>
+        <a href="#" onclick="add_customer();" class="btn btn-primary"><div id="action"></div></a>
       </div>
   </div>
 </div>
@@ -180,12 +185,12 @@
                 "title":"お客様名",
                 "data": "name",
                 "width": "20px",
-                "render": function(data, type, row, meta){
-                      if(data) {
-                        data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
-                      }
-                      return data;
-                }
+                // "render": function(data, type, row, meta){
+                //       if(data) {
+                //         data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+                //       }
+                //       return data;
+                // }
               },
               {
                 "title":"お客様名区分",
@@ -194,8 +199,10 @@
                 "render": function(data, type, row, meta){
                   if(data == "1") {
                     return "bp";
-                  } else {
+                  } else if(data == "0")  {
                     return "お客様";
+                  } else {
+                    return "Both"
                   }
                 }
               },
@@ -243,16 +250,18 @@
             processing:true,
             pageLength : 50,
             buttons: [
-              {
-                extend: 'pdfHtml5',
-                text: 'pdf',
-                customize: function ( doc ) {
-                  doc.defaultStyle.font= 'GenShin';
-                }
-              },
+              // {
+              //   extend: 'pdfHtml5',
+              //   text: 'pdf',
+              //   customize: function ( doc ) {
+              //     doc.defaultStyle.font= 'GenShin';
+              //   }
+              // },
               {
                   text: 'add',
                   action: function ( e, dt, node, config ) {
+                    $("#id").val(null);
+                    $("#action").text("登録");
                     $('#customer_register').modal({
                         show: true
                     })
@@ -261,7 +270,7 @@
               {
                   text: 'edit',
                   action: function ( e, dt, node, config ) {
-                    do_edit();
+                    show_edit();
                   }
               }, 
               {
@@ -270,7 +279,7 @@
                     do_delete();
                   }
               }, 
-              'excel'
+              // 'excel'
             ],
             autoWidth:false
           });
@@ -300,8 +309,9 @@
     var zip = $("#zip").val();
     // 住所
     var address = $("#address").val();
-    // プロジェクト
-    var project = $("#project_id").val();
+    // 住所
+    var id = $("#id").val();
+    $("#action").text("登録");
     if(is_empty(customer_name) || is_empty(partener) || is_empty(representative) || is_empty(tel) ||
     is_empty(email) || is_empty(station) || is_empty(zip) || is_empty(address)) {
       // alert("未入力項目があります。");
@@ -318,9 +328,9 @@
       "station":station,
       "zip":zip,
       "address":address,
-      "project":project
+      // "project":project,
+      "id":id
     }
-    
     
     get_axios().post("api/customer/insert", {
         headers: {"X-CSRFToken": csrfToken},
@@ -329,7 +339,6 @@
         if(response.data.exists_flag) {
           $("#error_message").text("重複登録できません。")
           $("#modal-alert").modal('show')
-          // alert("重複登録できません。")
           return;
         }
         $('#customer_register').modal('hide')
@@ -340,7 +349,7 @@
     })
   }
 
-  function do_edit() {
+  function show_edit() {
     var selected = _tbl_customer_list_.rows('.selected').data()
     if(selected && selected.length == 0) {
       $("#error_message").text("更新お客様を選択してください。")
@@ -363,18 +372,32 @@
         headers: {"X-CSRFToken": csrfToken},
         data: post_datas
       }).then(response => {
-        if(response.data.exists_flag) {
-          $("#error_message").text("重複登録できません。")
-          $("#modal-alert").modal('show')
-          return;
+        if(response.data.length > 0) {
+          let customer_info = response.data[0]
+          // お客様名称
+          $("#name").val(customer_info.name);
+          // 顧客区分
+          $("input[name=partener][value=" + customer_info.partener + "]").attr('checked', 'checked');
+          // 代表者
+          $("#representative").val(customer_info.representative);
+          // 電話番号
+          $("#tel").val(customer_info.tel_no);
+          // Email
+          $("#email").val(customer_info.email);
+          // 駅
+          $("#station").val(customer_info.station);
+          // 郵便番号
+          $("#zip").val(customer_info.zip);
+          // 住所
+          $("#address").val(customer_info.address);
+          // id
+          $("#id").val(customer_info.id);
+          $("#action").text("更新");
         }
-        $('#customer_register').modal('hide')
-        do_search();
     }).catch(err => {
       hideLoading();
       alert(err)
     })
-
   }
 
   function do_delete() {
