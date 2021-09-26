@@ -27,3 +27,6 @@ def any_permission_required(perms, login_url=None, raise_exception=False):
             raise PermissionDenied
         return False
     return user_passes_test(check_perms, login_url=login_url)
+
+def get_post_datas(request):
+    pass

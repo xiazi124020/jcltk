@@ -21,7 +21,7 @@
   <div class="col-xs-12">
     <div class="box box-info">
       <div class="box-body table-responsive">
-        <table id="employee_list" class="display stripe nowrap">
+        <table id="customer_list" class="display stripe nowrap">
           <thead>
           </thead>
         </table>
@@ -31,12 +31,32 @@
   </div>
   <!-- /.col -->
 </div>
-<div class="modal fade" id="emp_register">
+<div class="modal fade" id="modal-alert" style="display: none;z-index: 99999">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Alert</h4>
+      </div>
+      <div class="modal-body">
+        <p><div id="error_message"></div></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-center" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="customer_register">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h4 class="modal-title">登録</h4>
+        <h4 class="modal-title" >登録</h4>
       </div>
       <div class="modal-body">          
         <div class="row">
@@ -64,7 +84,7 @@
           <div class="col-md-4">
             <div class="form-group">
               <label>代表者</label>
-              <input type="text" id="Representative" class="form-control" placeholder="代表者">
+              <input type="text" id="representative" class="form-control" placeholder="代表者">
             </div>
           </div>
         </div>
@@ -119,7 +139,7 @@
       </div>
       <div class="modal-footer">	
         <a href="#" data-dismiss="modal" class="btn">Close</a>
-        <a href="#" class="btn btn-primary">登録</a>
+        <a href="#" onclick="add_customer();" class="btn btn-primary">登録</a>
       </div>
   </div>
 </div>
@@ -133,29 +153,26 @@
   function page_ready() {
     $('.select2').select2()
     do_search()
+    
   }
 
-  var _tbl_employee_list_ = null;
+  var _tbl_customer_list_ = null;
   
   function do_search() {
 
-      if ( $.fn.DataTable.isDataTable('#employee_list') ) {
-        $('#employee_list').DataTable().destroy();
+      if ( $.fn.DataTable.isDataTable('#customer_list') ) {
+        $('#customer_list').DataTable().destroy();
       }
-      $('#employee_list').empty();
+      $('#customer_list').empty();
 
-      $('#employee_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
-      get_api("api/employee/list").post(employees => {
-          // if( !employees || employees.length === 0 ) {
-          //   $('#employee_list').html('<tr><td class="text-info text-center"><h1>データなし</h1></td></tr>');
-          //   return;
-          // }
+      $('#customer_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/customer/list").post(customers => {
           $('#no_data_message').hide();
-          $('#employee_list').empty();
+          $('#customer_list').empty();
           var disp_columns = [
               {
-                "title":"社員番号",
-                "data": "emp_id",
+                "title":"お客様名",
+                "data": "name",
                 "width": "20px",
                 "render": function(data, type, row, meta){
                       if(data) {
@@ -165,48 +182,53 @@
                 }
               },
               {
-                "title":"氏名",
-                "data": "name",
+                "title":"お客様名区分",
+                "data": "partener",
                 "width": "20px",
                 "render": function(data, type, row, meta){
-                      return row.first_name + " " + row.last_name;
-                }
-              },
-              {
-                "title":"生年月日",
-                "data": "birthday",
-                "width": "20px"
-              },
-              {
-                "title":"性別",
-                "data": "sex",
-                "width": "10px",
-                "render": function(data, type, row, meta){
                   if(data == "1") {
-                    return "男"
+                    return "bp";
                   } else {
-                    return "女"
+                    return "お客様";
                   }
                 }
               },
               {
-                "title":"メールアドレス",
+                "title":"電話番号",
+                "data": "tel_no",
+                "width": "20px"
+              },
+              {
+                "title":"Email",
                 "data": "email",
+                "width": "30px",
+              },
+              {
+                "title":"代表取締役",
+                "data": "representative",
                 "width": "50px"
               },
               {
-                "title":"電話番号",
-                "data": "tel_no"
+                "title":"郵便番号",
+                "data": "zip"
+              },
+              {
+                "title":"住所",
+                "data": "address"
+              },
+              {
+                "title":"駅",
+                "data": "station"
               }
           ];
-          _tbl_employee_list_ = $('#employee_list').DataTable({
-            data: employees,
+          _tbl_customer_list_ = $('#customer_list').DataTable({
+            data: customers,
             columns: disp_columns,
-            fixedColumns:{
-              leftColumns: 5
-            },
+            // fixedColumns:{
+            //   leftColumns: 5
+            // },
             dom:'Bfrtip',
-            autoWidth:false,
+            autoWidth:true,
             scrollX: true,
             scrollY: '680px',
             paging:true,
@@ -225,21 +247,142 @@
               {
                   text: 'add',
                   action: function ( e, dt, node, config ) {
-                    // $('#modal').fadeTo(200,1);
-                    $('#emp_register').modal({
+                    $('#customer_register').modal({
                         show: true
                     })
+                  }
+              }, 
+              {
+                  text: 'edit',
+                  action: function ( e, dt, node, config ) {
+                    do_edit();
+                  }
+              }, 
+              {
+                  text: 'delete',
+                  action: function ( e, dt, node, config ) {
+                    do_delete();
                   }
               }, 
               'excel'
             ],
             autoWidth:false
           });
+          
+        $('#customer_list tbody').on( 'click', 'tr', function () {
+            $(this).toggleClass('selected');
+        } );
       }, err => {
-        $('#employee_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+        $('#customer_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
       });
   }
 
+  function add_customer() {
+    // お客様名称
+    var customer_name = $("#name").val();
+    // 顧客区分
+    var partener = $('input[name=partener]:checked').val();
+    // 代表者
+    var representative = $("#representative").val();
+    // 電話番号
+    var tel = $("#tel").val();
+    // Email
+    var email = $("#email").val();
+    // 駅
+    var station = $("#station").val();
+    // 郵便番号
+    var zip = $("#zip").val();
+    // 住所
+    var address = $("#address").val();
+    // プロジェクト
+    var project = $("#project_id").val();
+    if(is_empty(customer_name) || is_empty(partener) || is_empty(representative) || is_empty(tel) ||
+    is_empty(email) || is_empty(station) || is_empty(zip) || is_empty(address)) {
+      // alert("未入力項目があります。");
+      $("#error_message").text("未入力項目があります。")
+      $("#modal-alert").modal('show')
+      return
+    }
+    var post_datas = {
+      "customer_name":customer_name,
+      "partener":partener,
+      "representative":representative,
+      "tel":tel,
+      "email":email,
+      "station":station,
+      "zip":zip,
+      "address":address,
+      "project":project
+    }
+    
+    
+    get_axios().post("api/customer/insert", {
+        headers: {"X-CSRFToken": csrfToken},
+        data: post_datas
+      }).then(response => {
+        if(response.data.exists_flag) {
+          $("#error_message").text("重複登録できません。")
+          $("#modal-alert").modal('show')
+          // alert("重複登録できません。")
+          return;
+        }
+        $('#customer_register').modal('hide')
+        do_search();
+    }).catch(err => {
+      hideLoading();
+      alert(err)
+    })
+  }
 
+  function do_edit() {
+    var selected = _tbl_customer_list_.rows('.selected').data()
+    if(selected && selected.length == 0) {
+      // alert("更新お客様を選択してください。");
+      $("#error_message").text("更新お客様を選択してください。")
+      $("#modal-alert").modal('show')
+      return;
+    }
+    if(selected && selected.length > 1) {
+      $("#error_message").text("1件お客様選択しかない。")
+      $("#modal-alert").modal('show')
+      // alert("更新お客様を選択してください。");
+      return;
+    }
+    $('#customer_register').modal('show')
+    
+    // お客様名
+    let name = selected[0].name;
+    let post_datas = {
+      customer_name:name
+    }
+    get_axios().post("api/customer/info", {
+        headers: {"X-CSRFToken": csrfToken},
+        data: post_datas
+      }).then(response => {
+        if(response.data.exists_flag) {
+          $("#error_message").text("重複登録できません。")
+          $("#modal-alert").modal('show')
+          return;
+        }
+        $('#customer_register').modal('hide')
+        do_search();
+    }).catch(err => {
+      hideLoading();
+      alert(err)
+    })
+
+  }
+
+  function do_delete() {
+
+  }
+ 
+  function is_empty(s) {
+    if(s == null || "" == s) {
+      return true;
+    }
+    return false;
+  }
+  
 </script>
 {% endblock %}

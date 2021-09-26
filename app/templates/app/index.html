@@ -384,8 +384,17 @@
         {
           extend: 'pdfHtml5',
           text: 'pdf',
+          pageSize: 'A3',
           customize: function ( doc ) {
             doc.defaultStyle.font= 'GenShin';
+            // doc.content[0].text = '社員一覧'
+            // doc.styles.title = {
+            //   color: 'red',
+            //   fontSize: '40',
+            //   background: 'white',
+            //   alignment: 'center'
+            // }
+            // doc.content[1].table.body[0][0].rowSpan = 2
           }
         },
         'excel'

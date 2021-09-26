@@ -29,9 +29,16 @@ urlpatterns = [
     #----------------------------------------------------------------------------------------------------------------------------
     #社員
     path('api/employee/list', login_required((employee.get_list))),
-    path('api/customer/list', login_required((customer.get_list))),
     path('api/project/list', login_required((project.get_list))),
 
+
+    #----------------------------------------------------------------------------------------------------------------------------
+    # api url naming rules
+    #----------------------------------------------------------------------------------------------------------------------------
+    #お客様
+    path('api/customer/insert', login_required((customer.insert))),
+    path('api/customer/list', login_required((customer.get_list))),
+    path('api/customer/info', login_required((customer.get_customer))),
 
     #----------------------------------------------------------------------------------------------------------------------------
     #
