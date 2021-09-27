@@ -25,8 +25,10 @@ urlpatterns = [
     path("project/index", project.index, name="project.index"),
 
     #社員
+    path('api/employee/insert', login_required((employee.insert))),
+    path('api/employee/delete', login_required((employee.delete))),
     path('api/employee/list', login_required((employee.get_list))),
-    path('api/project/list', login_required((project.get_list))),
+    path('api/employee/info', login_required((employee.get_employee))),
 
 
     #お客様

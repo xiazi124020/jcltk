@@ -3,6 +3,7 @@ drop table IF EXISTS employee;
 drop table IF EXISTS department;
 drop table IF EXISTS project;
 drop table IF EXISTS customer;
+drop table IF EXISTS code;
 
 
 CREATE TABLE customer (
@@ -15,6 +16,7 @@ CREATE TABLE customer (
   partener int NOT NULL,
   Representative varchar(20) NOT NULL,
   station varchar(20),
+  delete_flag int NOT NULL default 0,
   insert_date timestamp DEFAULT CURRENT_TIMESTAMP,
   update_date timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -34,10 +36,10 @@ CREATE TABLE project (
   max_time int DEFAULT 200,
   insert_date timestamp DEFAULT CURRENT_TIMESTAMP,
   update_date timestamp DEFAULT CURRENT_TIMESTAMP,
-  
+  delete_flag int NOT NULL default 0,
   PRIMARY KEY (id),
   KEY customer_id (customer_id),
-  CONSTRAINT project_ibfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE
+  CONSTRAINT project_idfk_1 FOREIGN KEY (customer_id) REFERENCES customer (id) 
 );
 
 CREATE TABLE department (
@@ -45,6 +47,7 @@ CREATE TABLE department (
   name varchar(50) DEFAULT NULL,
   PRIMARY KEY (id)
 );
+
 CREATE TABLE employee (
   emp_id varchar(10) NOT NULL COMMENT '社員番号',
   department_id int DEFAULT NULL COMMENT '部門番号',
@@ -52,34 +55,90 @@ CREATE TABLE employee (
   first_name varchar(15)  COMMENT '名前１',
   last_name varchar(15) COMMENT '名前２',
   first_name_kana varchar(15) COMMENT 'カナ１',
-  last_name_kane varchar(15) COMMENT 'カナ２',
+  last_name_kana varchar(15) COMMENT 'カナ２',
   sex varchar(1) NOT NULL COMMENT '性別',
-  birthday date NOT NULL COMMENT '生年月日',
+  birthday date DEFAULT NULL COMMENT '生年月日',
   zip varchar(7) DEFAULT NULL COMMENT '郵便番号',
   address1 varchar(10) DEFAULT NULL COMMENT '住所1',
   address2 varchar(50) DEFAULT NULL COMMENT '住所2',
-  email varchar(30) NOT NULL COMMENT 'メールアドレス',
+  email varchar(30) DEFAULT NULL COMMENT 'メールアドレス',
   residence_no varchar(15) DEFAULT NULL COMMENT '在留カード番号',
   tel varchar(15) DEFAULT NULL COMMENT '電話番号',
   entry_date date NOT NULL COMMENT '入社日付',
   quit_date date DEFAULT NULL COMMENT '離任日付',
-  at_japan_date date NOT NULL COMMENT '来日年間',
-  start_work_date date DEFAULT NULL COMMENT '仕事経験',
+  start_work_date varchar(20) DEFAULT NULL COMMENT '仕事経験',
   japanese_level int DEFAULT NULL COMMENT '日本語能力',
-  emp_type int,
-  salary int,
+  emp_type int COMMENT '社員種別',
+  salary int COMMENT '給料',
   price int COMMENT '単価',
   Transport_cost int COMMENT '交通費',
   status int,
-  station int COMMENT '駅',
+  station varchar(20) COMMENT '駅',
   position int COMMENT '職位',
   sales_id varchar(10) COMMENT '営業担当ID',
   project_end_plan_date date COMMENT 'プロジェクト予定終了日',
-  kbn int,
-  delete_falg int,
+  delete_flag int NOT NULL default 0,
   PRIMARY KEY (emp_id),
   KEY department_id (department_id),
   KEY project_id (project_id),
-  CONSTRAINT employee_ibfk_1 FOREIGN KEY (department_id) REFERENCES department (id)  ON DELETE CASCADE,
-  CONSTRAINT employee_ibfk_2 FOREIGN KEY (project_id) REFERENCES project (id)  ON DELETE CASCADE
-) 
+  CONSTRAINT employee_idfk_1 FOREIGN KEY (department_id) REFERENCES department (id) ,
+  CONSTRAINT employee_idfk_2 FOREIGN KEY (project_id) REFERENCES project (id));
+
+CREATE TABLE code (
+  id int NOT NULL AUTO_INCREMENT COMMENT '主キー',
+  code_id int,
+  name varchar(50) NOT NULL,
+  start_date date NOT NULL,
+  end_date date DEFAULT NULL,
+  insert_date timestamp DEFAULT CURRENT_TIMESTAMP,
+  update_date timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+);
+
+--和歌山県
+--北海道
+--兵庫県
+--福島県
+--福岡県
+--福井県
+--富山県
+--奈良県
+--栃木県
+--徳島県
+--東京都
+--島根県
+--鳥取県
+--長野県
+--長崎県
+--大分県
+--大阪府
+--千葉県
+--石川県
+--静岡県
+--青森県
+--神奈川県
+--新潟県
+--秋田県
+--鹿児島県
+--滋賀県
+--山梨県
+--山口県
+--山形県
+--三重県
+--埼玉県
+--佐賀県
+--高知県
+--香川県
+--広島県
+--群馬県
+--熊本県
+--京都府
+--宮城県
+--宮崎県
+--岐阜県
+--岩手県
+--沖縄県
+--岡山県
+--茨城県
+--愛媛県
+--愛知県
