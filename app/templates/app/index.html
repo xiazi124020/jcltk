@@ -98,80 +98,7 @@
 {{ block.super }}
 <script>
 
-  const emp_datas = [
-    {
-      emp_id: "jcl0001",
-      first_name: "テスト",
-      last_name: "1",
-      first_name_kana: "テスト",
-      last_name_kana: "1",
-      birthday: "19810101",
-      salary: 300000,
-      price: 400000,
-      transport_cost: 12000,
-      sex: 0,
-      email: "test@test.jcl.com",
-      tel: "08039611111",
-      project_name: "テストプロジェクト１",
-      project_end_plan_date: "20211231",
-      entry_date: "20200101",
-      kbn: 1
-    },
-    {
-      emp_id: "jcl0002",
-      first_name: "テスト",
-      last_name: "2",
-      first_name_kana: "テスト",
-      last_name_kana: "2",
-      birthday: "19810102",
-      salary: 310000,
-      price: 410000,
-      transport_cost: 11000,
-      sex: 0,
-      email: "test@test2.jcl.com",
-      tel: "08039611112",
-      project_name: "テストプロジェクト２",
-      project_end_plan_date: "20211201",
-      entry_date: "20200101",
-      kbn: 2
-    },
-    {
-      emp_id: "jcl0003",
-      first_name: "テスト",
-      last_name: "3",
-      first_name_kana: "テスト",
-      last_name_kana: "3",
-      birthday: "19810103",
-      salary: 320000,
-      price: 420000,
-      transport_cost: 13000,
-      sex: 1,
-      email: "test@test3.jcl.com",
-      tel: "08039611113",
-      project_name: "テストプロジェクト２",
-      project_end_plan_date: "20211203",
-      entry_date: "20200101",
-      kbn: 3
-    },
-    {
-      emp_id: "jcl0003",
-      first_name: "テスト",
-      last_name: "3",
-      first_name_kana: "テスト",
-      last_name_kana: "3",
-      birthday: "19810103",
-      salary: 320000,
-      price: 420000,
-      transport_cost: 13000,
-      sex: 1,
-      email: "test@test3.jcl.com",
-      tel: "08039611113",
-      project_name: "テストプロジェクト２",
-      project_end_plan_date: "20211203",
-      entry_date: "20200101",
-      kbn: 4
-    }
-  ]
+  // const emp_datas = '{{ employee_datas }}'
 
   function page_ready() {
     sales_chart();
@@ -234,175 +161,118 @@
     if ( $.fn.DataTable.isDataTable('#employee_list') ) {
         $('#employee_list').DataTable().destroy();
       }
-    $('#employee_list').empty();
-    $('#employee_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
-    $('#no_data_message').hide();
-    $('#employee_list').empty();
-    var disp_columns = [
-        {
-          "title":"社員番号",
-          "data": "emp_id",
-          "className": "text-left",
-          // "width": "20px",
-          "render": function(data, type, row, meta){
-            if(data) {
-              data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+      $('#employee_list').empty();
+
+      $('#employee_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/employee/list").post(employees => {
+        $('#no_data_message').hide();
+        $('#employee_list').empty();
+        var disp_columns = [
+            {
+              "title":"社員番号",
+              "data": "emp_id",
+              "render": function(data, type, row, meta){
+                    if(data) {
+                      data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+                    }
+                    return data;
+              }
+            },
+            {
+              "title":"氏名",
+              "data": "name",
+              "render": function(data, type, row, meta){
+                    return row.first_name + " " + row.last_name;
+              }
+            },
+            {
+              "title":"生年月日",
+              "data": "birthday",
+            },
+            {
+              "title":"性別",
+              "data": "sex",
+              "render": function(data, type, row, meta){
+                if(data == "1") {
+                  return "男"
+                } else {
+                  return "女"
+                }
+              }
+            },
+            {
+              "title":"メールアドレス",
+              "data": "email",
+            },
+            {
+              "title":"電話番号",
+              "data": "tel"
+            },
+            {
+              "title":"日本語能力",
+              "data": "japanese_level"
+            },
+            {
+              "title":"単価(万円)",
+              "data": "price"
+            },
+            {
+              "title":"給料(万円)",
+              "data": "salary"
+            },
+            {
+              "title":"交通費",
+              "data": "transport_cost"
+            },
+            {
+              "title":"プロジェクト予定終了日",
+              "data": "project_end_plan_date"
             }
-            return data;
-          }
-        },
-        {
-          "title":"氏名",
-          "data": "name",
-          "className": "text-left",
-          "render": function(data, type, row, meta){
-            return row.first_name + " " + row.last_name;
-          }
-        },
-        {
-          "title":"氏名(カナ)",
-          "data": "name",
-          "className": "text-left",
-          "render": function(data, type, row, meta){
-            return row.first_name_kana + " " + row.last_name_kana;
-          }
-        },
-        {
-          "title":"給料",
-          "data": "salary",
-          "className": "text-right",
-          "render": function(data, type, row, meta) {
-            return data.toLocaleString(
-              undefined, 
-              { minimumFractionDigits: 2 }
-            )
-          }
-        },
-        {
-          "title":"単価",
-          "data": "price",
-          "className": "text-right",
-          "render": function(data, type, row, meta) {
-            return data.toLocaleString(
-              undefined, 
-              { minimumFractionDigits: 2 }
-            )
-          }
-        },
-        {
-          "title":"交通費",
-          "data": "transport_cost",
-          "className": "text-right",
-          "render": function(data, type, row, meta) {
-            return data.toLocaleString(
-              undefined, 
-              { minimumFractionDigits: 2 }
-            )
-          }
-        },
-        {
-          "title":"生年月日",
-          "data": "birthday",
-          "className": "text-left",
-          "render": function(data, type, row, meta) {
-            return data.format_as_yyyymmdd_with_slash()
-          }
-        },
-        {
-          "title":"性別",
-          "data": "sex",
-          "className": "text-left",
-          "render": function(data, type, row, meta){
-            if(data == "1") {
-              return "男"
-            } else {
-              return "女"
-            }
-          }
-        },
-        {
-          "title":"メールアドレス",
-          "data": "email",
-          "className": "text-left",
-        },
-        {
-          "title":"電話番号",
-          "data": "tel",
-          "className": "text-left",
-        },
-        {
-          "title":"プロジェクト",
-          "data": "project_name",
-          "className": "text-left",
-        },
-        {
-          "title":"プロジェクト予定終了日",
-          "data": "project_end_plan_date",
-          "className": "text-left",
-          "render": function(data, type, row, meta) {
-            return data.format_as_yyyymmdd_with_slash()
-          }
-        },
-        {
-          "title":"入社年月日",
-          "data": "entry_date",
-          "className": "text-left",
-          "render": function(data, type, row, meta) {
-            return data.format_as_yyyymmdd_with_slash()
-          }
-        },
-        {
-          "title":"社員種別",
-          "data": "kbn",
-          "className": "text-left",
-          "render": function(data, type, row, meta){
-            if(data === 1) {
-              return "正社員"
-            } else if(data === 2) {
-              return "契約社員"
-            } else if(data === 3) {
-              return "個人事業主"
-            } else {
-              return "不明"
-            }
-          }
-        }
-    ];
-    _tbl_employee_list_ = $('#employee_list').DataTable({
-      data: emp_datas,
-      columns: disp_columns,
-      // fixedColumns:{
-      //   leftColumns: 5
-      // },
-      dom:'Bfrtip',
-      autoWidth:true,
-      paging:true,
-      lengthChange:true,
-      processing:true,
-      pageLength : 10,
-      buttons: [
-        {
-          extend: 'pdfHtml5',
-          text: 'pdf',
-          pageSize: 'A3',
-          customize: function ( doc ) {
-            doc.defaultStyle.font= 'GenShin';
-            // doc.content[0].text = '社員一覧'
-            // doc.styles.title = {
-            //   color: 'red',
-            //   fontSize: '40',
-            //   background: 'white',
-            //   alignment: 'center'
-            // }
-            // doc.content[1].table.body[0][0].rowSpan = 2
-          }
-        },
-        'excel'
-      ],
-      autoWidth:false
-    });
+        ];
+        _tbl_employee_list_ = $('#employee_list').DataTable({
+          data: employees,
+          columns: disp_columns,
+          dom:'Bfrtip',
+          autoWidth:false,
+          // scrollX: true,
+          // scrollY: '680px',
+          paging:true,
+          // pageLength:200,
+          lengthChange:true,
+          processing:true,
+          pageLength : 50,
+          buttons: [
+            {
+              extend: 'pdfHtml5',
+              text: 'pdf',
+              pageSize: 'A4',
+              customize: function ( doc ) {
+                doc.defaultStyle.font= 'GenShin';
+              }
+            },"excel",
+            {
+                text: '書類作成',
+                action: function ( e, dt, node, config ) {
+                  create_file();
+                }
+            }, 
+          ],
+          autoWidth:false
+        });
+        $('#employee_list tbody').on( 'click', 'tr', function () {
+            $(this).toggleClass('selected');
+        } );
+      }, err => {
+        $('#employee_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+      });
   }
   
+  const create_file = () => {
+    get_api("api/file/create").post(projects => {
+      
+    })
+  }
+
   const project_datas = [
     {
       name: "プロジェクト１",
@@ -442,206 +312,225 @@
     if ( $.fn.DataTable.isDataTable('#project_list') ) {
         $('#project_list').DataTable().destroy();
       }
-    $('#project_list').empty();
-    $('#project_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
-    $('#no_data_message').hide();
-    $('#project_list').empty();
-    
-    var disp_columns = [
-        {
-          "title":"プロジェクト名称",
-          "className": "text-left",
-          "data": "name"
-        },
-        {
-          "title":"開始日",
-          "data": "start_date",
-          "className": "text-left",
-          "render": function(data, type, row, meta) {
-            return data.format_as_yyyymmdd_with_slash()
-          }
-        },
-        {
-          "title":"駅",
-          "className": "text-left",
-          "data": "station",
-        },
-        {
-          "title":"ステータス",
-          "className": "text-left",
-          "data": "status",
-          "render": function(data, type, row, meta){
-            if(data == "1") {
-              return "進行中"
-            } else {
-              return "未開始"
-            }
-          }
-        },
-        {
-          "title":"お客様名",
-          "className": "text-left",
-          "data": "customer_name",
-        },
-        {
-          "title":"精算有無",
-          "data": "seisan",
-          "render": function(data, type, row, meta){
-            if(data == "1") {
-              return "精算有"
-            } else {
-              return "精算無"
-            }
-          }
-        },
-        {
-          "title":"下限",
-          "className": "text-left",
-          "data": "min_time"
-        },
-        {
-          "title":"上限",
-          "className": "text-left",
-          "data": "max_time"
-        }
-    ];
-    _tbl_project_list_ = $('#project_list').DataTable({
-      data: project_datas,
-      columns: disp_columns,
-      // fixedColumns:{
-      //   leftColumns: 5
-      // },
-      dom:'Bfrtip',
-      autoWidth:false,
-      paging:true,
-      lengthChange:true,
-      processing:true,
-      pageLength : 10,
-      buttons: [
-        {
-          extend: 'pdfHtml5',
-          text: 'pdf',
-          customize: function ( doc ) {
-            doc.defaultStyle.font= 'GenShin';
-          }
-        },
-        'excel'
-      ],
-      autoWidth:false
-    });
+      $('#project_list').empty();
+
+      $('#project_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/project/list").post(projects => {
+        
+          $('#no_data_message').hide();
+          $('#project_list').empty();
+          var disp_columns = [
+              {
+                "title":"プロジェクトID",
+                "data": "id",
+                "width": "20px",
+                "visible": false,
+                "searchable": false
+                // "render": function(data, type, row, meta){
+                //       if(data) {
+                //         data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+                //       }
+                //       return data;
+                // }
+              },
+              {
+                "title":"プロジェクト名称",
+                "data": "name",
+                "width": "20px",
+              },
+              {
+                "title":"ステータス",
+                "data": "status",
+                "width": "20px",
+                "render": function(data, type, row, meta){
+                  if(data == "0") {
+                    return "未開始"
+                  } else if(data == "1") {
+                    return "進行中"
+                  } else if(data == "2") {
+                    return "完了"
+                  } else {
+                    return "中止"
+                  }
+                }
+              },
+              {
+                "title":"開始日",
+                "data": "start_date",
+                "width": "20px"
+              },
+              {
+                "title":"終了日",
+                "data": "end_date",
+                "width": "20px",
+                "render": function(data, type, row, meta){
+                  if(is_empty(data)) {
+                    return "-"
+                  }
+                  return data;
+                }
+              },
+              {
+                "title":"精算有無",
+                "data": "seisan",
+                "render": function(data, type, row, meta){
+                  if(data == "1") {
+                    return "無"
+                  } else {
+                    return "有"
+                  }
+                }
+              },
+              {
+                "title":"精算下限",
+                "data": "min_time",
+              },
+              {
+                "title":"精算上限",
+                "data": "max_time",
+              },
+              {
+                "title":"所属お客様",
+                "data": "customer_name",
+              },
+              {
+                "title":"駅",
+                "data": "station",
+              }
+          ];
+          _tbl_project_list_ = $('#project_list').DataTable({
+            data: projects,
+            columns: disp_columns,
+            dom:'Bfrtip',
+            autoWidth:false,
+            paging:true,
+            lengthChange:true,
+            processing:true,
+            pageLength : 50,
+            buttons: [
+              {
+                extend: 'pdfHtml5',
+                text: 'pdf',
+                customize: function ( doc ) {
+                  doc.defaultStyle.font= 'GenShin';
+                }
+              },
+              'excel'
+            ],
+            autoWidth:false
+          });
+          $('#project_list tbody').on( 'click', 'tr', function () {
+              $(this).toggleClass('selected');
+          } );
+      }, err => {
+        $('#project_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+      });
   }
   
-  const customer_datas = [
-    {
-      name: "株式会社ジェーシー1",
-      zip: "1140001",
-      address: "東京都江戸川区西葛西",
-      tel: "03-1234-1234",
-      email: "test@test1.com",
-      partener: "1",
-      representative: "山田　太郎1",
-      station: "神田",
-    },
-    {
-      name: "株式会社ジェーシー2",
-      zip: "1140002",
-      address: "東京都江戸川区西葛西",
-      tel: "03-1234-1234",
-      email: "test@test2.com",
-      partener: "0",
-      representative: "山田　太郎2",
-      station: "品川",
-    },
-    {
-      name: "株式会社ジェーシー2",
-      zip: "1140003",
-      address: "東京都江戸川区西葛西3",
-      tel: "03-1234-1234",
-      email: "test@test3.com",
-      partener: "1",
-      representative: "山田　太郎3",
-      station: "東京都",
-    },
-  ]
   let _tbl_customer_list_ = null;
   const customer_list = () => {
     
     if ( $.fn.DataTable.isDataTable('#customer_list') ) {
         $('#customer_list').DataTable().destroy();
       }
-    $('#customer_list').empty();
-    $('#customer_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
-    $('#no_data_message').hide();
-    $('#customer_list').empty();
+      $('#customer_list').empty();
 
-    var disp_columns = [
-        {
-          "title":"お客様名",
-          "data": "name",
-          "className": "text-left",
-        },
-        {
-          "title":"郵便番号",
-          "data": "zip",
-          "className": "text-left",
-        },
-        {
-          "title":"住所",
-          "data": "address",
-          "className": "text-left",
-        },
-        {
-          "title":"電話番号",
-          "data": "tel",
-          "className": "text-left",
-        },
-        {
-          "title":"お客様区分",
-          "data": "partener",
-          "className": "text-left",
-          "render": function(data, type, row, meta){
-            if(data == "1") {
-              return "上会社"
-            } else {
-              return "ＢＰ"
-            }
-          }
-        },
-        {
-          "title":"代表者",
-          "className": "text-left",
-          "data": "representative",
-        },
-        {
-          "title":"駅",
-          "className": "text-left",
-          "data": "station"
-        }
-    ];
-    _tbl_customer_list_ = $('#customer_list').DataTable({
-      data: customer_datas,
-      columns: disp_columns,
-      // fixedColumns:{
-      //   leftColumns: 5
-      // },
-      dom:'Bfrtip',
-      autoWidth:false,
-      paging:true,
-      lengthChange:true,
-      processing:true,
-      pageLength : 10,
-      buttons: [
-        {
-          extend: 'pdfHtml5',
-          text: 'pdf',
-          customize: function ( doc ) {
-            doc.defaultStyle.font= 'GenShin';
-          }
-        },
-        'excel'
-      ],
-      autoWidth:false
-    });
+      $('#customer_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/customer/list").post(customers => {
+          $('#no_data_message').hide();
+          $('#customer_list').empty();
+          var disp_columns = [
+              {
+                "title":"id",
+                "data": "id",
+                "visible": false,
+                "searchable": false
+              },
+              {
+                "title":"お客様名",
+                "data": "name",
+                "width": "20px",
+                // "render": function(data, type, row, meta){
+                //       if(data) {
+                //         data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+                //       }
+                //       return data;
+                // }
+              },
+              {
+                "title":"お客様名区分",
+                "data": "partener",
+                "width": "20px",
+                "render": function(data, type, row, meta){
+                  if(data == "1") {
+                    return "bp";
+                  } else if(data == "0")  {
+                    return "お客様";
+                  } else {
+                    return "Both"
+                  }
+                }
+              },
+              {
+                "title":"電話番号",
+                "data": "tel_no",
+                "width": "20px"
+              },
+              {
+                "title":"Email",
+                "data": "email",
+                "width": "30px",
+              },
+              {
+                "title":"代表取締役",
+                "data": "representative",
+                "width": "50px"
+              },
+              {
+                "title":"郵便番号",
+                "data": "zip"
+              },
+              {
+                "title":"住所",
+                "data": "address"
+              },
+              {
+                "title":"駅",
+                "data": "station"
+              }
+          ];
+          _tbl_customer_list_ = $('#customer_list').DataTable({
+            data: customers,
+            columns: disp_columns,
+            // fixedColumns:{
+            //   leftColumns: 5
+            // },
+            dom:'Bfrtip',
+            autoWidth:true,
+            scrollX: true,
+            paging:true,
+            lengthChange:true,
+            processing:true,
+            pageLength : 50,
+            buttons: [
+              {
+                extend: 'pdfHtml5',
+                text: 'pdf',
+                customize: function ( doc ) {
+                  doc.defaultStyle.font= 'GenShin';
+                }
+              },
+              'excel'
+            ],
+            autoWidth:false
+          });
+          
+        $('#customer_list tbody').on( 'click', 'tr', function () {
+            $(this).toggleClass('selected');
+        } );
+      }, err => {
+        $('#customer_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+      });
   }
 </script>
 {% endblock %}

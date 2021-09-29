@@ -385,6 +385,10 @@
               "data": "transport_cost"
             },
             {
+              "title":"プロジェクト名",
+              "data": "name"
+            },
+            {
               "title":"プロジェクト予定終了日",
               "data": "project_end_plan_date"
             }
@@ -583,6 +587,8 @@
       }).then(response => {
         if(response.data.length > 0) {
           let employee_info = response.data[0]
+          // 社員ID
+          $("#emp_id").val(employee_info.emp_id);
           // 部門ID
           $("#department_id").val(employee_info.department_id);
           // 性別

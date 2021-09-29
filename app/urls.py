@@ -24,6 +24,9 @@ urlpatterns = [
     path("customer/index", customer.index, name="customer.index"),
     path("project/index", project.index, name="project.index"),
 
+    # ファイル作成
+    path('api/file/create', login_required((index.file_create))),
+
     #社員
     path('api/employee/insert', login_required((employee.insert))),
     path('api/employee/delete', login_required((employee.delete))),

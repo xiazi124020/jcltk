@@ -41,7 +41,41 @@ def index(request):
 def get_list(request):
 
     sql = f"""
-        select emp_id,department_id,project_id,first_name,last_name,first_name_kana,last_name_kana,sex,birthday,zip,address1,address2,email,residence_no,tel,entry_date,quit_date,start_work_date,japanese_level,emp_type,salary,price,transport_cost,status,station,position,sales_id,project_end_plan_date,delete_flag from employee
+        select
+        a.emp_id
+        , a.department_id
+        , a.project_id
+        , a.first_name
+        , a.last_name
+        , a.first_name_kana
+        , a.last_name_kana
+        , a.sex
+        , a.birthday
+        , a.zip
+        , a.address1
+        , a.address2
+        , a.email
+        , a.residence_no
+        , a.tel
+        , a.entry_date
+        , a.quit_date
+        , a.start_work_date
+        , a.japanese_level
+        , a.emp_type
+        , a.salary
+        , a.price
+        , a.transport_cost
+        , a.status
+        , a.station
+        , a.position
+        , a.sales_id
+        , a.project_end_plan_date
+        , a.delete_flag
+        , b.name 
+        from
+        employee a
+        inner join project b
+        on a.project_id = b.id
     """
     datas = []
     with connection.cursor() as cursor:
@@ -60,10 +94,10 @@ def get_employee(request):
     emp_id = parameters['emp_id']
     datas = []
     sql = f"""
-        select emp_id from employee where emp_id = %s
+        select emp_id,department_id,project_id,first_name,last_name,first_name_kana,last_name_kana,sex,birthday,zip,address1,address2,email,residence_no,tel,entry_date,quit_date,start_work_date,japanese_level,emp_type,salary,price,transport_cost,status,station,position,sales_id,project_end_plan_date,delete_flag from employee where emp_id = %s
     """
     with connection.cursor() as cursor:
-        cursor.execute(sql, (id,))
+        cursor.execute(sql, (emp_id,))
         datas = dictfetchall(cursor)
 
     return HttpResponse(to_json(datas), content_type='application/json')
