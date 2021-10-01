@@ -35,7 +35,16 @@ def index(request):
     with connection.cursor() as cursor:
         cursor.execute(sql)
         depart_datas = dictfetchall(cursor)
-    return render(request, "app/employee/index.html", {'project_datas': project_datas,'depart_datas': depart_datas})
+        
+    sql = f"""
+        select emp_id,last_name,first_name from employee
+    """
+    seisan_datas_emp = []
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        seisan_datas_emp = dictfetchall(cursor)
+
+    return render(request, "app/employee/index.html", {'project_datas': project_datas,'depart_datas': depart_datas,'seisan_datas_emp': seisan_datas_emp})
 
 @login_required
 def get_list(request):
@@ -299,6 +308,119 @@ def insert(request):
             """
             with connection.cursor() as cursor:
                 cursor.execute(exec_sql, (department_id,project_id,first_name,last_name,first_name_kana,last_name_kana,sex,birthday,zip,address1,address2,email,residence_no,tel,entry_date,quit_date,start_work_date,japanese_level,emp_type,salary,price,transport_cost,status,station,position,sales_id,project_end_plan_date,emp_id))
+
+    sql = f"""
+        select emp_id,department_id,project_id,first_name,last_name,first_name_kana,last_name_kana,sex,birthday,zip,address1,address2,email,residence_no,tel,entry_date,quit_date,start_work_date,japanese_level,emp_type,salary,price,transport_cost,status,station,position,sales_id,project_end_plan_date,delete_flag from employee
+    """
+    datas = []
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        datas = dictfetchall(cursor)
+
+    return HttpResponse(to_json(datas), content_type='application/json')
+
+
+@login_required
+def seisan_insert(request):
+
+    post_data = json.loads(request.body.decode('utf-8'))
+    parameters = post_data['data']
+    # 社員番号
+    emp_id = parameters['emp_id']
+    # 精算時間
+    seisan_time = parameters['seisan_time']
+    #  精算年月
+    seisan_ym = parameters['seisan_ym']
+    
+    sql = f"""
+        select id, seisan_time, emp_id, ym from seisan where emp_id = %s and ym = %s
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(sql, (emp_id, seisan_ym))
+        datas = dictfetchall(cursor)
+        if len(datas) == 0:
+            exec_sql = f"""
+                INSERT INTO seisan( 
+                    seisan_time,
+                    emp_id,
+                    ym
+                    ) 
+                    VALUES ( 
+                    %s
+                    , %s
+                    , %s
+                    )
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(exec_sql, (seisan_time,emp_id,seisan_ym))
+        else:
+            exec_sql = f"""
+                update seisan set
+                    seisan_time = %s
+                where
+                    ym = %s and
+                    emp_id = %s
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(exec_sql, (seisan_time,seisan_ym,emp_id))
+
+    sql = f"""
+        select emp_id,department_id,project_id,first_name,last_name,first_name_kana,last_name_kana,sex,birthday,zip,address1,address2,email,residence_no,tel,entry_date,quit_date,start_work_date,japanese_level,emp_type,salary,price,transport_cost,status,station,position,sales_id,project_end_plan_date,delete_flag from employee
+    """
+    datas = []
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        datas = dictfetchall(cursor)
+
+    return HttpResponse(to_json(datas), content_type='application/json')
+
+
+@login_required
+def seisan_info(request):
+
+    post_data = json.loads(request.body.decode('utf-8'))
+    parameters = post_data['data']
+    # 社員番号
+    emp_id = parameters['emp_id']
+    # 精算時間
+    seisan_time = parameters['seisan_time']
+    #  精算年月
+    seisan_ymd = parameters['seisan_ymd']
+    #  id
+    id = parameters['id']
+    
+    sql = f"""
+        select id, seisan_time, emp_id, ymd from employee where id = %s
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(sql, (emp_id,))
+        datas = dictfetchall(cursor)
+        if len(datas) == 0:
+            # return HttpResponse(to_json({"exists_flag": 1}), content_type='application/json')
+            exec_sql = f"""
+                INSERT INTO seisan( 
+                    seisan_time,
+                    emp_id,
+                    ymd
+                    ) 
+                    VALUES ( 
+                    %s
+                    , %s
+                    , %s
+                    )
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(exec_sql, (seisan_time,emp_id,seisan_ymd))
+        else:
+            exec_sql = f"""
+                update seisan set
+                    seisan_time = %s
+                where
+                and ymd = %s,
+                    emp_id = %s
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(exec_sql, (seisan_time,seisan_ymd,emp_id))
 
     sql = f"""
         select emp_id,department_id,project_id,first_name,last_name,first_name_kana,last_name_kana,sex,birthday,zip,address1,address2,email,residence_no,tel,entry_date,quit_date,start_work_date,japanese_level,emp_type,salary,price,transport_cost,status,station,position,sales_id,project_end_plan_date,delete_flag from employee

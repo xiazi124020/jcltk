@@ -61,14 +61,14 @@
       <div class="modal-body">          
         <div class="row">
           <div class="col-md-3">
-            <div class="form-group">
-              <label>社員番号</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">社員番号</label>
               <input type="text" id="emp_id" class="form-control" placeholder="社員番号" maxlength="10">
             </div>
           </div>
           <div class="col-md-3">
-            <div class="form-group">
-              <label>職位</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">職位</label>
               <select class="form-control" id="position">
                 <option value="1">一般社員</option>
                 <option value="2">営業担当</option>
@@ -79,8 +79,8 @@
             </div>
           </div>
           <div class="col-md-3">
-            <div class="form-group">
-              <label>部門</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">部門</label>
               <select class="form-control" id="department_id">
                   {% for data in depart_datas %}
                     <option value="{{data.id}}">
@@ -91,8 +91,8 @@
             </div>
           </div>
           <div class="col-md-3">
-            <div class="form-group">
-              <label>社員種別</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">社員種別</label>
               <select class="form-control" id="emp_type">
                 <option value="1">正社員</option>
                 <option value="2">契約社員</option>
@@ -104,34 +104,34 @@
         </div>
         <div class="row">
           <div class="col-md-3">
-            <div class="form-group">
-              <label>姓</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">姓</label>
               <input type="text" id="first_name" class="form-control" placeholder="姓" maxlength="15">
             </div>
           </div>
           <div class="col-md-3">
-            <div class="form-group">
-              <label>名</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">名</label>
               <input type="text" id="last_name" class="form-control" placeholder="名" maxlength="15">
             </div>
           </div>
           <div class="col-md-3">
-            <div class="form-group">
-              <label>姓(カナ)</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">姓(カナ)</label>
               <input type="text" id="first_name_kana" class="form-control" placeholder="姓(カナ" maxlength="15">
             </div>
           </div>
           <div class="col-md-3">
-            <div class="form-group">
-              <label>名(カナ</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">名(カナ</label>
               <input type="text" id="last_name_kana" class="form-control" placeholder="名(カナ" maxlength="15">
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-md-3">
-            <div class="form-group">
-              <label>性別</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">性別</label>
               <div class="radio">
                 <label>
                   <input type="radio" name="sex" id="optionsRadios1" value="1" checked="">
@@ -232,8 +232,8 @@
         </div>
         <div class="row">
           <div class="col-md-3">
-            <div class="form-group">
-              <label>入社日付</label>
+            <div class="form-group required">
+              <label class="control-label text-primary">入社日付</label>
               <input type="date" id="entry_date" class="form-control" placeholder="入社日付">
             </div>
           </div>
@@ -301,6 +301,58 @@
         <a href="#" data-dismiss="modal" class="btn">Close</a>
         <a href="#" class="btn btn-primary" onclick="add_employee();" id="action">登録</a>
       </div>
+  </div>
+</div>
+</div>
+
+
+
+<div class="modal fade" id="seisan_register">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title" id="seisan_title">登録</h4>
+      </div>
+      <div class="modal-body">          
+        <div class="row">
+          <div class="col-md-12">
+          <div class="form-group">
+            <label>社員番号</label>
+            <select class="form-control" id="seisan_emp_id">
+                {% for data in seisan_datas_emp %}
+                  <option value="{{data.emp_id}}">
+                      {{data.first_name}} &nbsp;{{data.first_name}}
+                  </option>
+                {% endfor %}
+            </select>
+          </div>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>精算年月</label>
+              <input type="date" id="seisan_ym" class="form-control" placeholder="精算年月">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <div class="form-group">
+                <label>精算時間</label>
+                <input type="number" id="seisan_time" class="form-control" placeholder="精算時間">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">	
+        <a href="#" data-dismiss="modal" class="btn">Close</a>
+        <a href="#" class="btn btn-primary" onclick="add_seisan();" id="action">登録</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -433,6 +485,14 @@
                 text: 'delete',
                 action: function ( e, dt, node, config ) {
                   do_delete();
+                }
+            }, 
+            {
+                text: '精算登録',
+                action: function ( e, dt, node, config ) {
+                  $('#seisan_register').modal({
+                      show: true
+                  })
                 }
             }, 
           ],
@@ -656,6 +716,7 @@
     })
   }
 
+
   function do_delete() {
     
     var selected = _tbl_employee_list_.rows('.selected').data()
@@ -679,8 +740,39 @@
       alert(err)
     })
   }
- 
-  
+
+  function add_seisan() {
+    
+    // 社員番号
+    var emp_id = $("#seisan_emp_id").val();
+    // 精算年月
+    var seisan_ym = $("#seisan_ym").val();
+    var date = new Date(seisan_ym);
+    seisan_ym = date.format_as_yyyymm()
+    // 精算時間
+    var seisan_time = $("#seisan_time").val();
+    if(is_empty(emp_id) || is_empty(seisan_ym) || is_empty(seisan_ym)) {
+      $("#error_message").text("未入力項目があります。")
+      $("#modal-alert").modal('show')
+      return
+    }
+    var post_datas = {
+      "emp_id":emp_id,
+      "seisan_ym":seisan_ym,
+      "seisan_time":seisan_time,
+    }
+    
+    get_axios().post("api/employee/seisan/insert", {
+        headers: {"X-CSRFToken": csrfToken},
+        data: post_datas
+      }).then(response => {
+        $('#seisan_register').modal('hide')
+        // do_search();
+    }).catch(err => {
+      hideLoading();
+        $("#error_message").text(err)
+    })
+  }
 
 </script>
 {% endblock %}

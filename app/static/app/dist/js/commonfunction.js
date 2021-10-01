@@ -282,6 +282,14 @@ Date.prototype.format_as_yyyymmdd = function(){
   d  = d + ''
   return y  +  m + d;
 }
+Date.prototype.format_as_yyyymm = function(){
+  var a = this;
+  var y = a.getFullYear() + '';
+  var m = a.getMonth() + 1;
+  m = m < 10 ? ('0' + m) : m;
+  m = m + ''
+  return y  +  m;
+}
 Date.prototype.get_past_date = function(days){
   var a = this;
   var d = new Date(a.getFullYear(), a.getMonth(), a.getDate(), 0, 0, 0);

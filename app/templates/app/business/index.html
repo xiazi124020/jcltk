@@ -1,0 +1,255 @@
+{% extends "tem_sidebar.html" %}
+
+{% block title %}書類作成{% endblock %}
+
+{% block page-title %}書類作成{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<style>
+.modal-content {
+  background-color: #F5FFFA;
+}
+.modal-dialog {
+  width: 1000px
+}
+</style>
+{% endblock css %}
+
+{% block side-bar %}
+      <!-- search form -->
+      <form action="#" method="get" id="search_form" name="search_form" class="sidebar-form" style="border:0px solid black">
+        {% csrf_token %}
+          <div class="form-group">
+            <button class="btn bg-olive btn-sm" type="button" onclick="do_search()">検索 <i class="fa fa-search"></i></button>&nbsp;&nbsp;
+            <button class="btn bg-olive btn-sm" type="button" onclick="do_clear()">クリア <i class="fa fa-trash"></i></button>
+            <button class="btn bg-olive btn-sm pull-right" type="button" onclick="do_export()">出力 <i class="fa fa-search"></i></button>
+          </div>
+
+          <div class="form-group required">
+              <label for="page_length" class="text-primary">表示件数</label>
+              <select id="page_length" name="page_length" class="form-control rpa-input" style="height:40px">
+                <option value="10" selected="selected">TOP 10件</option>
+                <option value="20">TOP 20件</option>
+                <option value="30">TOP 30件</option>
+                <option value="50">TOP 50件</option>
+                <option value="100">TOP 100件</option>
+                <option value="300">TOP 300件</option>
+                <option value="500">TOP 500件</option>
+              </select>
+          </div>
+
+            <!-- /.input group -->
+          <div class="form-group required" id="disp_business">
+            <label for="page_length"  class="control-label text-primary">書類選択</label>
+              <select id="business_kbn" name="business_kbn" class="form-control rpa-input" multiple="10" style="height:90px">
+                <option value="1">請求書</option>
+                <option value="2">注文書</option>
+                <option value="3">給料明細</option>
+                  <!-- {% for data in datas %}
+                    <option value="{{data.ym}}">
+                        {{data.ym}}
+                    </option>
+                  {% endfor %} -->
+              </select>
+         </div>
+         
+        <div class="form-group required">
+          <label class="control-label text-primary">作成期間</label>
+          <div class="input-group" id="dispDateRange">
+            <input type="text" class="form-control rpa-input" id="daterange-btn" style="width:320px"/>
+          </div>
+        </div>
+
+  </form>
+{% endblock %}
+{% block content-header %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-info">
+      <div class="box-body table-responsive">
+        <table id="business_list" class="display stripe nowrap">
+          <thead>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <!-- /.box -->
+  </div>
+  <!-- /.col -->
+</div>
+
+<div class="modal fade" id="modal-alert" style="display: none;z-index: 99999">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Alert</h4>
+      </div>
+      <div class="modal-body">
+        <p><div id="error_message"></div></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-center" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+
+  function page_ready() {
+    var date = new Date();
+    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          create_date_range_picker('daterange-btn', [firstDay.format_as_yyyymmdd_with_slash(), lastDay.format_as_yyyymmdd_with_slash()]);
+    do_search()
+  }
+
+  var _tbl_business_list_ = null;
+  
+  function do_search() {
+
+      if ( $.fn.DataTable.isDataTable('#business_list') ) {
+        $('#business_list').DataTable().destroy();
+      }
+      $('#business_list').empty();
+
+      $('#business_list').html('<tr><td class="text-info text-center"><h1>Loading...</h1></td></tr>');
+      get_api("api/business/list").post(employees => {
+        $('#no_data_message').hide();
+        $('#business_list').empty();
+        var disp_columns = [
+            {
+              "title":"社員番号",
+              "data": "emp_id",
+              "render": function(data, type, row, meta){
+                    if(data) {
+                      data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+                    }
+                    return data;
+              }
+            },
+            {
+              "title":"氏名",
+              "data": "name",
+              "render": function(data, type, row, meta){
+                    return row.first_name + " " + row.last_name;
+              }
+            },
+            {
+              "title":"氏名(カナ)",
+              "data": "name",
+              "render": function(data, type, row, meta){
+                    return row.first_name_kana + " " + row.last_name_kana;
+              }
+            },
+            {
+              "title":"単価(万円)",
+              "data": "price"
+            },
+            {
+              "title":"プロジェクト名",
+              "data": "project_name"
+            },
+            {
+              "title":"お客様名",
+              "data": "customer_name"
+            },
+            {
+              "title":"郵便番号(お客様)",
+              "data": "customer_zip"
+            },
+            {
+              "title":"住所(お客様)",
+              "data": "customer_address"
+            },
+            {
+              "title":"電話番号(お客様)",
+              "data": "customer_address"
+            },
+            {
+              "title":"Email(お客様)",
+              "data": "customer_email"
+            },
+            {
+              "title":"区分(お客様)",
+              "data": "customer_email"
+            },
+        ];
+        _tbl_business_list_ = $('#business_list').DataTable({
+          data: employees,
+          columns: disp_columns,
+          dom:'Bfrtip',
+          autoWidth:false,
+          scrollX: true,
+          scrollY: '680px',
+          paging:true,
+          // pageLength:200,
+          lengthChange:true,
+          processing:true,
+          pageLength : 50,
+          buttons: [
+            {
+              extend: 'pdfHtml5',
+              text: 'pdf',
+              pageSize: 'A4',
+              customize: function ( doc ) {
+                doc.defaultStyle.font= 'GenShin';
+              }
+            },
+          ],
+          autoWidth:false
+        });
+        // $('#business_list tbody').on( 'click', 'tr', function () {
+        //     $(this).toggleClass('selected');
+        // } );
+      }, err => {
+        $('#business_list').html('<tr><td class="text-info text-center"><h1>{0}</h1></td></tr>'.format(err));
+      });
+  }
+
+  function do_clear() {
+    document.search_form.reset()
+    var date = new Date();
+    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    $('#daterange-btn').val( firstDay.format_as_yyyymmdd_with_slash() + "-" + lastDay.format_as_yyyymmdd_with_slash())
+  }
+
+  function do_export() {
+    var business_kbn = $('#business_kbn').val();
+    var daterange=$("#daterange-btn").val();
+
+    if (is_empty(business_kbn)
+        || is_empty(daterange)) {
+        alert('検索条件を入力してください。');
+        return;
+    }
+
+    var dateArr=daterange.split("-");
+    var dateFrom=$.trim(dateArr[0]);
+    dateFrom=dateFrom.substr(0, 4) + dateFrom.substr(5, 2) + dateFrom.substr(8, 2)
+    var dateTo=$.trim(dateArr[1]);
+    dateTo=dateTo.substr(0, 4) + dateTo.substr(5, 2) + dateTo.substr(8, 2)
+    payload = {
+      business_kbn:business_kbn,
+      dateFrom: dateFrom,
+      dateTo:dateTo,
+    }
+    
+    document.search_form.method = "post";
+    document.search_form.action = gethostwebname() + "/api/business/export/{0}/{1}/{2}".format("123",dateFrom, dateTo);
+    document.search_form.target =  "_self";
+    document.search_form.submit();
+    
+  }
+</script>
+{% endblock %}

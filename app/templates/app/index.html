@@ -68,7 +68,7 @@
   <div class="col-md-6" style="text-align: left">
     <div class="box">
       <div class="box-header with-border">
-        <h3 class="box-title">稼働プロジェクト一覧</h3>
+        <h3 class="box-title">稼働中プロジェクト一覧</h3>
       </div>
       <div class="box-body">
         <table id="project_list" class="display stripe nowrap">
@@ -250,12 +250,12 @@
                 doc.defaultStyle.font= 'GenShin';
               }
             },"excel",
-            {
-                text: '書類作成',
-                action: function ( e, dt, node, config ) {
-                  create_file();
-                }
-            }, 
+            // {
+            //     text: '書類作成',
+            //     action: function ( e, dt, node, config ) {
+            //       create_file();
+            //     }
+            // }, 
           ],
           autoWidth:false
         });
@@ -267,45 +267,6 @@
       });
   }
   
-  const create_file = () => {
-    get_api("api/file/create").post(projects => {
-      
-    })
-  }
-
-  const project_datas = [
-    {
-      name: "プロジェクト１",
-      start_date: "20210101",
-      station: "王子",
-      status: 1,
-      customer_name: "株式会社ジェーシーエル",
-      seisan: 1,
-      min_time: 140,
-      max_time: 180
-    },
-    {
-      name: "プロジェクト２",
-      start_date: "20210102",
-      station: "王子",
-      status: 1,
-      customer_name: "株式会社ジェーシーエル",
-      seisan: 0,
-      min_time: 0,
-      max_time: 0
-    },
-    {
-      name: "プロジェクト３",
-      start_date: "20210103",
-      station: "王子",
-      status: 0,
-      customer_name: "株式会社ジェーシーエル",
-      seisan: 1,
-      min_time: 150,
-      max_time: 200
-    },
-  ]
-
   let _tbl_project_list_ = null;
   const project_list = () => {
     

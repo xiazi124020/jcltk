@@ -8,10 +8,12 @@ from app.views import index
 from app.views import employee
 from app.views import customer
 from app.views import project
+from app.views import business
 from app.util.utils import any_permission_required
 import apps.settings
 from . import url_converters
 
+url_converters.register()
 
 urlpatterns = [
 
@@ -23,12 +25,15 @@ urlpatterns = [
     path("employee/index", employee.index, name="employee.index"),
     path("customer/index", customer.index, name="customer.index"),
     path("project/index", project.index, name="project.index"),
+    path("business/index", business.index, name="business.index"),
 
     # ファイル作成
-    path('api/file/create', login_required((index.file_create))),
+    path('api/business/list', login_required((business.get_list))),
+    path('api/business/export/<service:service>/<yyyymmdd:start>/<yyyymmdd:end>', login_required((business.export))),
 
     #社員
     path('api/employee/insert', login_required((employee.insert))),
+    path('api/employee/seisan/insert', login_required((employee.seisan_insert))),
     path('api/employee/delete', login_required((employee.delete))),
     path('api/employee/list', login_required((employee.get_list))),
     path('api/employee/info', login_required((employee.get_employee))),

@@ -102,20 +102,6 @@
       data = $('form').serializeArray();
       for (idx = 0; idx < data.length; idx++) {
         p_name = data[idx].name
-        if ( p_name.indexOf('client_id') >= 0 ) {
-            p_value = data[idx].value.split(/[\s\n,]/g).filter(item => item)
-            lpad_client_ids(p_value)
-            if (p_value.length == 0) {
-              p_value = data[idx].value
-            } else if (p_value.length == 1) {
-              p_value = p_value[0]
-            }
-        } else {
-            p_value = data[idx].value
-            if( p_value.match(/^\d{4}\/\d{2}\/\d{2}-\d{4}\/\d{2}\/\d{2}$/) ) {
-              p_value = p_value.replace(/\//g, '').split('-')
-            }
-        }
         result[p_name] = p_value
       }
       return result;
