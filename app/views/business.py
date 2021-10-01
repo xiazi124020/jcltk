@@ -15,14 +15,10 @@ import json
 import os
 import urllib, zipfile, shutil, tempfile
 import openpyxl
-import logging.config
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
-logging.config.dictConfig({
-    'version': 1,
-    'disable_existing_loggers': True,
-})
-
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 @login_required
 def index(request):
@@ -68,6 +64,19 @@ def get_list(request):
 
     return HttpResponse(to_json(datas), content_type='application/json')
 
+def months_between(start_date, end_date):
+    
+    if start_date > end_date:
+        raise ValueError(f"Start date {start_date} is not before end date {end_date}")
+    
+    start = datetime.strptime(start_date, '%Y%m%d').date()
+    end = datetime.strptime(end_date, '%Y%m%d').date()
+
+    ret = []
+    while start < end:
+        ret.append(datetime.strftime(start, '%Y%m'))
+        start += relativedelta(months=1)
+    return ret
 
 @login_required
 def export(request, service="000", start="19000101", end="21991231"):
@@ -96,8 +105,6 @@ def export(request, service="000", start="19000101", end="21991231"):
         on a.project_id = b.id 
     inner join customer c 
         on b.customer_id = c.id 
-    where
-        b.status = 1 
     order by
         c.id
         , c.partener
@@ -107,11 +114,18 @@ def export(request, service="000", start="19000101", end="21991231"):
         cursor.execute(sql)
         file_datas = dictfetchall(cursor)
 
+    for data in file_datas:
+        data['start_date'] = data['start_date'].strftime('%Y%m%d')
+        if data['end_date'] is not None:
+            data['end_date'] = data['end_date'].strftime('%Y%m%d')
+
     seisan_datas = []
     sql = """
         select emp_id, seisan_time, ym from seisan where ym < %s
     """
+    months = months_between(start, end)
 
+    print("=============", months)
     base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # load workbook if you want to write in existing file else use openpyxl.Workbook()
     wb = openpyxl.load_workbook(os.path.join(base_path, "請求書.xlsx"))
