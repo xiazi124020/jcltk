@@ -71,16 +71,12 @@
               <label class="control-label text-primary">顧客区分</label>
               <div class="radio">
                 <label>
-                  <input type="radio" name="partener" id="optionsRadios1" value="0" checked="">
+                  <input type="radio" name="partener" id="optionsRadios1" value="1" checked="">
                   お客様
                 </label>
                 <label>
-                  <input type="radio" name="partener" id="optionsRadios2" value="1">
+                  <input type="radio" name="partener" id="optionsRadios2" value="2">
                   BP
-                </label>
-                <label>
-                  <input type="radio" name="partener" id="optionsRadios3" value="2">
-                  Both
                 </label>
               </div>
             </div>
@@ -198,11 +194,9 @@
                 "width": "20px",
                 "render": function(data, type, row, meta){
                   if(data == "1") {
-                    return "bp";
-                  } else if(data == "0")  {
                     return "お客様";
                   } else {
-                    return "Both"
+                    return "bp";
                   }
                 }
               },

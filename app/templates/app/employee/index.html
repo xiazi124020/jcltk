@@ -13,6 +13,7 @@
 .modal-dialog {
   width: 1000px
 }
+
 </style>
 {% endblock css %}
 {% block content-header %}{% endblock %}
@@ -33,7 +34,7 @@
 </div>
 
 <div class="modal fade" id="modal-alert" style="display: none;z-index: 99999">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="width: 500px">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -138,7 +139,7 @@
                   男性
                 </label>
                 <label>
-                  <input type="radio" name="sex" id="optionsRadios2" value="0">
+                  <input type="radio" name="sex" id="optionsRadios2" value="2">
                   女性
                 </label>
               </div>
@@ -146,19 +147,19 @@
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label>生年月日</label>
+              <label class="control-label text-primary">生年月日</label>
               <input type="date" id="birthday" class="form-control" placeholder="生年月日">
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label>電話番号</label>
+              <label class="control-label text-primary">電話番号</label>
               <input type="number" id="tel" class="form-control" placeholder="電話番号" maxlength="15">
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label>所属営業担当</label>
+              <label class="control-label text-primary">所属営業担当</label>
               <select class="form-control" id="sales_id">
                 <option value="1">営業担当１</option>
                 <option value="2">営業担当２</option>
@@ -169,13 +170,13 @@
         <div class="row">
           <div class="col-md-9">
             <div class="form-group">
-              <label>Email</label>
+              <label class="control-label text-primary">Email</label>
               <input type="text" id="email" class="form-control" placeholder="Email" maxlength="30">
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label>駅</label>
+              <label class="control-label text-primary">駅</label>
               <input type="text" id="station" class="form-control" placeholder="駅" maxlength="20">
             </div>
           </div>
@@ -183,50 +184,61 @@
         <div class="row">
           <div class="col-md-2">
             <div class="form-group">
-              <label>郵便番号</label>
+              <label class="control-label text-primary">郵便番号</label>
               <input type="text" id="zip" class="form-control" placeholder="郵便番号" maxlength="7">
             </div>
           </div>
           <div class="col-md-2">
             <div class="form-group">
-              <label>都道府県</label>
+              <label class="control-label text-primary">都道府県</label>
               <select class="form-control" id="address1">
-                <option value="0">東京都</option>
-                <option value="1">千葉県</option>
-                <option value="2">埼玉県</option>
-                <option value="3">神奈川県</option>
+                <option value="1">東京都</option>
+                <option value="2">千葉県</option>
+                <option value="3">埼玉県</option>
+                <option value="4">神奈川県</option>
               </select>
             </div>
           </div>
           <div class="col-md-8">
             <div class="form-group">
-              <label>市町郡街</label>
+              <label class="control-label text-primary">市町郡街</label>
               <input type="text" id="address2" class="form-control" placeholder="市町郡街" maxlength="50">
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row">          
           <div class="col-md-3">
             <div class="form-group">
-              <label>在留カード番号</label>
-              <input type="text" id="residence_no" class="form-control" placeholder="在留カード番号" maxlength="15">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label>日本語能力</label>
-              <select class="form-control" id="japanese_level">
-                <option value="1">1級流暢</option>
-                <option value="2">1級</option>
-                <option value="3">2級</option>
-                <option value="4">3級</option>
+              <label class="control-label text-primary">ステータス</label>
+              <select class="form-control" id="status">
+                <option value="1">稼働中</option>
+                <option value="2">待機中</option>
+                <option value="3">離任</option>
               </select>
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label>仕事経験</label>
-              <input type="text" id="start_work_date" class="form-control" placeholder="仕事経験">
+              <label class="control-label text-primary">プロジェクト</label>
+              <select class="form-control" id="project_id">
+                {% for data in project_datas %}
+                  <option value="{{data.id}}">
+                      {{data.name}}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label text-primary">単価(万円)</label>
+              <input type="number" id="price" class="form-control" placeholder="給料">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label text-primary">プロジェクト予定終了日</label>
+              <input type="date" id="project_end_plan_date" class="form-control" placeholder="プロジェクト予定終了日">
             </div>
           </div>
         </div>
@@ -239,14 +251,14 @@
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label>離任日付</label>
+              <label class="control-label text-primary">離任日付</label>
               <input type="date" id="quit_date" class="form-control" placeholder="離任日付">
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
               <div class="form-group">
-                <label>給料</label>
+                <label class="control-label text-primary">給料</label>
                 <input type="number" id="salary" class="form-control" placeholder="給料">
               </div>
             </div>
@@ -254,7 +266,7 @@
           <div class="col-md-3">
             <div class="form-group">
               <div class="form-group">
-                <label>交通費</label>
+                <label class="control-label text-primary">交通費</label>
                 <input type="number" id="transport_cost" class="form-control" placeholder="交通費">
               </div>
             </div>
@@ -263,36 +275,31 @@
         <div class="row">
           <div class="col-md-3">
             <div class="form-group">
-              <label>プロジェクト</label>
-              <select class="form-control" id="project_id">
-                {% for data in project_datas %}
-                  <option value="{{data.id}}">
-                      {{data.name}}
-                  </option>
-                {% endfor %}
+              <label class="control-label text-primary">待機費(万円)</label>
+              <input type="number" id="no_project_benefit" class="form-control" placeholder="待機費">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label class="control-label text-primary">日本語能力</label>
+              <select class="form-control" id="japanese_level">
+                <option value="1">1級流暢</option>
+                <option value="2">1級</option>
+                <option value="3">2級</option>
+                <option value="4">3級</option>
               </select>
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label>単価(万円)</label>
-              <input type="number" id="price" class="form-control" placeholder="給料">
+              <label class="control-label text-primary">仕事経験</label>
+              <input type="text" id="start_work_date" class="form-control" placeholder="仕事経験">
             </div>
           </div>
           <div class="col-md-3">
             <div class="form-group">
-              <label>ステータス</label>
-              <select class="form-control" id="status">
-                <option value="1">稼働中</option>
-                <option value="2">待機中</option>
-                <option value="3">離任</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label>プロジェクト予定終了日</label>
-              <input type="date" id="project_end_plan_date" class="form-control" placeholder="プロジェクト予定終了日">
+              <label class="control-label text-primary">在留カード番号</label>
+              <input type="text" id="residence_no" class="form-control" placeholder="在留カード番号" maxlength="15">
             </div>
           </div>
         </div>
@@ -318,7 +325,7 @@
         <div class="row">
           <div class="col-md-12">
           <div class="form-group">
-            <label>社員番号</label>
+            <label class="control-label text-primary">社員番号</label>
             <select class="form-control" id="seisan_emp_id">
                 {% for data in seisan_datas_emp %}
                   <option value="{{data.emp_id}}">
@@ -332,7 +339,7 @@
         <div class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <label>精算年月</label>
+              <label class="control-label text-primary">精算年月</label>
               <input type="date" id="seisan_ym" class="form-control" placeholder="精算年月">
             </div>
           </div>
@@ -341,7 +348,7 @@
           <div class="col-md-12">
             <div class="form-group">
               <div class="form-group">
-                <label>精算時間</label>
+                <label class="control-label text-primary">精算時間</label>
                 <input type="number" id="seisan_time" class="form-control" placeholder="精算時間">
               </div>
             </div>
@@ -433,8 +440,12 @@
               "data": "salary"
             },
             {
-              "title":"交通費",
+              "title":"交通費(万円)",
               "data": "transport_cost"
+            },
+            {
+              "title":"待機費(万円)",
+              "data": "no_project_benefit"
             },
             {
               "title":"プロジェクト名",
@@ -444,6 +455,7 @@
               "title":"プロジェクト予定終了日",
               "data": "project_end_plan_date"
             }
+            
         ];
         _tbl_employee_list_ = $('#employee_list').DataTable({
           data: employees,
@@ -565,6 +577,8 @@
     var station = $("#station").val();
     // tel
     var tel = $("#tel").val();
+    // 待機費
+    var no_project_benefit = $("#no_project_benefit").val();
     var id = $("#id").val();
     $("#action").text("登録");
     $(".modal-title").text("登録");
@@ -602,7 +616,8 @@
       "position":position,
       "sales_id":sales_id,
       "project_end_plan_date":project_end_plan_date,
-      "tel":tel
+      "tel":tel,
+      "no_project_benefit":no_project_benefit
     }
     
     get_axios().post("api/employee/insert", {
@@ -705,6 +720,8 @@
           $("#sales_id").val(employee_info.sales_id);
           // project_end_plan_date
           $("#project_end_plan_date").val(employee_info.project_end_plan_date);
+          // no_project_benefit
+          $("#no_project_benefit").val(employee_info.no_project_benefit);
           // delete_flag
           $("#delete_flag").val(employee_info.delete_flag);
           $("#action").text("更新");

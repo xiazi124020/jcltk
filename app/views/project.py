@@ -131,6 +131,8 @@ def insert(request):
     start_date = parameters['start_date']
     # 終了日
     end_date = parameters['end_date']
+    if end_date == '':
+        end_date = None
     sql = None
     exec_sql = None
     if id is None or id == "":

@@ -79,7 +79,7 @@
           </div>
           <div class="col-md-4">
             <div class="form-group">
-              <label>終了日</label>
+              <label class="control-label text-primary">終了日</label>
               <div class="input-group date">
                 <div class="input-group-addon">
                   <i class="fa fa-calendar"></i>
@@ -94,10 +94,10 @@
             <div class="form-group required">
               <label class="control-label text-primary">ステータス</label>
               <select class="form-control" id="status">
-                <option value="0">未開始</option>
-                <option value="1">進行中</option>
-                <option value="2">完了</option>
-                <option value="3">中止</option>
+                <option value="1">未開始</option>
+                <option value="2">進行中</option>
+                <option value="3">完了</option>
+                <option value="4">中止</option>
               </select>
             </div>
           </div>
@@ -115,7 +115,7 @@
           </div>
           <div class="col-md-4">
             <div class="form-group">
-              <label>駅</label>
+              <label class="control-label text-primary">駅</label>
               <input type="text" id="station" class="form-control" placeholder="駅" maxlength="20">
             </div>
           </div>
@@ -126,11 +126,11 @@
               <label class="control-label text-primary">精算有無</label>
               <div class="radio">
                 <label>
-                  <input type="radio" name="seisan" id="optionsRadios1" value="0" checked="">
+                  <input type="radio" name="seisan" id="optionsRadios1" value="1" checked="">
                   あり
                 </label>
                 <label>
-                  <input type="radio" name="seisan" id="optionsRadios2" value="1">
+                  <input type="radio" name="seisan" id="optionsRadios2" value="2">
                   なし
                 </label>
               </div>
@@ -138,13 +138,13 @@
           </div>
           <div class="col-md-4">
             <div class="form-group">
-              <label>精算下限</label>
+              <label class="control-label text-primary">精算下限</label>
               <input type="number" id="min_time" class="form-control" placeholder="精算下限" min="140" max="160">
             </div>
           </div>
           <div class="col-md-4">
             <div class="form-group">
-              <label>精算上限</label>
+              <label class="control-label text-primary">精算上限</label>
               <input type="number"" id="max_time" class="form-control" placeholder="精算上限" min="180" max="200">
             </div>
           </div>
@@ -209,11 +209,11 @@
                 "data": "status",
                 "width": "20px",
                 "render": function(data, type, row, meta){
-                  if(data == "0") {
+                  if(data == "1") {
                     return "未開始"
-                  } else if(data == "1") {
-                    return "進行中"
                   } else if(data == "2") {
+                    return "進行中"
+                  } else if(data == "3") {
                     return "完了"
                   } else {
                     return "中止"
