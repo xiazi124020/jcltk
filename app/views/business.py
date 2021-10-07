@@ -80,6 +80,7 @@ def months_between(start_date, end_date):
 @login_required
 def export(request, service="000", start="20200401", end="20301231"):
 
+    months = months_between(start, end)
     download_file_list = []
     zip_tempfile_path = '{}-{}.zip'.format(start, end)
 
@@ -110,6 +111,9 @@ def export(request, service="000", start="20200401", end="20301231"):
         inner join customer c 
             on b.customer_id = c.id 
             and c.partener = %s
+        where b.id <> 1
+        and b.start_date >= %s
+        and (b.end_date is null or b.end_date >= %s)
         order by
         c.id
     """
@@ -117,7 +121,7 @@ def export(request, service="000", start="20200401", end="20301231"):
     if service[0:1] == "1":
         bill_file_datas = []
         with connection.cursor() as cursor:
-            cursor.execute(sql, (1,))
+            cursor.execute(sql, (1,months[0][:4] + "/" + months[0][4:] + "/01", months[len(months) - 1][:4] + "/" + months[len(months) - 1][4:] + "/01"))
             bill_file_datas = dictfetchall(cursor)
 
         for data in bill_file_datas:
@@ -129,7 +133,6 @@ def export(request, service="000", start="20200401", end="20301231"):
         sql = """
             select emp_id, seisan_time, ym from seisan where ym < %s
         """
-        months = months_between(start, end)
         output_max_month = months[-1]
         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         if len(bill_file_datas) > 0:
@@ -188,7 +191,7 @@ def export(request, service="000", start="20200401", end="20301231"):
         
         order_file_datas = []
         with connection.cursor() as cursor:
-            cursor.execute(sql, (2,))
+            cursor.execute(sql, (2 ,months[0][:4] + "/" + months[0][4:] + "/01", months[len(months) - 1][:4] + "/" + months[len(months) - 1][4:] + "/01"))
             order_file_datas = dictfetchall(cursor)
 
         for data in order_file_datas:

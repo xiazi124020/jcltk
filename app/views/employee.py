@@ -150,7 +150,7 @@ def get_employee(request):
             project c
         on b.project_id = c.id
         where 
-            emp_id = %s
+            a.emp_id = %s
     """
     with connection.cursor() as cursor:
         cursor.execute(sql, (emp_id,))
@@ -374,7 +374,7 @@ def insert(request):
                 cursor.execute(exec_sql, (department_id,first_name,last_name,first_name_kana,last_name_kana,sex,birthday,zip,address1,address2,email,residence_no,tel,entry_date,quit_date,start_work_date,japanese_level,emp_type,salary,price,transport_cost,status,station,position,sales_id,project_end_plan_date,emp_id))
 
             select_ql = f"""
-                select count(*) count from emp_project where emp_id - %s and project_id = %s
+                select count(*) count from emp_project where emp_id = %s and project_id = %s
             """
             
             emp_project_datas = []

@@ -55,7 +55,7 @@
          </div>
          
         <div class="form-group required">
-          <!-- <label class="control-label text-primary">作成期間</label> -->
+          <label class="control-label text-primary">作成期間</label>
           <div class="input-group" id="dispDateRange">
             <input type="text" class="form-control rpa-input" id="daterange-btn" style="width:320px"/>
           </div>
@@ -165,7 +165,10 @@
             },
             {
               "title":"郵便番号(お客様)",
-              "data": "customer_zip"
+              "data": "customer_zip",
+              "render": function(data, type, row, meta){
+                return "〒" + data
+              }
             },
             {
               "title":"住所(お客様)",
@@ -173,7 +176,7 @@
             },
             {
               "title":"電話番号(お客様)",
-              "data": "customer_address"
+              "data": "customer_tel_no"
             },
             {
               "title":"Email(お客様)",
@@ -181,7 +184,14 @@
             },
             {
               "title":"区分(お客様)",
-              "data": "customer_email"
+              "data": "partener",
+              "render": function(data, type, row, meta){
+                  if(data == "1") {
+                    return "お客様"
+                  } else {
+                    return "BP"
+                  }
+              }
             },
         ];
         _tbl_business_list_ = $('#business_list').DataTable({
