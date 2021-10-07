@@ -109,7 +109,12 @@
     var date = new Date();
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-    create_date_range_picker('daterange-btn', [firstDay.format_as_yyyymmdd_with_slash(), lastDay.format_as_yyyymmdd_with_slash()]);
+    $('#daterange-btn').daterangepicker({
+    "startDate": firstDay.format_as_yyyymmdd_with_slash(),
+    "endDate": lastDay.format_as_yyyymmdd_with_slash(),
+    "format": 'YYYY/MM/DD',
+    });
+    // create_date_range_picker('daterange-btn', [firstDay.format_as_yyyymmdd_with_slash(), lastDay.format_as_yyyymmdd_with_slash()]);
     do_search()
   }
 
