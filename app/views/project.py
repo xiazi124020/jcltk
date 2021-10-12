@@ -127,6 +127,8 @@ def insert(request):
     min_time = parameters['min_time']
     #  上限
     max_time = parameters['max_time']
+    print("==================", min_time)
+    print("==================", max_time)
     # 開始日
     start_date = parameters['start_date']
     # 終了日

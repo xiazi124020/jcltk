@@ -94,10 +94,12 @@ def export(request, service="000", start="20200401", end="20301231"):
             , a.last_name
             , a.first_name_kana
             , a.last_name_kana
-            , a.price
+            , a.price * 10000 as price
             , b.name project_name
             , b.start_date
             , b.end_date
+            , b.min_time
+            , b.max_time
             , c.id customer_id
             , c.name customer_name
             , c.zip customer_zip
@@ -123,8 +125,16 @@ def export(request, service="000", start="20200401", end="20301231"):
     
     seisan_datas = []
     seisan_sql = """
-        select emp_id, seisan_time, ym from seisan where ym < %s
+        select emp_id, seisan_time, ym from seisan where ym >= %s and ym <= %s
     """
+    
+    with connection.cursor() as cursor:
+        cursor.execute(seisan_sql, (start[:6], end[:6]))
+        seisan_datas = dictfetchall(cursor)
+
+    print("============")
+    print(seisan_datas)
+    print("============")
     # 請求書
     if service[0:1] == "1":
         bill_file_datas = []
@@ -180,6 +190,23 @@ def export(request, service="000", start="20200401", end="20301231"):
                             sh1.cell(row=15+count,column=6,value="人・月")
                             sh1.cell(row=15+count,column=7,value=data2['price'])
                             count = count + 1
+                            for seisan_data in seisan_datas:
+                                if seisan_data['ym'] == month and data2['emp_id'] == seisan_data['emp_id']:
+                                    if data2['min_time'] != 0 and data2['max_time'] != 0:
+                                        if seisan_data['seisan_time'] > 0:
+                                            sh1.cell(row=15+count,column=1,value=count + 1)
+                                            sh1.cell(row=15+count,column=2,value="精算" + "【" + data2['first_name'] + data2['last_name'] +  "】")
+                                            sh1.cell(row=15+count,column=5,value=seisan_data['seisan_time'])
+                                            sh1.cell(row=15+count,column=6,value="時間")
+                                            sh1.cell(row=15+count,column=7,value=round(data2['price']/data2['max_time']))
+                                        else:
+                                            sh1.cell(row=15+count,column=1,value=count + 1)
+                                            sh1.cell(row=15+count,column=2,value="精算" + "【" + data2['first_name'] + data2['last_name'] +  "】")
+                                            sh1.cell(row=15+count,column=5,value=seisan_data['seisan_time'])
+                                            sh1.cell(row=15+count,column=6,value="時間")
+                                            sh1.cell(row=15+count,column=7,value=round(data2['price']/data2['min_time']))
+                                        count = count + 1
+                                        break
                     
                     if data_exists_flag == True:
                         download_file_list.append(filename)

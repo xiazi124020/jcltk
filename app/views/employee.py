@@ -500,9 +500,49 @@ def seisan_insert(request):
             with connection.cursor() as cursor:
                 cursor.execute(exec_sql, (seisan_time,seisan_ym,emp_id))
 
+
     sql = f"""
-        select emp_id,department_id,project_id,first_name,last_name,first_name_kana,last_name_kana,sex,birthday,zip,address1,address2,email,residence_no,tel,entry_date,quit_date,start_work_date,japanese_level,emp_type,salary,price,transport_cost,status,station,position,sales_id,project_end_plan_date,delete_flag from employee
+        select
+            a.emp_id
+            , a.department_id
+            , a.first_name
+            , a.last_name
+            , a.first_name_kana
+            , a.last_name_kana
+            , a.sex
+            , a.birthday
+            , a.zip
+            , a.address1
+            , a.address2
+            , a.email
+            , a.residence_no
+            , a.tel
+            , a.entry_date
+            , a.quit_date
+            , a.start_work_date
+            , a.japanese_level
+            , a.emp_type
+            , a.salary
+            , a.price
+            , a.transport_cost
+            , a.status
+            , a.station
+            , a.position
+            , a.sales_id
+            , a.project_end_plan_date
+            , a.delete_flag
+            , a.no_project_benefit
+            , c.name 
+            , c.id project_id
+        from
+            employee a
+        inner join emp_project b
+        on a.emp_id = b.emp_id
+        and b.current_flag = 1
+        inner join project c
+        on b.project_id = c.id
     """
+
     datas = []
     with connection.cursor() as cursor:
         cursor.execute(sql)
