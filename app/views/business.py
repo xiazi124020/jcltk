@@ -40,6 +40,8 @@ def get_list(request):
         , a.last_name_kana
         , a.price
         , b.name project_name
+        , b.start_date
+        , b.end_date
         , c.id customer_id
         , c.name customer_name
         , c.zip customer_zip
@@ -139,39 +141,32 @@ def export(request, service="000", start="20200401", end="20301231"):
         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         if len(bill_file_datas) > 0:
             for month in months:
-                customer_id = bill_file_datas[0]['customer_id']
                 # load workbook if you want to write in existing file else use openpyxl.Workbook()
                 wb = openpyxl.load_workbook(os.path.join(base_path, "請求書.xlsx"))
                 #get the active sheet
                 sh1=wb.active
                 sh1=wb['請求書']
-                filename = "{}_{}_請求書.xlsx"
-                exists_flag = False
-                count = 0
-                for data in bill_file_datas:
-                    if customer_id != data['customer_id']:
-                        customer_id = data['customer_id']
-                        filename = filename.format(month, data['customer_name'])
-                        # save the excel with name or you can give specific location of your choice
-                        wb.save(os.path.join(base_path, filename))
-                        wb.close()
-                        download_file_list.append(filename)
-                        exists_flag = False
-                        wb = openpyxl.load_workbook(os.path.join(base_path, "請求書.xlsx"))
-                        #get the active sheet
-                        sh1=wb.active
-                        sh1=wb['請求書']
-                    else:
-                        if month >= data['start_date'][:6] and (data['end_date'] is None or month <= data['end_date'][:6]):
+                done_customer_list = []
+                for data1 in bill_file_datas:
+                    current_customer_id = data1['customer_id']
+                    if current_customer_id in done_customer_list:
+                        continue
+                    done_customer_list.append(current_customer_id)
+                    filename = "{}_{}_請求書.xlsx".format(month, data1['customer_name'])
+                    count = 0
+                    data_exists_flag = False
 
-                            filename = filename.format(month, data['customer_name'])
+                    for data2 in bill_file_datas:
+                        if current_customer_id == data2['customer_id'] and month >= data2['start_date'][:6] and (data['end_date'] is None or month <= data2['end_date'][:6]):
+
+                            data_exists_flag = True
                             # pass which row and column and value which you want to update
-                            sh1.cell(row=2,column=1,value=data['customer_name'] + "御中")
+                            sh1.cell(row=2,column=1,value=data2['customer_name'] + "御中")
                             sh1.cell(row=2,column=8,value='JCL-' + month + "-" + str(count + 1).zfill(3))
                             sh1.cell(row=3,column=8,value=month[:4] + "/" + month[4:] + "/01")
-                            sh1.cell(row=4,column=1,value="〒" + data['customer_zip'][:3] + "-" + data['customer_zip'][3:])
-                            sh1.cell(row=5,column=1,value=data['customer_address'])
-                            sh1.cell(row=8,column=1,value="件名：" + data['project_name'])
+                            sh1.cell(row=4,column=1,value="〒" + data2['customer_zip'][:3] + "-" + data2['customer_zip'][3:])
+                            sh1.cell(row=5,column=1,value=data2['customer_address'])
+                            sh1.cell(row=8,column=1,value="件名：" + data2['project_name'])
                             # 支払期限
                             current_date = datetime.strptime(month + '01', '%Y%m%d')
                             next_two_month = current_date + relativedelta(months=2)
@@ -180,21 +175,20 @@ def export(request, service="000", start="20200401", end="20301231"):
 
                             sh1.cell(row=12,column=8,value=datetime.strftime(last_day_of_month, '%Y%m%d'))
                             sh1.cell(row=15+count,column=1,value=count + 1)
-                            sh1.cell(row=15+count,column=2,value=data['project_name'] + "【" + data['first_name'] + data['last_name'] +  "】")
+                            sh1.cell(row=15+count,column=2,value=data2['project_name'] + "【" + data2['first_name'] + data2['last_name'] +  "】")
                             sh1.cell(row=15+count,column=5,value=1)
                             sh1.cell(row=15+count,column=6,value="人・月")
-                            sh1.cell(row=15+count,column=7,value=data['price'])
+                            sh1.cell(row=15+count,column=7,value=data2['price'])
                             count = count + 1
-                            exists_flag = True
                     
-                if exists_flag == True:
-                    # save the excel with name or you can give specific location of your choice
-                    wb.save(os.path.join(base_path, filename))
-                    download_file_list.append(filename)
+                    if data_exists_flag == True:
+                        download_file_list.append(filename)
+                        # save the excel with name or you can give specific location of your choice
+                        wb.save(os.path.join(base_path, filename))
                     wb.close()
 
     # 注文書
-    if service[1:2] == "2":
+    if service[1:2] == "1":
         
         order_file_datas = []
         with connection.cursor() as cursor:
@@ -211,38 +205,27 @@ def export(request, service="000", start="20200401", end="20301231"):
         base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         
         if len(order_file_datas) > 0:
+            
             for month in months:
-                
-                customer_id = bill_file_datas[0]['customer_id']
                 # load workbook if you want to write in existing file else use openpyxl.Workbook()
                 wb = openpyxl.load_workbook(os.path.join(base_path, "注文書.xlsx"))
                 #get the active sheet
                 sh1=wb.active
                 sh1=wb['注文書']
-                exists_flag = False
-                count = 0
-                filename = "{}_{}_注文書.xlsx"
-                exists_flag = False
-                for data in order_file_datas:
+                done_customer_list = []
+                for data1 in order_file_datas:
+                    current_customer_id = data1['customer_id']
+                    if current_customer_id in done_customer_list:
+                        continue
+                    done_customer_list.append(current_customer_id)
+                    filename = "{}_{}_注文書.xlsx".format(month, data1['customer_name'])
                     count = 0
-                    if customer_id != data['customer_id']:
-                        
-                        customer_id = data['customer_id']
-                        filename = filename.format(month, data['customer_name'])
-                        # save the excel with name or you can give specific location of your choice
-                        wb.save(os.path.join(base_path, filename))
-                        wb.close()
-                        download_file_list.append(filename)
-                        exists_flag = False
-                        wb = openpyxl.load_workbook(os.path.join(base_path, "注文書.xlsx"))
-                        #get the active sheet
-                        sh1=wb.active
-                        sh1=wb['注文書']
+                    data_exists_flag = False
 
-                    else:
-                        if month >= data['start_date'][:6] and (data['end_date'] is None or month <= data['end_date'][:6]):
+                    for data2 in order_file_datas:
+                        if current_customer_id == data2['customer_id'] and month >= data2['start_date'][:6] and (data['end_date'] is None or month <= data2['end_date'][:6]):
 
-                            filename = filename.format(month, data['customer_name'])
+                            data_exists_flag = True
                             # pass which row and column and value which you want to update
                             sh1.cell(row=2,column=1,value=data['customer_name'])
                             sh1.cell(row=2,column=8,value='JCL-' + month + "-" + str(count + 1).zfill(3))
@@ -260,13 +243,11 @@ def export(request, service="000", start="20200401", end="20301231"):
                             sh1.cell(row=15+count,column=6,value="人・月")
                             sh1.cell(row=15+count,column=7,value=data['price'])
                             count = count + 1
-                            exists_flag = True
-                        
-                if exists_flag == False:
-                    # save the excel with name or you can give specific location of your choice
-                    filename = filename.format(month, data['customer_name'])
-                    wb.save(os.path.join(base_path, filename))
-                    download_file_list.append(filename)
+                    
+                    if data_exists_flag == True:
+                        download_file_list.append(filename)
+                        # save the excel with name or you can give specific location of your choice
+                        wb.save(os.path.join(base_path, filename))
                     wb.close()
 
     with zipfile.ZipFile(os.path.join(base_path,zip_tempfile_path), 'w', compression=zipfile.ZIP_DEFLATED) as new_zip:

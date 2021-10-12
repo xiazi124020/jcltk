@@ -6,7 +6,7 @@ from django.urls import register_converter
 class ServiceConverter:
     """url mapping for b/o/s"""
 
-    regex = '[1-3]{3}'
+    regex = '[0-1]{3}'
     def to_python(self, value):
         return value
     def to_url(self, value):

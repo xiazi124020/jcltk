@@ -135,12 +135,12 @@
             {
               "title":"社員番号",
               "data": "emp_id",
-              "render": function(data, type, row, meta){
-                    if(data) {
-                      data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
-                    }
-                    return data;
-              }
+              // "render": function(data, type, row, meta){
+              //       if(data) {
+              //         data = '<a href="javascript:void(0);" onclick="dispProfile(\'' + data + '\', null); return false;">' + data +'</a>';
+              //       }
+              //       return data;
+              // }
             },
             {
               "title":"氏名",
@@ -163,6 +163,23 @@
             {
               "title":"プロジェクト名",
               "data": "project_name"
+            },
+            {
+              "title":"プロジェクト開始日",
+              "data": "start_date",
+              "render": function(data, type, row, meta){
+                    return data.format_as_yyyymmdd_with_slash();
+              }
+            },
+            {
+              "title":"プロジェクト終了日",
+              "data": "end_date",
+              "render": function(data, type, row, meta){
+                if(is_empty(data)) {
+                  return "-"
+                }
+                return data.format_as_yyyymmdd_with_slash();
+              }
             },
             {
               "title":"お客様名",
@@ -202,6 +219,9 @@
         _tbl_business_list_ = $('#business_list').DataTable({
           data: employees,
           columns: disp_columns,
+          fixedColumns:{
+            leftColumns: 4
+          },
           dom:'Bfrtip',
           autoWidth:false,
           scrollX: true,
@@ -211,16 +231,17 @@
           lengthChange:true,
           processing:true,
           pageLength : 50,
-          buttons: [
-            {
-              extend: 'pdfHtml5',
-              text: 'pdf',
-              pageSize: 'A4',
-              customize: function ( doc ) {
-                doc.defaultStyle.font= 'GenShin';
-              }
-            },
-          ],
+          buttons:[],
+          // buttons: [
+          //   {
+          //     extend: 'pdfHtml5',
+          //     text: 'pdf',
+          //     pageSize: 'A4',
+          //     customize: function ( doc ) {
+          //       doc.defaultStyle.font= 'GenShin';
+          //     }
+          //   },
+          // ],
           autoWidth:false
         });
         // $('#business_list tbody').on( 'click', 'tr', function () {
@@ -240,7 +261,20 @@
   }
 
   function do_export() {
+    var service = "001";
     var business_kbn = $('#business_kbn').val();
+    for(var i = 0; i < business_kbn.length; i++) {
+      if(business_kbn[i] == "1") {
+        service = "1" + service.substr(1)
+      }
+      if(business_kbn[i] == "2") {
+        service = service.substring(0,1) + "1" + service.substr(2);
+      }
+      if(business_kbn[i] == "3") {
+        service = service.substr(0,2) + "1";
+      }
+    }
+
     var daterange=$("#daterange-btn").val();
 
     if (is_empty(business_kbn)
@@ -261,7 +295,7 @@
     }
     
     document.search_form.method = "post";
-    document.search_form.action = gethostwebname() + "/api/business/export/{0}/{1}/{2}".format("123",dateFrom, dateTo);
+    document.search_form.action = gethostwebname() + "/api/business/export/{0}/{1}/{2}".format(service,dateFrom, dateTo);
     document.search_form.target =  "_self";
     document.search_form.submit();
     
