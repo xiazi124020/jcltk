@@ -1,0 +1,71 @@
+# apache install
+sudo yum install httpd
+
+
+#firewall open port 80
+sudo firewall-cmd --zone=public --add-service=http --permanent
+sudo firewall-cmd --reload
+
+#disabled selinux
+cd /etc/selinux
+sudo vi config
+««««
+#SELINUX=enforcing
+SELINUX=disabled
+ªªªª
+
+#restart
+sudo shutdown -r now
+
+#apache start
+sudo systemctl start httpd
+
+
+#install mysql
+sudo yum install mysql-community-server
+
+#start mysql
+sudo systemctl start mysqld
+
+#confirm and change init password
+sudo cat /var/log/mysqld.log | grep password
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'NewPassword';
+
+
+#connect mysql
+ mysql -u root -p
+ 
+#reset init password
+
+
+$ sudo yum install python-devel mysql-devel
+sudo yum install python3-dev
+sudo yum install libevent-dev
+
+
+ yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make libffi-devel
+ 
+# port listen
+sudo lsof -i -P -n | grep LISTEN
+
+#open port
+firewall-cmd --zone=public --add-port=8000/tcp --permanent
+firewall-cmd --reload
+
+
+#django static files
+python manage.py collectstatic
+
+enable the configuration sudo a2ensite <YourConfiguration>
+disable the default configuration sudo a2dissite <Default configuration>
+reload apache service systemctl reload apache2
+
+
+#kill port 
+ ps aux | grep -i manage
+ 
+ 
+#run django
+nohup python manage.py runserver 0.0.0.0:8000 &
+ 

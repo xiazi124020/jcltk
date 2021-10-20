@@ -27,7 +27,7 @@ CREATE TABLE customer (
 
 
 CREATE TABLE project (
-  id int NOT NULL AUTO_INCREMENT COMMENT 'åƒL[',
+  id int NOT NULL AUTO_INCREMENT COMMENT 'ä¸»ã‚­ãƒ¼',
   name varchar(50) NOT NULL,
   start_date date NOT NULL,
   end_date date DEFAULT NULL,
@@ -52,43 +52,45 @@ CREATE TABLE department (
 );
 
 CREATE TABLE employee (
-  emp_id varchar(10) NOT NULL COMMENT 'Ğˆõ”Ô†',
-  department_id int DEFAULT NULL COMMENT '•”–å”Ô†',
-  first_name varchar(15)  COMMENT '–¼‘O‚P',
-  last_name varchar(15) COMMENT '–¼‘O‚Q',
-  first_name_kana varchar(15) COMMENT 'ƒJƒi‚P',
-  last_name_kana varchar(15) COMMENT 'ƒJƒi‚Q',
-  sex varchar(1) NOT NULL COMMENT '«•Ê',
-  birthday date DEFAULT NULL COMMENT '¶”NŒ“ú',
-  zip varchar(7) DEFAULT NULL COMMENT '—X•Ö”Ô†',
-  address1 varchar(10) DEFAULT NULL COMMENT 'ZŠ1',
-  address2 varchar(50) DEFAULT NULL COMMENT 'ZŠ2',
-  email varchar(30) DEFAULT NULL COMMENT 'ƒ[ƒ‹ƒAƒhƒŒƒX',
-  residence_no varchar(15) DEFAULT NULL COMMENT 'İ—¯ƒJ[ƒh”Ô†',
-  tel varchar(15) DEFAULT NULL COMMENT '“d˜b”Ô†',
-  entry_date date NOT NULL COMMENT '“üĞ“ú•t',
-  quit_date date DEFAULT NULL COMMENT '—£”C“ú•t',
-  start_work_date varchar(20) DEFAULT NULL COMMENT 'd–ŒoŒ±',
-  japanese_level int DEFAULT NULL COMMENT '“ú–{Œê”\—Í',
-  emp_type int COMMENT 'Ğˆõí•Ê',
-  salary int default 0 COMMENT '‹‹—¿',
-  price int default 0 COMMENT '’P‰¿',
-  Transport_cost int default 0 COMMENT 'Œğ’Ê”ï',
+  emp_id varchar(10) NOT NULL COMMENT 'ç¤¾å“¡ç•ªå·',
+  department_id int DEFAULT NULL COMMENT 'éƒ¨é–€ç•ªå·',
+  first_name varchar(15)  COMMENT 'åå‰ï¼‘',
+  last_name varchar(15) COMMENT 'åå‰ï¼’',
+  first_name_kana varchar(15) COMMENT 'ã‚«ãƒŠï¼‘',
+  last_name_kana varchar(15) COMMENT 'ã‚«ãƒŠï¼’',
+  sex varchar(1) NOT NULL COMMENT 'æ€§åˆ¥',
+  birthday date DEFAULT NULL COMMENT 'ç”Ÿå¹´æœˆæ—¥',
+  zip varchar(7) DEFAULT NULL COMMENT 'éƒµä¾¿ç•ªå·',
+  address1 varchar(10) DEFAULT NULL COMMENT 'ä½æ‰€1',
+  address2 varchar(50) DEFAULT NULL COMMENT 'ä½æ‰€2',
+  email varchar(30) DEFAULT NULL COMMENT 'ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹',
+  residence_no varchar(15) DEFAULT NULL COMMENT 'åœ¨ç•™ã‚«ãƒ¼ãƒ‰ç•ªå·',
+  tel varchar(15) DEFAULT NULL COMMENT 'é›»è©±ç•ªå·',
+  entry_date date NOT NULL COMMENT 'å…¥ç¤¾æ—¥ä»˜',
+  quit_date date DEFAULT NULL COMMENT 'é›¢ä»»æ—¥ä»˜',
+  start_work_date varchar(20) DEFAULT NULL COMMENT 'ä»•äº‹çµŒé¨“',
+  japanese_level int DEFAULT NULL COMMENT 'æ—¥æœ¬èªèƒ½åŠ›',
+  emp_type int COMMENT 'ç¤¾å“¡ç¨®åˆ¥',
+  salary int default 0 COMMENT 'çµ¦æ–™',
+  price int default 0 COMMENT 'å˜ä¾¡',
+  Transport_cost int default 0 COMMENT 'äº¤é€šè²»',
   status int,
-  station varchar(20) COMMENT '‰w',
-  position int COMMENT 'EˆÊ',
-  sales_id varchar(10) COMMENT '‰c‹Æ’S“–ID',
-  project_end_plan_date date COMMENT 'ƒvƒƒWƒFƒNƒg—\’èI—¹“ú',
-  no_project_benefit int COMMENT '‘Ò‹@”ï',
+  station varchar(20) COMMENT 'é§…',
+  position int COMMENT 'è·ä½',
+  sales_id varchar(10) COMMENT 'å–¶æ¥­æ‹…å½“ID',
+  project_end_plan_date date COMMENT 'ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆäºˆå®šçµ‚äº†æ—¥',
+  no_project_benefit int COMMENT 'å¾…æ©Ÿè²»',
   delete_flag int NOT NULL default 0,
   PRIMARY KEY (emp_id),
   KEY department_id (department_id),
   CONSTRAINT employee_idfk_1 FOREIGN KEY (department_id) REFERENCES department (id));
 
 create table emp_project(
-  emp_id varchar(10)  not NULL COMMENT 'Ğˆõ”Ô†',
-  project_id int  COMMENT 'ƒvƒƒWƒFƒNƒg”Ô†',
+  emp_id varchar(10)  not NULL COMMENT 'ç¤¾å“¡ç•ªå·',
+  project_id int  COMMENT 'ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆç•ªå·',
   current_flag int,
+  salary int default 0 COMMENT 'çµ¦æ–™',
+  price int default 0 COMMENT 'å˜ä¾¡',
   primary key(emp_id,project_id),
   KEY emp_id (emp_id),
   KEY project_id (project_id),
@@ -97,16 +99,16 @@ create table emp_project(
 );
 
 CREATE TABLE seisan (
-  id int NOT NULL AUTO_INCREMENT COMMENT 'åƒL[',
+  id int NOT NULL AUTO_INCREMENT COMMENT 'ä¸»ã‚­ãƒ¼',
   seisan_time int default 0,
-  emp_id varchar(10) NOT NULL COMMENT 'Ğˆõ”Ô†',
+  emp_id varchar(10) NOT NULL COMMENT 'ç¤¾å“¡ç•ªå·',
   ym varchar(6) default null,
   PRIMARY KEY (id),
   KEY emp_id (emp_id),  
   CONSTRAINT seisan_idfk_1 FOREIGN KEY (emp_id) REFERENCES employee (emp_id));
 
 CREATE TABLE code (
-  id int NOT NULL AUTO_INCREMENT COMMENT 'åƒL[',
+  id int NOT NULL AUTO_INCREMENT COMMENT 'ä¸»ã‚­ãƒ¼',
   code_id int,
   name varchar(50) NOT NULL,
   start_date date NOT NULL,
@@ -117,59 +119,59 @@ CREATE TABLE code (
 );
 
 create table auto_index(
-  id int NOT NULL AUTO_INCREMENT COMMENT 'åƒL[',
+  id int NOT NULL AUTO_INCREMENT COMMENT 'ä¸»ã‚­ãƒ¼',
   PRIMARY KEY (id)
   );
 
-insert into  customer(name, zip, address,tel_no,email,partener,representative, station) values ( 'Š”®‰ïĞƒWƒF[ƒV[ƒGƒ‹','3350002','é‹ÊŒ§˜ns’Ë‰z2|1|17[‚T‚O‚S','070-1448-1666', 'jianhou.zhang@jcltk.com', 1, '’£ŒšŒú','˜n');
-insert into  project(name, start_date, end_date, station, status, customer_id, seisan, min_time, max_time) values ('‘Ò‹@', now() , now() , '˜n', 1, 1, 1, 0, 0);
-insert into department(name) values ('ŠJ”­ˆê•”');
+insert into  customer(name, zip, address,tel_no,email,partener,representative, station) values ( 'æ ªå¼ä¼šç¤¾ã‚¸ã‚§ãƒ¼ã‚·ãƒ¼ã‚¨ãƒ«','3350002','åŸ¼ç‰çœŒè•¨å¸‚å¡šè¶Š2ï¼1ï¼17ãƒ¼ï¼•ï¼ï¼”','070-1448-1666', 'jianhou.zhang@jcltk.com', 1, 'å¼µå»ºåš','è•¨');
+insert into  project(name, start_date, end_date, station, status, customer_id, seisan, min_time, max_time) values ('å¾…æ©Ÿ', now() , now() , 'è•¨', 1, 1, 1, 0, 0);
+insert into department(name) values ('é–‹ç™ºä¸€éƒ¨');
 
   
---˜a‰ÌRŒ§
---–kŠC“¹
---•ºŒÉŒ§
---•Ÿ“‡Œ§
---•Ÿ‰ªŒ§
---•ŸˆäŒ§
---•xRŒ§
---“Ş—ÇŒ§
---“È–ØŒ§
---“¿“‡Œ§
---“Œ‹“s
---“‡ªŒ§
---’¹æŒ§
---’·–ìŒ§
---’·èŒ§
---‘å•ªŒ§
---‘åã•{
---ç—tŒ§
---ÎìŒ§
---Ã‰ªŒ§
---ÂXŒ§
---_“ŞìŒ§
---VŠƒŒ§
---H“cŒ§
---­™“‡Œ§
--- ‰êŒ§
---R—œŒ§
---RŒûŒ§
---RŒ`Œ§
---OdŒ§
---é‹ÊŒ§
---²‰êŒ§
---‚’mŒ§
---ìŒ§
---L“‡Œ§
---ŒQ”nŒ§
---ŒF–{Œ§
---‹“s•{
---‹{éŒ§
---‹{èŒ§
---Šò•ŒŒ§
---ŠâèŒ§
---‰«“êŒ§
---‰ªRŒ§
---ˆïéŒ§
---ˆ¤•QŒ§
---ˆ¤’mŒ§
+--å’Œæ­Œå±±çœŒ
+--åŒ—æµ·é“
+--å…µåº«çœŒ
+--ç¦å³¶çœŒ
+--ç¦å²¡çœŒ
+--ç¦äº•çœŒ
+--å¯Œå±±çœŒ
+--å¥ˆè‰¯çœŒ
+--æ ƒæœ¨çœŒ
+--å¾³å³¶çœŒ
+--æ±äº¬éƒ½
+--å³¶æ ¹çœŒ
+--é³¥å–çœŒ
+--é•·é‡çœŒ
+--é•·å´çœŒ
+--å¤§åˆ†çœŒ
+--å¤§é˜ªåºœ
+--åƒè‘‰çœŒ
+--çŸ³å·çœŒ
+--é™å²¡çœŒ
+--é’æ£®çœŒ
+--ç¥å¥ˆå·çœŒ
+--æ–°æ½ŸçœŒ
+--ç§‹ç”°çœŒ
+--é¹¿å…å³¶çœŒ
+--æ»‹è³€çœŒ
+--å±±æ¢¨çœŒ
+--å±±å£çœŒ
+--å±±å½¢çœŒ
+--ä¸‰é‡çœŒ
+--åŸ¼ç‰çœŒ
+--ä½è³€çœŒ
+--é«˜çŸ¥çœŒ
+--é¦™å·çœŒ
+--åºƒå³¶çœŒ
+--ç¾¤é¦¬çœŒ
+--ç†Šæœ¬çœŒ
+--äº¬éƒ½åºœ
+--å®®åŸçœŒ
+--å®®å´çœŒ
+--å²é˜œçœŒ
+--å²©æ‰‹çœŒ
+--æ²–ç¸„çœŒ
+--å²¡å±±çœŒ
+--èŒ¨åŸçœŒ
+--æ„›åª›çœŒ
+--æ„›çŸ¥çœŒ

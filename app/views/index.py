@@ -25,26 +25,37 @@ def portal(request):
 @login_required
 def file_create(request):
 
-    # 稼働中社員情報取得
-    sql = """
-        select 
+    sql = f"""
+        select
+        a.emp_id
+        , a.first_name
+        , a.last_name
+        , a.first_name_kana
+        , a.last_name_kana
+        , a.price
+        , b.name project_name
+        , b.start_date
+        , b.end_date
+        , c.id customer_id
+        , c.name customer_name
+        , c.zip customer_zip
+        , c.address customer_address
+        , c.tel_no customer_tel_no
+        , c.email customer_email
+        , c.partener 
+    from
+        employee a 
+    inner join emp_project d
+        on a.emp_id = d.emp_id
+        and d.current_flag = 1
+    inner join project b 
+        on d.project_id = b.id
+    inner join customer c 
+        on b.customer_id = c.id 
     """
+    datas = []
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        datas = dictfetchall(cursor)
 
-    base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # load workbook if you want to write in existing file else use openpyxl.Workbook()
-    wb = openpyxl.load_workbook(os.path.join(base_path, "請求書.xlsx"))
-
-    #set the sheet name
-    # wb['Sheet'].title="Report of Automation"
-
-    #get the active sheet
-    sh1=wb.active
-    sh1=wb['請求書']
-
-    # pass which row and column and value which you want to update
-    sh1.cell(row=5,column=1,value='Pytest')
-    sh1.cell(row=5,column=2,value='UK')
-    sh1.cell(row=5,column=3,value=88.88)
-
-    # save the excel with name or you can give specific location of your choice
-    wb.save("Report.xlsx")
+    return HttpResponse(to_json(datas), content_type='application/json')

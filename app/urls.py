@@ -25,7 +25,7 @@ urlpatterns = [
     path("employee/index", employee.index, name="employee.index"),
     path("customer/index", customer.index, name="customer.index"),
     path("project/index", project.index, name="project.index"),
-    path("business/index", business.index, name="business.index"),
+    path("business/create_file", business.create_file, name="business.create_file"),
 
     # ファイル作成
     path('api/business/list', login_required((business.get_list))),

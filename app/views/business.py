@@ -23,10 +23,10 @@ import calendar
 logger = logging.getLogger(__name__)
 
 @login_required
-def index(request):
+def create_file(request):
     """page to portal page."""
 
-    return render(request, "app/business/index.html")
+    return render(request, "app/business/create_file.html")
 
 @login_required
 def get_list(request):
