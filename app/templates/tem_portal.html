@@ -167,21 +167,31 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a> -->
+        {% if perms.employee.management_employee %}
         <li class="treeview menu-open">
             <a href="javascript:void(0);" onclick="dispEmployee()"><i class="fa fa-user"></i><span>社員管理</span></a>
         </li>
+        {% endif %}
+        {% if perms.project.management_project %}
         <li class="treeview menu-open">
           <a href="javascript:void(0);" onclick="dispProject()"><i class="fa fa-tasks"></i><span>プロジェクト管理</span></a>
         </li>
+        {% endif %}
+        {% if perms.customer.management_customer %}
         <li class="treeview menu-open">
             <a href="javascript:void(0);" onclick="dispCustomer()"><i class="fa fa-retweet"></i><span>お客様管理</span></a>
         </li>
+        {% endif %}
+        {% if perms.trade.management_trade %}
         <li class="treeview menu-open">
           <a href="javascript:void(0);" onclick="dispBusiness()"><i class="fa fa-exchange"></i><span>取引情報</span></a>
         </li>
+        {% endif %}
+        {% if perms.file.output_file %}
         <li class="treeview menu-open">
           <a href="javascript:void(0);" onclick="createBusiness()"><i class="fa fa-file-pdf-o"></i><span>書類作成</span></a>
         </li>
+        {% endif %}
       </ul>
     </section>
     <!-- /.sidebar -->

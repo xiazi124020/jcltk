@@ -145,8 +145,8 @@
         page_ready()
     })
 
-    function dispProfile(client_id) {
-      window.open_sub_window(gethostwebname() + "/user/{0}".format(client_id), "_blank");
+    function dispProfile(emp_id) {
+      window.open_sub_window(gethostwebname() + "/api/employee/info/{0}".format(emp_id), "_blank");
     }
 
 </script>
